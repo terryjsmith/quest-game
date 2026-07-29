@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{098b8b73-92d4-4e46-91fa-9863bceced3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{25db7add-bd7e-4335-96eb-04e02703e0f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IO">
+      <UniqueIdentifier>{62d6c0a8-fb4f-41e8-943d-b94df1e59f43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripting">
+      <UniqueIdentifier>{78a4251c-5278-40c6-a2d0-681e92be3f5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{dc50372c-ae73-40c3-8061-8312517c815b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Source\Engine\Core\QGWorld.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Core\QGApplication.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\IO\QGKeyboard.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\IO\QGGameWindow.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\IO\QGInputSystem.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Network\QGNetworkSystem.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Network\QGNetworkServer.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Core\QGTimeSystem.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Network\QGNetworkClient.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Core\QGVariant.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Core\QGDataRecord.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Network\QGReplicationClient.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Network\QGReplicationServer.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Scripting\QGScriptingSystem.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Scripting\QGScriptMethods.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Scripting\QGScriptComponent.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Core\QGTransform.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Network\QGEntitySnapshot.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Source\Engine\quest-engine.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGComponent.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGObject.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGEntity.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGSystem.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGWorld.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGApplication.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\IO\QGInputDevice.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\IO\QGInputSystem.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\IO\QGKeyboard.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\IO\QGGameWindow.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGEvent.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGEventSystem.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\IO\QGInputEvent.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\IO\QGInputCommand.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Network\QGNetworkSystem.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Network\QGNetworkServer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGTimeSystem.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Network\QGNetworkClient.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Network\QGReplicationClient.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGVariant.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGSerializable.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGDataRecord.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Network\QGNetworkPackets.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Network\QGReplicationServer.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Network\QGNetworkEvents.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Scripting\QGScript.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Scripting\QGScriptObject.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Scripting\QGMonoIncludes.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Scripting\QGScriptingSystem.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Scripting\QGScriptMethods.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Scripting\QGScriptComponent.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGTransform.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Network\QGEntitySnapshot.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGMetaSystem.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,61 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+Build/*
+*.exe
+*.out
+*.app
+*.bin
+
+# MacOS
+*.DS_Store
+
+# Visual Studio
+*.tlog
+Solution/x64/*
+Solution/quest-game/*
+Solution/quest-engine/*
+Solution/quest-server/*
+Solution/.vs/*
+*.suo
+*.opendb
+*.db
+*.pdb
+*.ilk
+*.user
+*.log
+*.idb
+*.exp
+
+# Qt
+*.Debug
+*.Release
+
+# Build dir
+Build/*
