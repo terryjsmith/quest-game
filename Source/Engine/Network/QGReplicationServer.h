@@ -12,7 +12,6 @@
 class QUEST_API QGReplicationServer : public QGSystem {
 public:
 	QGReplicationServer() {
-		m_replayTick = 0;
 		m_playerCreateFunc = 0;
 		m_replaying = false;
 	}
@@ -69,8 +68,8 @@ protected:
 	std::map<uint64_t, std::vector<QGReplicationEvent*>> m_eventHistory;
 
 	// Oldest tick we need to replay back to in next loop
-	uint64_t m_replayTick;
 	bool m_replaying;
+	std::map<uint64_t, bool> m_replayTicks;
 
 	// Player creation
 	PlayerCreateFunc m_playerCreateFunc;

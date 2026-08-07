@@ -7,6 +7,9 @@ namespace QuestGame {
         private float moveSpeed = 0.0f;
         private float turnSpeed = 0.0f;
 
+        private float moveModifier = 1.0f;
+        private float turnModifier = 20.0f;
+
         public override void Initialize() {
             QGEventSystem.Subscribe<QGInputCommand>(InputCommandCallback, this.gameObject);
         }
@@ -27,8 +30,8 @@ namespace QuestGame {
         }
 
         public override void Update(float delta) {
-            this.gameObject.transform.Move(delta * moveSpeed * this.gameObject.transform.forward);
-            this.gameObject.transform.Rotate(this.gameObject.transform.up, delta * turnSpeed);
+            this.gameObject.transform.Move(delta * moveSpeed * moveModifier * this.gameObject.transform.forward);
+            this.gameObject.transform.Rotate(this.gameObject.transform.up, delta * turnSpeed * turnModifier);
         }
     }
 }

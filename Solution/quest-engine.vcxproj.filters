@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Core">
       <UniqueIdentifier>{098b8b73-92d4-4e46-91fa-9863bceced3c}</UniqueIdentifier>
     </Filter>
@@ -23,6 +19,12 @@
     </Filter>
     <Filter Include="Render">
       <UniqueIdentifier>{dc50372c-ae73-40c3-8061-8312517c815b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\GL">
+      <UniqueIdentifier>{8d867586-aaee-453f-87ed-a9c7a07c0088}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render\Passes">
+      <UniqueIdentifier>{254c7ac6-6841-445b-8692-99ac384ec73c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +81,69 @@
     </ClCompile>
     <ClCompile Include="..\Source\Engine\Network\QGEntitySnapshot.cpp">
       <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\QGVertexAttributeList.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\QGVertexBuffer.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\QGMesh.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\QGIndexBuffer.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\IO\QGResourceSystem.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\QGTextureLoader.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\QGMeshLoader.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\QGMaterial.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\QGShaderLoader.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\QGRenderSystem.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\QGMeshComponent.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLIndexBuffer.cpp">
+      <Filter>Render\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Build\gl3w\src\gl3w.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLDefines.cpp">
+      <Filter>Render\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLVertexBuffer.cpp">
+      <Filter>Render\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLTexture2D.cpp">
+      <Filter>Render\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLShaderProgram.cpp">
+      <Filter>Render\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLVertexAttributeList.cpp">
+      <Filter>Render\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLRenderSystem.cpp">
+      <Filter>Render\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\Passes\QGForwardRenderPass.cpp">
+      <Filter>Render\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Core\QGCameraComponent.cpp">
+      <Filter>Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +251,93 @@
     </ClInclude>
     <ClInclude Include="..\Source\Engine\Core\QGMetaSystem.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGRenderSystem.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGMesh.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGVertexBuffer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGVertexAttributeList.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGIndexBuffer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGMeshComponent.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\IO\QGResource.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\IO\QGResourceObject.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGTexture2D.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\IO\QGResourceSystem.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGMeshLoader.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\IO\QGResourceLoader.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGTextureLoader.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGMaterial.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGShader.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGShaderLoader.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGShaderProgram.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Core\QGCameraComponent.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGScene.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGLIndexBuffer.h">
+      <Filter>Render\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGL.h">
+      <Filter>Render\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGRenderDefines.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGLVertexBuffer.h">
+      <Filter>Render\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGLTexture2D.h">
+      <Filter>Render\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGLShaderProgram.h">
+      <Filter>Render\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGLRenderSystem.h">
+      <Filter>Render\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGLVertexAttributeList.h">
+      <Filter>Render\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\QGRenderPass.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Render\Passes\QGForwardRenderPass.h">
+      <Filter>Render\Passes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

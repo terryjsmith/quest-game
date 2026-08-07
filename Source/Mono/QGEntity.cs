@@ -9,9 +9,9 @@ namespace QGEngine
         {
             foreach (QGComponent component in components)
             {
-                if (component is T)
+                if (component is T comp)
                 {
-                    return (T)Convert.ChangeType(component, typeof(T));
+                    return (comp);
                 }
             }
 

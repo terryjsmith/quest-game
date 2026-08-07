@@ -11,6 +11,30 @@
 #include <Core/QGMetaSystem.h>
 #include <Scripting/QGScriptComponent.h>
 #include <Scripting/QGScriptingSystem.h>
+#include <Render/QGMeshComponent.h>
+#include <Render/GL/QGGLRenderSystem.h>
+#include <IO/QGResourceSystem.h>
+#include <Render/QGTextureLoader.h>
+#include <Render/QGMeshLoader.h>
+#include <Network/QGNetworkEvents.h>
+#include <Core/QGCameraComponent.h>
+#include <Render/QGShaderLoader.h>
+#include <Render/QGRenderDefines.h>
+#include <Render/Passes/QGForwardRenderPass.h>
+
+void PlayerConnectedCallback(QGEvent* ev, QGObject* obj) {
+    QGPlayerConnectedEvent* event = (QGPlayerConnectedEvent*)ev;
+    QGEntity* entity = event->entity;
+
+    // Add a camera component
+    QGCameraComponent* camera = entity->CreateComponent<QGCameraComponent>();
+
+    // Add player script
+    QGScriptComponent* script = entity->CreateComponent<QGScriptComponent>();
+    QGScriptingSystem* scriptingSystem = GetQGSystem<QGScriptingSystem>();
+    script->Initialize(scriptingSystem->GetScript("QuestPlayer"));
+}
+
 
 int main()
 {
@@ -28,6 +52,8 @@ int main()
     QGReplicationClient* replClient = application->CreateSystem<QGReplicationClient>(60);
     QGMetaSystem* metaSystem = application->CreateSystem<QGMetaSystem>();
     QGScriptingSystem* scriptingSystem = application->CreateSystem<QGScriptingSystem>();
+    QGGLRenderSystem* renderSystem = application->CreateSystem<QGGLRenderSystem>();
+    QGResourceSystem* resourceSystem = application->CreateSystem<QGResourceSystem>();
 
     // Initialize systems
     application->Initialize();
@@ -36,6 +62,10 @@ int main()
     QGGameWindow* window = QGGameWindow::GetInstance();
     window->Create("Game Window", 800, 600, false);
 
+    // Setup rendering pipeline
+    QGForwardRenderPass* forwardRenderPass = new QGForwardRenderPass();
+    renderSystem->AddRenderPass(0, forwardRenderPass);
+
     // Create command mappings
     inputSystem->RegisterCommand(10, "MOVE");
     inputSystem->RegisterCommand(20, "TURN");
@@ -43,9 +73,19 @@ int main()
     // Register components types
     metaSystem->RegisterType<QGEntity>(1000, "QGEntity");
     metaSystem->RegisterType<QGScriptComponent>(1010, "QGScriptComponent");
+    metaSystem->RegisterType<QGMeshComponent>(1020, "QGMeshComponent");
+    metaSystem->RegisterType<QGCameraComponent>(1030, "QGCameraComponent");
+
+    resourceSystem->RegisterResourceLoader<QGTextureLoader>("Texture2D");
+    resourceSystem->RegisterResourceLoader<QGMeshLoader>("Mesh");
+    resourceSystem->RegisterResourceLoader<QGShaderLoader>("Shader", false);
 
     // Load game library
     scriptingSystem->LoadScriptLibrary("QuestClient.dll");
+
+    // Initialize OpenGL
+    renderSystem->Initialize(window->Width(), window->Height());
+    renderSystem->InitializeGL();
 
     // Create a keyboard
     QGKeyboard* keyboard = inputSystem->CreateInputDevice<QGKeyboard>();
@@ -53,12 +93,18 @@ int main()
     // Register key mappings
     inputSystem->AssociateCommandInput("MOVE", keyboard, QGKeys::KEY_UP,    1.0f);
     inputSystem->AssociateCommandInput("MOVE", keyboard, QGKeys::KEY_DOWN, -1.0f);
-    inputSystem->AssociateCommandInput("TURN", keyboard, QGKeys::KEY_RIGHT, 1.0f);
-    inputSystem->AssociateCommandInput("TURN", keyboard, QGKeys::KEY_LEFT, -1.0f);
+    inputSystem->AssociateCommandInput("TURN", keyboard, QGKeys::KEY_RIGHT, -1.0f);
+    inputSystem->AssociateCommandInput("TURN", keyboard, QGKeys::KEY_LEFT,  1.0f);
 
     // Initialize server
     const char* address = "127.0.0.1:35325";
     networkSystem->Connect(address);
+
+    // Set player ID
+    replClient->PlayerID(networkSystem->ClientID());
+
+    // Subscribe to a player connection event
+    eventSystem->Subscribe<QGPlayerConnectedEvent>(PlayerConnectedCallback, 0);
 
     // Get start time of loop
     timespec lastTimestamp;
@@ -78,7 +124,13 @@ int main()
         application->Update(d);
         lastTimestamp = currentTimestamp;
 
+        // Draw all of the amazing stuff
+        renderSystem->Render();
+
         // Swap buffers
         window->SwapBuffers();
+
+        // Rest
+        Sleep(0);
     }
 }

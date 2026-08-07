@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace QGEngine
 {
-    public partial class QGEvent
+    public partial class QGEvent : QGObject
     {
         
     }

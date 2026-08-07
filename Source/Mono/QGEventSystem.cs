@@ -7,7 +7,7 @@ namespace QGEngine
     // Define the blueprint for the callback function
     public delegate void QGEventHandlerCallback(QGEvent ev, QGObject obj);
 
-    public partial class QGEventSystem
+    public partial class QGEventSystem : QGObject
     {
         public static void Subscribe<T>(QGEventHandlerCallback func, QGObject obj = null)
         {

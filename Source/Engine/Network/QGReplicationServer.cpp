@@ -33,18 +33,25 @@ void QGReplicationServer::Update(float delta) {
 	QGWorld* world = QGWorld::GetInstance();
 	std::map<uint64_t, QGEntity*> entities = world->GetEntities();
 
+	// Get oldest replay tick
+	uint64_t replayTick = 0;
+	if (m_replayTicks.size()) {
+		replayTick = m_replayTicks.begin()->first;
+		m_replayTicks.clear();
+	}
+
 	// If we have a valid replay tick, go back and replay
-	if (m_replayTick > 0 && m_replaying == false) {
+	if (replayTick > 0 && m_replaying == false) {
 		printf("Entering replay mode...\n");
 		m_replaying = true;
 
 		// Remove all saved snapshots after this point
-		for (uint64_t i = m_replayTick + 1; i < currentTick; i++) {
+		for (uint64_t i = replayTick + 1; i < currentTick; i++) {
 			m_snapshots.erase(i);
 		}
 
 		// Get the saved snapshot
-		QGEntitySnapshot* snapshot = &m_snapshots[m_replayTick];
+		QGEntitySnapshot* snapshot = &m_snapshots[replayTick];
 
 		// Remove all non-player entities not included in the snapshot
 		for (auto eit = entities.begin(); eit != entities.end(); eit++) {
@@ -86,12 +93,12 @@ void QGReplicationServer::Update(float delta) {
 
 		QGApplication* application = QGApplication::GetInstance();
 		QGEventSystem* eventSystem = GetQGSystem<QGEventSystem>();
-		while (m_replayTick <= currentTick) {
-			printf("Replaying tick %llu.\n", m_replayTick);
-			timeSystem->OverrideTick(m_replayTick);
+		while (replayTick <= currentTick) {
+			printf("Replaying tick %llu.\n", replayTick);
+			timeSystem->OverrideTick(replayTick);
 
 			// Process any events that happened in this tick
-			auto it = m_eventHistory.find(m_replayTick);
+			auto it = m_eventHistory.find(replayTick);
 			if (it != m_eventHistory.end()) {
 				for (auto eit = it->second.begin(); eit != it->second.end(); eit++) {
 					printf("Replaying event.\n");
@@ -103,12 +110,11 @@ void QGReplicationServer::Update(float delta) {
 			application->Update(1.0f / (float)QG_TICKS_PER_SECOND);
 
 			// Advance
-			m_replayTick++;
+			replayTick++;
 		}
 
 		// Reset
 		printf("Exiting replay mode.\n");
-		m_replayTick = 0;
 		m_replaying = false;
 
 		timeSystem->OverrideTick(0);
@@ -210,10 +216,8 @@ void QGReplicationServer::HandleInputCommandReceived(QGNetworkPacket* packet) {
 	server->m_eventHistory[tick].push_back(repl);
 
 	// Check the oldest replay tick and go back as necessary
-	if (tick < server->m_replayTick || server->m_replayTick == 0) {
-		printf("Setting replay tick to %llu.\n", tick);
-		server->m_replayTick = tick;
-	}
+	server->m_replayTicks[tick] = true;
+	printf("Setting replay tick to %llu.\n", tick);
 }
 
 void QGReplicationServer::HandleClientConnectEvent(QGEvent* ev, QGObject* obj) {

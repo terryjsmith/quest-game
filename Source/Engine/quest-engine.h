@@ -10,6 +10,7 @@
 #include <map>
 #include <string>
 #include <typeindex>
+#include <filesystem>
 
 #include <assert.h>
 

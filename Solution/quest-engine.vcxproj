@@ -19,7 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Build\gl3w\src\gl3w.c" />
     <ClCompile Include="..\Source\Engine\Core\QGApplication.cpp" />
+    <ClCompile Include="..\Source\Engine\Core\QGCameraComponent.cpp" />
     <ClCompile Include="..\Source\Engine\Core\QGDataRecord.cpp" />
     <ClCompile Include="..\Source\Engine\Core\QGTimeSystem.cpp" />
     <ClCompile Include="..\Source\Engine\Core\QGTransform.cpp" />
@@ -28,18 +30,38 @@
     <ClCompile Include="..\Source\Engine\IO\QGGameWindow.cpp" />
     <ClCompile Include="..\Source\Engine\IO\QGInputSystem.cpp" />
     <ClCompile Include="..\Source\Engine\IO\QGKeyboard.cpp" />
+    <ClCompile Include="..\Source\Engine\IO\QGResourceSystem.cpp" />
     <ClCompile Include="..\Source\Engine\Network\QGEntitySnapshot.cpp" />
     <ClCompile Include="..\Source\Engine\Network\QGNetworkClient.cpp" />
     <ClCompile Include="..\Source\Engine\Network\QGNetworkServer.cpp" />
     <ClCompile Include="..\Source\Engine\Network\QGNetworkSystem.cpp" />
     <ClCompile Include="..\Source\Engine\Network\QGReplicationClient.cpp" />
     <ClCompile Include="..\Source\Engine\Network\QGReplicationServer.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLDefines.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLIndexBuffer.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLRenderSystem.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLShaderProgram.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLTexture2D.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLVertexAttributeList.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\GL\QGGLVertexBuffer.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\Passes\QGForwardRenderPass.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\QGIndexBuffer.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\QGMaterial.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\QGMesh.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\QGMeshComponent.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\QGMeshLoader.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\QGRenderSystem.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\QGShaderLoader.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\QGTextureLoader.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\QGVertexAttributeList.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\QGVertexBuffer.cpp" />
     <ClCompile Include="..\Source\Engine\Scripting\QGScriptComponent.cpp" />
     <ClCompile Include="..\Source\Engine\Scripting\QGScriptingSystem.cpp" />
     <ClCompile Include="..\Source\Engine\Scripting\QGScriptMethods.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Engine\Core\QGApplication.h" />
+    <ClInclude Include="..\Source\Engine\Core\QGCameraComponent.h" />
     <ClInclude Include="..\Source\Engine\Core\QGComponent.h" />
     <ClInclude Include="..\Source\Engine\Core\QGEntity.h" />
     <ClInclude Include="..\Source\Engine\Core\QGEventSystem.h" />
@@ -59,6 +81,10 @@
     <ClInclude Include="..\Source\Engine\IO\QGInputSystem.h" />
     <ClInclude Include="..\Source\Engine\IO\QGKeyboard.h" />
     <ClInclude Include="..\Source\Engine\IO\QGGameWindow.h" />
+    <ClInclude Include="..\Source\Engine\IO\QGResource.h" />
+    <ClInclude Include="..\Source\Engine\IO\QGResourceLoader.h" />
+    <ClInclude Include="..\Source\Engine\IO\QGResourceObject.h" />
+    <ClInclude Include="..\Source\Engine\IO\QGResourceSystem.h" />
     <ClInclude Include="..\Source\Engine\Network\QGEntitySnapshot.h" />
     <ClInclude Include="..\Source\Engine\Network\QGNetworkClient.h" />
     <ClInclude Include="..\Source\Engine\Network\QGNetworkEvents.h" />
@@ -68,6 +94,30 @@
     <ClInclude Include="..\Source\Engine\Network\QGReplicationClient.h" />
     <ClInclude Include="..\Source\Engine\Network\QGReplicationServer.h" />
     <ClInclude Include="..\Source\Engine\quest-engine.h" />
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGL.h" />
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGLIndexBuffer.h" />
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGLRenderSystem.h" />
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGLShaderProgram.h" />
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGLTexture2D.h" />
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGLVertexAttributeList.h" />
+    <ClInclude Include="..\Source\Engine\Render\GL\QGGLVertexBuffer.h" />
+    <ClInclude Include="..\Source\Engine\Render\Passes\QGForwardRenderPass.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGIndexBuffer.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGMaterial.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGMesh.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGMeshComponent.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGMeshLoader.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGRenderDefines.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGRenderPass.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGRenderSystem.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGScene.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGShader.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGShaderLoader.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGShaderProgram.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGTexture2D.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGTextureLoader.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGVertexAttributeList.h" />
+    <ClInclude Include="..\Source\Engine\Render\QGVertexBuffer.h" />
     <ClInclude Include="..\Source\Engine\Scripting\QGMonoIncludes.h" />
     <ClInclude Include="..\Source\Engine\Scripting\QGScript.h" />
     <ClInclude Include="..\Source\Engine\Scripting\QGScriptComponent.h" />
@@ -100,7 +150,7 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -172,7 +222,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\Source\Engine;..\Source\ThirdParty\glm\include;..\Source\ThirdParty\netcode-1.3.3;..\Source\ThirdParty\glfw-3.4\include;C:\Program Files\Mono\include\mono-2.0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Source\Engine;..\Source\ThirdParty\glm\include;..\Build\gl3w\include;..\Source\ThirdParty\assimp-6.0.5\include;..\Build\assimp\include;..\Source\ThirdParty\netcode-1.3.3;..\Source\ThirdParty\stb;..\Source\ThirdParty\glfw-3.4\include;C:\Program Files\Mono\include\mono-2.0</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -180,7 +231,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>"C:\Program Files\Mono\bin\mcs" ../Source/Mono/*.cs -target:library -out:../Build/QGEngine.dll</Command>
+      <Command>"C:\Program Files\Mono\bin\mcs" ../Source/Mono/*.cs -target:library -out:../QGEngine.dll</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

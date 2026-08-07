@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace QGEngine
 {
-    public partial class QGTransform
+    public partial class QGTransform : QGObject
     {
         /**
 	     * Move from current position (add to position)

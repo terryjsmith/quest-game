@@ -8,6 +8,7 @@
 #include <Core/QGTimeSystem.h>
 #include <Core/QGWorld.h>
 #include <Core/QGMetaSystem.h>
+#include <Network/QGNetworkEvents.h>
 
 void QGReplicationClient::Initialize() {
 	// Subscribe to input commands
@@ -132,6 +133,17 @@ void QGReplicationClient::Update(float delta) {
 					entity->AddComponent(component);
 				}
 			}
+		}
+
+		// Check if we got a player entity, and if it is new
+		QGEntity* playerEntity = world->FindEntity(m_playerID);
+		if (playerEntity != 0 && m_playerEntity == 0) {
+			// Save
+			m_playerEntity = playerEntity;
+			
+			// Emit event
+			QGEventSystem* eventSystem = GetQGSystem<QGEventSystem>();
+			eventSystem->Publish(new QGPlayerConnectedEvent(m_playerID, m_playerEntity));
 		}
 
 		// Remove any entities that shouldn't be here anymore

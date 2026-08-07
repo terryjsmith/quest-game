@@ -5,6 +5,8 @@
 #include <Core/QGEntity.h>
 #include <Core/QGEventSystem.h>
 #include <IO/QGInputCommand.h>
+#include <Core/QGCameraComponent.h>
+#include <Core/QGMetaSystem.h>
 
 void qgscripting_register_monomethods() {
 	// Tie our constructor for new objects
@@ -39,6 +41,11 @@ void qgscripting_register_monomethods() {
 	mono_add_internal_call("QGEngine.QGInputCommand::get_command", uscript_uinputcommand_command_get);
 	mono_add_internal_call("QGEngine.QGInputCommand::get_type", uscript_uinputcommand_type_get);
 	mono_add_internal_call("QGEngine.QGInputCommand::get_state", uscript_uinputcommand_state_get);
+
+	// QGCameraComponent
+	mono_add_internal_call("QGEngine.QGCameraComponent::get_transform", uscript_ucameracomponent_transform_get);
+	mono_add_internal_call("QGEngine.QGCameraComponent::get_fov", uscript_ucameracomponent_fov_get);
+	mono_add_internal_call("QGEngine.QGCameraComponent::set_fov", uscript_ucameracomponent_fov_set);
 }
 
 /**
@@ -90,14 +97,16 @@ MonoArray* uscript_uentity_components_get(MonoObject* obj) {
 	// Get our local object
 	QGEntity* entity = UMonoMethods_GetLocalObject<QGEntity>(obj);
 	QGScriptingSystem* scriptSystem = GetQGSystem<QGScriptingSystem>();
+	QGMetaSystem* metaSystem = GetQGSystem<QGMetaSystem>();
 
 	std::vector<QGComponent*> components = entity->GetComponents();
-	std::vector<QGVariant> list;
+	std::map<QGObject*, std::string> objs;
 	for (auto it = components.begin(); it != components.end(); it++) {
-		list.push_back(*it);
+		QGObjectType* type = metaSystem->GetType(*it);
+		objs[*it] = type->className;
 	}
 
-	return(scriptSystem->VariantListToMonoArray(list, "QGComponent"));
+	return(scriptSystem->ObjectListToMonoArray(objs, "QGComponent"));
 }
 
 uint32_t uscript_uentity_id_get(MonoObject* obj) {
@@ -240,4 +249,22 @@ uint32_t uscript_uinputcommand_type_get(MonoObject* obj) {
 float uscript_uinputcommand_state_get(MonoObject* obj) {
 	QGInputCommand* command = UMonoMethods_GetLocalObject<QGInputCommand>(obj);
 	return(command->state);
+}
+
+/**
+ * QGCameraComponent
+ */
+MonoObject* uscript_ucameracomponent_transform_get(MonoObject* obj) {
+	QGCameraComponent* camera = UMonoMethods_GetLocalObject<QGCameraComponent>(obj);
+	return(UMonoMethods_GetRemoteObject("QGTransform", &camera->transform));
+}
+
+float uscript_ucameracomponent_fov_get(MonoObject* obj) {
+	QGCameraComponent* camera = UMonoMethods_GetLocalObject<QGCameraComponent>(obj);
+	return(camera->fov);
+}
+
+void uscript_ucameracomponent_fov_set(MonoObject* obj, float fov) {
+	QGCameraComponent* camera = UMonoMethods_GetLocalObject<QGCameraComponent>(obj);
+	camera->fov = fov;
 }

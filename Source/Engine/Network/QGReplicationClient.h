@@ -11,7 +11,7 @@
 
 class QUEST_API QGReplicationClient : public QGSystem {
 public:
-	QGReplicationClient() = default;
+	QGReplicationClient() : m_playerID(0) {}
 	~QGReplicationClient() = default;
 
 	/**
@@ -24,6 +24,12 @@ public:
 	 */
 	void Update(float delta);
 
+	/** 
+	 * Set player ID for this session
+	 */
+	void PlayerID(uint64_t playerID) { m_playerID = playerID; }
+	uint64_t PlayerID() { return m_playerID; }
+
 public:
 	// Callbacks
 	static void HandleNetworkStartupPacket(QGNetworkPacket* packet);
@@ -35,6 +41,12 @@ public:
 protected:
 	// Entity snapshots received
 	std::map<uint64_t, QGEntitySnapshot> m_snapshots;
+
+	// Player ID for session
+	uint64_t m_playerID;
+
+	// Player entity
+	QGEntity* m_playerEntity;
 };
 
 #endif

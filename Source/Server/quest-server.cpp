@@ -12,6 +12,13 @@
 #include <Core/QGMetaSystem.h>
 #include <Scripting/QGScriptComponent.h>
 #include <Network/QGNetworkEvents.h>
+#include <Render/QGMeshComponent.h>
+#include <Render/QGRenderSystem.h>
+#include <IO/QGResourceSystem.h>
+#include <Render/QGTextureLoader.h>
+#include <Render/QGMeshLoader.h>
+#include <Core/QGCameraComponent.h>
+#include <Render/QGShaderLoader.h>
 
 // Callback for newly connected players
 void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
@@ -22,7 +29,11 @@ void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
     QGScriptComponent* script = event->entity->CreateComponent<QGScriptComponent>();
     script->Initialize(scriptingSystem->GetScript("QuestPlayer"));
 
-    printf("Added script component to new entity for client ID %llu.\n", event->clientID);
+    QGResourceSystem* resourceSystem = GetQGSystem<QGResourceSystem>();
+    QGMeshComponent* mesh = event->entity->CreateComponent<QGMeshComponent>();
+    mesh->mesh = (QGMesh*)resourceSystem->Load("Resources/Meshes/box.fbx", "Mesh");
+
+    printf("Added mesh and script component to new entity for client ID %llu.\n", event->clientID);
 }
 
 int main()
@@ -41,6 +52,8 @@ int main()
     QGReplicationServer* replServer = application->CreateSystem<QGReplicationServer>(60);
     QGScriptingSystem* scriptingSystem = application->CreateSystem<QGScriptingSystem>(60);
     QGMetaSystem* metaSystem = application->CreateSystem<QGMetaSystem>();
+    QGRenderSystem* renderSystem = application->CreateSystem<QGRenderSystem>();
+    QGResourceSystem* resourceSystem = application->CreateSystem<QGResourceSystem>();
 
     // Initialize systems
     application->Initialize();
@@ -52,6 +65,12 @@ int main()
     // Register components types
     metaSystem->RegisterType<QGEntity>(1000, "QGEntity");
     metaSystem->RegisterType<QGScriptComponent>(1010, "QGScriptComponent", false);
+    metaSystem->RegisterType<QGMeshComponent>(1020, "QGMeshComponent");
+    metaSystem->RegisterType<QGCameraComponent>(1030, "QGCameraComponent", false);
+
+    resourceSystem->RegisterResourceLoader<QGTextureLoader>("Texture2D");
+    resourceSystem->RegisterResourceLoader<QGMeshLoader>("Mesh");
+    resourceSystem->RegisterResourceLoader<QGShaderLoader>("Shader", false);
 
     // Initialize server
     const char* address = "127.0.0.1:35325";
@@ -62,6 +81,12 @@ int main()
 
     // Listen for newly connected players
     eventSystem->Subscribe<QGPlayerConnectedEvent>(initialize_player_prefab, 0);
+
+    // Create a static entity
+    QGEntity* floor = world->CreateEntity("floor", 10);
+    QGMeshComponent* fmeshc = floor->CreateComponent<QGMeshComponent>();
+    fmeshc->mesh = (QGMesh*)resourceSystem->Load("Resources/Meshes/floor.fbx", "Mesh");
+    floor->transform.position = vector3(0.0f, -1.0f, 0.0f);
 
     // Get start time of loop
     timespec lastTimestamp;
@@ -82,3 +107,4 @@ int main()
         Sleep(0);
     }
 }
+

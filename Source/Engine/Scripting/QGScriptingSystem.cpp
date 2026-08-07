@@ -11,8 +11,8 @@
 void QGScriptingSystem::Initialize() {
 	// If this is our first Mono library, create domain
 	if (m_monoDomain == 0) {
-		std::string libDir = "mono\\lib";
-		std::string configDir = "mono\\etc";
+		std::string libDir = "Resources\\mono\\lib";
+		std::string configDir = "Resources\\mono\\etc";
 		mono_set_dirs(libDir.c_str(), configDir.c_str());
 		mono_config_parse(NULL);
 
@@ -230,15 +230,15 @@ QGScriptObject* QGScriptingSystem::GetRemoteObject(std::string className, QGObje
 
 	// Create a new object
 	MonoObject* newMonoObject = mono_object_new(m_monoDomain, ci->second);
+	uint32_t handle = mono_gchandle_new(newMonoObject, true);
 
 	// Create a new relationship between local and remote
 	QGScriptObject* monoObject = new QGScriptObject();
 	monoObject->localObj = localObject;
-	monoObject->remoteObj = newMonoObject;
+	monoObject->remoteObj = mono_gchandle_get_target(handle);;
 
 	// Store in both directions
 	m_objectsFromLocal[localObject] = monoObject;
-	m_objectsFromRemote[newMonoObject] = monoObject;
 
 	// Call mono constructor
 	mono_runtime_object_init(newMonoObject);
@@ -250,9 +250,18 @@ QGScriptObject* QGScriptingSystem::GetLocalObject(void* object) {
 	// Convert
 	MonoObject* obj = (MonoObject*)object;
 
+	// Get the ptr value
+	MonoClass* cl = mono_object_get_class(obj);
+	MonoProperty* prop = mono_class_get_property_from_name(cl, "ptr");
+	MonoClassField* fl = mono_class_get_field_from_name(cl, "ptr");
+
+	intptr_t value;
+	mono_field_get_value(obj, fl, &value);
+	QGObject* ptr = (QGObject*)value;
+
 	// Check cache
-	auto it = m_objectsFromRemote.find(obj);
-	if (it != m_objectsFromRemote.end()) {
+	auto it = m_objectsFromLocal.find(ptr);
+	if (it != m_objectsFromLocal.end()) {
 		return(it->second);
 	}
 
@@ -431,7 +440,7 @@ MonoObject* QGScriptingSystem::VariantToMonoObject(QGVariant var, std::string cl
 		field = mono_class_get_field_from_name(cl, "z");
 		mono_field_set_value(mobj, field, &vec.z);
 
-		mono_class_get_field_from_name(cl, "w");
+		field = mono_class_get_field_from_name(cl, "w");
 		mono_field_set_value(mobj, field, &vec.w);
 	}
 
@@ -444,13 +453,13 @@ MonoObject* QGScriptingSystem::VariantToMonoObject(QGVariant var, std::string cl
 		MonoClassField* field = mono_class_get_field_from_name(cl, "x");
 		mono_field_set_value(mobj, field, &quat.x);
 
-		mono_class_get_field_from_name(cl, "y");
+		field = mono_class_get_field_from_name(cl, "y");
 		mono_field_set_value(mobj, field, &quat.y);
 
-		mono_class_get_field_from_name(cl, "z");
+		field = mono_class_get_field_from_name(cl, "z");
 		mono_field_set_value(mobj, field, &quat.z);
 
-		mono_class_get_field_from_name(cl, "w");
+		field = mono_class_get_field_from_name(cl, "w");
 		mono_field_set_value(mobj, field, &quat.w);
 	}
 
@@ -465,6 +474,21 @@ MonoArray* QGScriptingSystem::VariantListToMonoArray(std::vector<QGVariant> arr,
 	MonoArray* monoarr = mono_array_new(m_monoDomain, it->second, arr.size());
 	for (int i = 0; i < arr.size(); i++) {
 		mono_array_setref(monoarr, i, VariantToMonoObject(arr[i], it->first));
+	}
+
+	return(monoarr);
+}
+
+MonoArray* QGScriptingSystem::ObjectListToMonoArray(std::map<QGObject*, std::string> arr, std::string classHint) {
+	// Get class image
+	auto it = m_monoClasses.find(classHint);
+	QGASSERT(it != m_monoClasses.end(), "Cannot find base class type.");
+
+	MonoArray* monoarr = mono_array_new(m_monoDomain, it->second, arr.size());
+	int index = 0;
+	for (auto oit = arr.begin(); oit != arr.end(); oit++) {
+		mono_array_setref(monoarr, index, VariantToMonoObject(oit->first, oit->second));
+		index++;
 	}
 
 	return(monoarr);
@@ -522,7 +546,6 @@ QGObject* QGScriptingSystem::internal_GigaObject_Ctor(MonoObject* obj) {
 	cobj->remoteObj = obj;
 
 	scriptingSystem->m_objectsFromLocal[cobj] = cobj;
-	scriptingSystem->m_objectsFromRemote[obj] = cobj;
 
 	return(newobj);
 }

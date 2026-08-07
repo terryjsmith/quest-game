@@ -63,6 +63,11 @@ public:
 	 */
 	MonoArray* VariantListToMonoArray(std::vector<QGVariant> arr, std::string classHint = "");
 
+	/**
+	 * Array of objects
+	 */
+	MonoArray* ObjectListToMonoArray(std::map<QGObject*, std::string> arr, std::string classHint = "");
+
 public:
 	// Callback methods to interface w/ Mono
 	static void InputCommandCallback(QGEvent* ev, QGObject* obj);
@@ -77,7 +82,6 @@ protected:
 
 	// Mapping local and remote objects
 	std::map<QGObject*, QGScriptObject*> m_objectsFromLocal;
-	std::map<MonoObject*, QGScriptObject*> m_objectsFromRemote;
 
 	// Cached built-in Mono types
 	std::map<uint32_t, MonoClass*> m_cachedTypes;
