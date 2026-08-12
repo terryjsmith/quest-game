@@ -26,6 +26,9 @@
     <Filter Include="Render\Passes">
       <UniqueIdentifier>{254c7ac6-6841-445b-8692-99ac384ec73c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{c18ce79c-94fe-424d-9a16-2d50bc0df454}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\Engine\Core\QGWorld.cpp">
@@ -350,6 +353,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\Engine\Scripting\QGMonoComponentType.h">
       <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Physics\QGColliderComponent.h">
+      <Filter>Physics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

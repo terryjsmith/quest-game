@@ -109,14 +109,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\Source\Server;..\Source\Engine;..\Source\ThirdParty\stb;..\Source\ThirdParty\glm\include;..\Build\gl3w\include;..\Source\ThirdParty\assimp-6.0.5\include;..\Build\assimp\include;..\Source\ThirdParty\netcode-1.3.3;..\Source\ThirdParty\glfw-3.4\include;C:\Program Files\Mono\include\mono-2.0</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Source\Server;..\Source\Engine;..\Source\ThirdParty\stb;..\Source\ThirdParty\glm\include;..\Build\gl3w\include;..\Source\ThirdParty\bullet3-3.25\src;..\Source\ThirdParty\assimp-6.0.5\include;..\Build\assimp\include;..\Source\ThirdParty\netcode-1.3.3;..\Source\ThirdParty\glfw-3.4\include;C:\Program Files\Mono\include\mono-2.0</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>..\Build;..\Build\glfw\src\Debug;..\Build\assimp\lib\Debug;..\Build\netcode\bin\Debug;C:\Program Files\Mono\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>quest-engine.lib;glfw3.lib;assimpd.lib;libmono-static-sgen.lib;netcode.lib;sodium.lib;ws2_32.lib;winmm.lib;Version.lib;Bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\Build;..\Build\glfw\src\Debug;..\Build\assimp\lib\Debug;..\Build\bullet\lib\Debug;..\Build\netcode\bin\Debug;C:\Program Files\Mono\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>quest-engine.lib;glfw3.lib;assimpd.lib;libmono-static-sgen.lib;Bullet3Common_Debug.lib;Bullet3Dynamics_Debug.lib;Bullet3Collision_Debug.lib;LinearMath_Debug.lib;netcode.lib;sodium.lib;ws2_32.lib;winmm.lib;Version.lib;Bcrypt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>"C:\Program Files\Mono\bin\mcs" ../Resources/Scripts/Server/*.cs -r:../QGEngine.dll -target:library -out:../QuestServer.dll</Command>
