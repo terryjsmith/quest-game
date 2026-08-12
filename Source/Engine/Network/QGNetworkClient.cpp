@@ -6,6 +6,11 @@
 #define QGNETCODE_CONNECT_TOKEN_EXPIRY 30
 #define QGNETCODE_CONNECT_TOKEN_TIMEOUT 5
 
+void QGNetworkClient::Initialize() {
+    this->QGNetworkSystem::Initialize();
+    this->RegisterPacketCallback(QGNetworkPackets::QGPACKET_SYNC, &HandleSyncPacket);
+}
+
 void QGNetworkClient::Connect(const char* address) {
     m_time = 0.0;
 
@@ -86,6 +91,27 @@ void QGNetworkClient::Update(float delta) {
     }
 
     m_time += delta;
+
+    // Handle any ack packets that need to be re-sent
+    QGTimeSystem* timeSystem = GetQGSystem<QGTimeSystem>();
+    uint64_t currentTick = timeSystem->Tick();
+
+    // Determine response time from average RTT (plus 20%)
+    int avgRTTTicks = std::ceil(std::ceil(((float)m_avgRTT / 1000.0f) * (float)QG_TICKS_PER_SECOND) * 1.2f);
+    auto it = m_ackPackets.begin();
+    for (; it != m_ackPackets.end(); it++) {
+        if (it->first < (currentTick - avgRTTTicks)) {
+            // Resend
+            printf("Resending packet type %d from tick %llu.\n", it->second->env.type, it->first);
+            this->Send(it->second->env.type, it->second->bytes, it->second->env.size, it->second->env.ack);
+        }
+        else {
+            break;
+        }
+    }
+
+    // Remove any re-sent packets
+    if (it != m_ackPackets.begin()) m_ackPackets.erase(m_ackPackets.begin(), it);
 }
 
 void QGNetworkClient::Send(uint32_t type, unsigned char* data, uint32_t size, bool ack) {
@@ -178,4 +204,34 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
     QGNetworkPacket* packetcopy = m_ackPackets[sequence_num];
     delete packetcopy;
     m_ackPackets.erase(sequence_num);
+}
+
+void QGNetworkClient::HandleSyncPacket(QGNetworkPacket* packet) {
+    QGTimeSystem* timeSystem = GetQGSystem<QGTimeSystem>();
+    QGNetworkClient* client = GetQGSystem<QGNetworkClient>();
+
+    uint64_t packetTick;
+    int offset = 0;
+
+    memcpy(&packetTick, packet->bytes + offset, sizeof(uint64_t));
+    offset += sizeof(uint64_t);
+
+    // Use to establish a rough RTT based on one direction
+    uint64_t currentTick = timeSystem->Tick();
+    uint64_t diff = ((float)currentTick - packetTick) * (1.0f / QG_TICKS_PER_SECOND) * 1000 * 2.0f;
+
+    // Push on and take one off
+    client->m_rtts.push_back((int)diff);
+    if (client->m_rtts.size() > 10) {
+        client->m_rtts.erase(client->m_rtts.begin());
+    }
+
+    // Recalc RTT
+    int avg = 0;
+    auto it = client->m_rtts.begin();
+    for (; it != client->m_rtts.end(); it++) {
+        avg += (*it);
+    }
+    avg /= client->m_rtts.size();
+    client->m_avgRTT = avg;
 }

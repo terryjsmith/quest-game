@@ -7,6 +7,7 @@
 #include <Core/QGApplication.h>
 #include <IO/QGInputCommand.h>
 #include <Core/QGMetaSystem.h>
+#include <Scripting/QGMonoComponent.h>
 
 void QGScriptingSystem::Initialize() {
 	// If this is our first Mono library, create domain
@@ -202,6 +203,123 @@ void QGScriptingSystem::LoadScriptLibrary(std::string filename) {
 			m_monoScripts[name] = script;
 		}
 
+		// Do the same for components
+		MonoClass* componentClass = 0;
+		auto cit = m_monoClasses.find("QGComponent");
+		if (cit != m_monoClasses.end()) {
+			componentClass = cit->second;
+		}
+
+		if (componentClass == 0) {
+			// Try to load from current library
+			componentClass = mono_class_from_name(image, name_space, "QGComponent");
+			m_monoClasses["QGComponent"] = componentClass;
+		}
+
+		QGASSERT(componentClass != 0, "Unable to find component base class.");
+
+		// Check whether this class inherits from UScript
+		QGMetaSystem* metaSystem = GetQGSystem<QGMetaSystem>();
+		if (mono_class_is_subclass_of(_class, componentClass, false)) {
+			// Ignore the QGComponent class itself
+			if (_class == componentClass) continue;
+
+			// If so, need to store specific function references
+			QGMonoComponentType* component = new QGMonoComponentType();
+			component->className = name;
+
+			// Find functions - Initialize
+			MonoMethod* method = mono_class_get_method_from_name(_class, "Serialize", 0);
+			if (method) {
+				component->serializeFunc = (QGMonoComponentSerializeFunction)mono_method_get_unmanaged_thunk(method);
+			}
+
+			// Find functions - Initialize
+			method = mono_class_get_method_from_name(_class, "Deserialize", 0);
+			if (method) {
+				component->deserializeFunc = (QGMonoComponentDeserializeFunction)mono_method_get_unmanaged_thunk(method);
+			}
+
+			// Find public variables
+			void* iter = NULL;
+			MonoClassField* field = mono_class_get_fields(_class, &iter);
+			while (field != NULL) {
+				std::string fieldName = mono_field_get_name(field);
+				MonoCustomAttrInfo* info = mono_custom_attrs_from_field(_class, field);
+
+				// If info is null, no attributes
+				if (info == 0) {
+					field = mono_class_get_fields(_class, &iter);
+					continue;
+				}
+
+				// Check for custom attribute
+				bool serializable = false;
+				for (int i = 0; i < info->num_attrs; i++) {
+					MonoMethod* attrmethod = info->attrs[i].ctor;
+					std::string attrName = mono_class_get_name(mono_method_get_class(attrmethod));
+					if (attrName == "SerializeField") serializable = true;
+				}
+
+				if (serializable == false) {
+					field = mono_class_get_fields(_class, &iter);
+					continue;
+				}
+
+				// Check field accessibility
+				uint32_t flags = mono_field_get_flags(field) & MONO_FIELD_ATTRIBUTE_FIELD_ACCESS_MASK;
+				if ((flags & MONO_FIELD_ATTRIBUTE_PUBLIC) == false) {
+					field = mono_class_get_fields(_class, &iter);
+					continue;
+				}
+
+				// For public fields, map type
+				MonoType* fieldType = mono_field_get_type(field);
+				int enumType = mono_type_get_type(fieldType);
+				int variantType = 0;
+				switch (enumType) {
+				case MONO_TYPE_STRING:
+				case MONO_TYPE_CHAR:
+					variantType = QGVariant::VAR_STRING;
+					break;
+				case MONO_TYPE_CLASS:
+					variantType = QGVariant::VAR_OBJECT;
+					break;
+				case MONO_TYPE_BOOLEAN:
+					variantType = QGVariant::VAR_BOOL;
+					break;
+				case MONO_TYPE_I4:
+					variantType = QGVariant::VAR_UINT32;
+					break;
+				case MONO_TYPE_U4:
+					variantType = QGVariant::VAR_INT32;
+					break;
+				case MONO_TYPE_I8:
+					variantType = QGVariant::VAR_INT64;
+					break;
+				case MONO_TYPE_U8:
+					variantType = QGVariant::VAR_UINT64;
+					break;
+				case MONO_TYPE_R4:
+				case MONO_TYPE_R8:
+					variantType = QGVariant::VAR_FLOAT;
+					break;
+				default:
+					break;
+				}
+
+				QGASSERT(variantType != 0, "Unable to map variant type.");
+
+				component->vars[fieldName] = variantType;
+				field = mono_class_get_fields(_class, &iter);
+			}
+
+			m_monoComponentTypes[name] = component;
+
+			// Also need to register it with meta system
+			metaSystem->RegisterType<QGMonoComponent>(5000 + m_monoComponentTypes.size(), name);
+		}
+
 		// Add to list
 		m_monoClasses[name] = _class;
 	}
@@ -216,6 +334,14 @@ QGScript* QGScriptingSystem::GetScript(std::string className) {
 	return(0);
 }
 
+QGMonoComponentType* QGScriptingSystem::GetComponentType(std::string className) {
+	auto it = m_monoComponentTypes.find(className);
+	if (it != m_monoComponentTypes.end()) {
+		return(it->second);
+	}
+
+	return(0);
+}
 
 QGScriptObject* QGScriptingSystem::GetRemoteObject(std::string className, QGObject* localObject) {
 	// Check cache
@@ -235,7 +361,7 @@ QGScriptObject* QGScriptingSystem::GetRemoteObject(std::string className, QGObje
 	// Create a new relationship between local and remote
 	QGScriptObject* monoObject = new QGScriptObject();
 	monoObject->localObj = localObject;
-	monoObject->remoteObj = mono_gchandle_get_target(handle);;
+	monoObject->remoteObj = mono_gchandle_get_target(handle);
 
 	// Store in both directions
 	m_objectsFromLocal[localObject] = monoObject;
@@ -252,7 +378,7 @@ QGScriptObject* QGScriptingSystem::GetLocalObject(void* object) {
 
 	// Get the ptr value
 	MonoClass* cl = mono_object_get_class(obj);
-	MonoProperty* prop = mono_class_get_property_from_name(cl, "ptr");
+//	MonoProperty* prop = mono_class_get_property_from_name(cl, "ptr");
 	MonoClassField* fl = mono_class_get_field_from_name(cl, "ptr");
 
 	intptr_t value;
@@ -536,10 +662,9 @@ QGObject* QGScriptingSystem::internal_GigaObject_Ctor(MonoObject* obj) {
 	// Process inheritance to find top-level native C++ class
 	QGMetaSystem* metaSystem = GetQGSystem<QGMetaSystem>();
 	std::string className = mono_class_get_name(_class);
-	QGObjectType* type = metaSystem->GetType(className);
 
 	// Create a new script object
-	newobj = type->ctor();
+	newobj = metaSystem->CreateObject(className);
 
 	QGScriptObject* cobj = new QGScriptObject();
 	cobj->localObj = newobj;

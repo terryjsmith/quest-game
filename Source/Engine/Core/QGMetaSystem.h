@@ -4,23 +4,6 @@
 
 #include <Core/QGSystem.h>
 
-// Internal function to call a C++ player constructor
-typedef QGObject* (*QGObjectCreateFunc)();
-
-// Registered type info
-class QGObjectType {
-public:
-	QGObjectType() : typeID(0), type(typeid(this)), ctor(0), networkSync(true) {}
-	~QGObjectType() = default;
-
-public:
-	uint32_t typeID;
-	std::type_index type;
-	QGObjectCreateFunc ctor;
-	std::string className;
-	bool networkSync;
-};
-
 class QUEST_API QGMetaSystem : public QGSystem {
 public:
 	QGMetaSystem() = default;
@@ -40,6 +23,28 @@ public:
 		m_typeByID[typeID] = t;
 		m_typeByType[t.type] = t;
 		m_typeByName[className] = t;
+	}
+
+	/**
+	 * Create an object from a class name
+	 */
+	QGObject* CreateObject(std::string className) {
+		auto it = m_typeByName.find(className);
+		QGASSERT(it != m_typeByName.end(), "Unable to find class.");
+		QGObject* obj = it->second.ctor();
+		obj->m_type = &it->second;
+		return(obj);
+	}
+
+	/**
+	 * Create an object from a type ID
+	 */
+	QGObject* CreateObject(uint32_t typeID) {
+		auto it = m_typeByID.find(typeID);
+		QGASSERT(it != m_typeByID.end(), "Unable to find class.");
+		QGObject* obj = it->second.ctor();
+		obj->m_type = &it->second;
+		return(obj);
 	}
 
 	/**

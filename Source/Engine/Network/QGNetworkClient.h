@@ -11,6 +11,11 @@ public:
 	~QGNetworkClient() = default;
 
 	/**
+	 * Initialize
+	 */
+	void Initialize();
+
+	/**
 	 * Connect securely to a server
 	 */
 	void Connect(const char* address);
@@ -34,6 +39,7 @@ protected:
 	// Send ack packet
 	void SendAckPacket(uint64_t sequence_num);
 	void HandleAckPacket(QGNetworkPacket* packet);
+	static void HandleSyncPacket(QGNetworkPacket* packet);
 
 protected:
 	struct netcode_client_t* m_client;
@@ -41,6 +47,9 @@ protected:
 
 	std::map<uint64_t, uint64_t> m_ackPacketTicks;
 	std::map<uint64_t, QGNetworkPacket*> m_ackPackets;
+
+	std::vector<int> m_rtts;
+	int m_avgRTT;
 };
 
 #endif

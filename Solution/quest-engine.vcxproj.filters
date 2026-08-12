@@ -145,6 +145,12 @@
     <ClCompile Include="..\Source\Engine\Core\QGCameraComponent.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Engine\Scripting\QGMonoComponent.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Core\QGObject.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Engine\quest-engine.h">
@@ -338,6 +344,12 @@
     </ClInclude>
     <ClInclude Include="..\Source\Engine\Render\Passes\QGForwardRenderPass.h">
       <Filter>Render\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Scripting\QGMonoComponent.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Scripting\QGMonoComponentType.h">
+      <Filter>Scripting</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

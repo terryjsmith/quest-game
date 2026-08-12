@@ -36,8 +36,25 @@ void QGReplicationServer::Update(float delta) {
 	// Get oldest replay tick
 	uint64_t replayTick = 0;
 	if (m_replayTicks.size()) {
-		replayTick = m_replayTicks.begin()->first;
-		m_replayTicks.clear();
+		bool foundSnapshot = false;
+		uint64_t possibleReplayTick = m_replayTicks.begin()->first;
+
+		// Do we have a snapshot for this tick?
+		int attempts = 0, maxAttempts = 5;
+		while (attempts < maxAttempts) {
+			auto it = m_snapshots.find(possibleReplayTick);
+			if (it != m_snapshots.end()) {
+				foundSnapshot = true;
+				replayTick = possibleReplayTick;
+				m_replayTicks.clear();
+			}
+			possibleReplayTick--;
+			attempts++;
+		}
+		
+		if(foundSnapshot == false) {
+			printf("No snapshot found for tick %llu.\n", possibleReplayTick);
+		}
 	}
 
 	// If we have a valid replay tick, go back and replay
@@ -74,7 +91,7 @@ void QGReplicationServer::Update(float delta) {
 				// Loop over components
 				std::vector<QGComponent*> components = eit->second->GetComponents();
 				for (auto cit = components.begin(); cit != components.end(); cit++) {
-					QGObjectType* type = metaSystem->GetType(*cit);
+					QGObjectType* type = (*cit)->Type();
 					auto iit = sit->second.components.find(type->typeID);
 
 					// If it's not in the list...
@@ -109,6 +126,10 @@ void QGReplicationServer::Update(float delta) {
 			// Update
 			application->Update(1.0f / (float)QG_TICKS_PER_SECOND);
 
+			// Make sure we keep current
+			timeSystem->OverrideTick(0);
+			currentTick = timeSystem->Tick();
+
 			// Advance
 			replayTick++;
 		}
@@ -134,7 +155,7 @@ void QGReplicationServer::Update(float delta) {
 		std::vector<QGComponent*> components = eit->second->GetComponents();
 		for (auto cit = components.begin(); cit != components.end(); cit++) {
 			// Get the type
-			QGObjectType* type = metaSystem->GetType(*cit);
+			QGObjectType* type = (*cit)->Type();
 			if (type->networkSync == false) continue;
 
 			QGEntitySnapshot::QGSerializedComponent serializedComponent;

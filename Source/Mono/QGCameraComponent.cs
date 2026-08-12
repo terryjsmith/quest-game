@@ -6,6 +6,12 @@ namespace QGEngine
 {
     public partial class QGCameraComponent : QGComponent
     {
+        /**
+	     * Set target / focus position
+	     */
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        public extern void SetTargetPosition(Vector3 target);
+
         public QGTransform transform
         {
             [MethodImpl(MethodImplOptions.InternalCall)]

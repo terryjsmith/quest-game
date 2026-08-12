@@ -23,6 +23,7 @@
     <ClCompile Include="..\Source\Engine\Core\QGApplication.cpp" />
     <ClCompile Include="..\Source\Engine\Core\QGCameraComponent.cpp" />
     <ClCompile Include="..\Source\Engine\Core\QGDataRecord.cpp" />
+    <ClCompile Include="..\Source\Engine\Core\QGObject.cpp" />
     <ClCompile Include="..\Source\Engine\Core\QGTimeSystem.cpp" />
     <ClCompile Include="..\Source\Engine\Core\QGTransform.cpp" />
     <ClCompile Include="..\Source\Engine\Core\QGVariant.cpp" />
@@ -55,6 +56,7 @@
     <ClCompile Include="..\Source\Engine\Render\QGTextureLoader.cpp" />
     <ClCompile Include="..\Source\Engine\Render\QGVertexAttributeList.cpp" />
     <ClCompile Include="..\Source\Engine\Render\QGVertexBuffer.cpp" />
+    <ClCompile Include="..\Source\Engine\Scripting\QGMonoComponent.cpp" />
     <ClCompile Include="..\Source\Engine\Scripting\QGScriptComponent.cpp" />
     <ClCompile Include="..\Source\Engine\Scripting\QGScriptingSystem.cpp" />
     <ClCompile Include="..\Source\Engine\Scripting\QGScriptMethods.cpp" />
@@ -118,6 +120,8 @@
     <ClInclude Include="..\Source\Engine\Render\QGTextureLoader.h" />
     <ClInclude Include="..\Source\Engine\Render\QGVertexAttributeList.h" />
     <ClInclude Include="..\Source\Engine\Render\QGVertexBuffer.h" />
+    <ClInclude Include="..\Source\Engine\Scripting\QGMonoComponent.h" />
+    <ClInclude Include="..\Source\Engine\Scripting\QGMonoComponentType.h" />
     <ClInclude Include="..\Source\Engine\Scripting\QGMonoIncludes.h" />
     <ClInclude Include="..\Source\Engine\Scripting\QGScript.h" />
     <ClInclude Include="..\Source\Engine\Scripting\QGScriptComponent.h" />

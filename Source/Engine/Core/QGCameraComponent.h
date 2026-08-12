@@ -7,11 +7,13 @@
 
 class QUEST_API QGCameraComponent : public QGComponent {
 public:
-	QGCameraComponent() : fov(60.0f), aspectRatio(1.33333f), fnear(1.0f), ffar(100.0f) {}
+	QGCameraComponent() : fov(60.0f), aspectRatio(1.33333f), fnear(1.0f), ffar(100.0f), m_target(0, 0, 0) {}
 	~QGCameraComponent() = default;
 
 	matrix4 ProjectionMatrix();
 	matrix4 ViewMatrix();
+
+	void SetTargetPosition(vector3 target) { m_target = target; }
 
 public:
 	void Serialize(QGDataRecord* record);
@@ -24,6 +26,8 @@ public:
 	float aspectRatio;
 	float fnear;
 	float ffar;
+
+	vector3 m_target;
 };
 
 #endif

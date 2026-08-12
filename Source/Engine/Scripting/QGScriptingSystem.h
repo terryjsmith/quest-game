@@ -6,6 +6,7 @@
 #include <Core/QGSystem.h>
 #include <Core/QGVariant.h>
 #include <Scripting/QGScript.h>
+#include <Scripting/QGMonoComponentType.h>
 #include <Core/QGEventSystem.h>
 
 typedef void (*QGMonoEventHandlerFunction)(MonoObject*, MonoObject*, MonoException**);
@@ -37,6 +38,11 @@ public:
 	 * Find a script class
 	 */
 	QGScript* GetScript(std::string className);
+
+	/**
+	 * Get scripted component type
+	 */
+	QGMonoComponentType* GetComponentType(std::string className);
 
 	/**
 	 * Get or create an object relationship from Mono to local
@@ -79,6 +85,9 @@ protected:
 
 	// Mono script types
 	std::map<std::string, QGScript*> m_monoScripts;
+
+	// Mono component types
+	std::map<std::string, QGMonoComponentType*> m_monoComponentTypes;
 
 	// Mapping local and remote objects
 	std::map<QGObject*, QGScriptObject*> m_objectsFromLocal;

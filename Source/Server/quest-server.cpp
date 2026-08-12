@@ -19,6 +19,7 @@
 #include <Render/QGMeshLoader.h>
 #include <Core/QGCameraComponent.h>
 #include <Render/QGShaderLoader.h>
+#include <Scripting/QGMonoComponent.h>
 
 // Callback for newly connected players
 void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
@@ -86,7 +87,14 @@ int main()
     QGEntity* floor = world->CreateEntity("floor", 10);
     QGMeshComponent* fmeshc = floor->CreateComponent<QGMeshComponent>();
     fmeshc->mesh = (QGMesh*)resourceSystem->Load("Resources/Meshes/floor.fbx", "Mesh");
-    floor->transform.position = vector3(0.0f, -1.0f, 0.0f);
+
+    QGEntity* questGiver = world->CreateEntity("QuestGiver", 20);
+    QGMeshComponent* qmeshc = questGiver->CreateComponent<QGMeshComponent>();
+    qmeshc->mesh = (QGMesh*)resourceSystem->Load("Resources/Meshes/box.fbx", "Mesh");
+    questGiver->transform.position = vector3(5, 0, 5);
+
+    QGMonoComponent* giverc = (QGMonoComponent*)metaSystem->CreateObject("QuestGiver");
+    questGiver->AddComponent(giverc);
 
     // Get start time of loop
     timespec lastTimestamp;

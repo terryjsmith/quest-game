@@ -37,6 +37,7 @@ uint32_t uscript_uinputcommand_type_get(MonoObject* obj);
 float uscript_uinputcommand_state_get(MonoObject* obj);
 
 // QGCameraComponent
+void uscript_ucameracomponent_settargetposition(MonoObject* obj, MonoObject* amount);
 MonoObject* uscript_ucameracomponent_transform_get(MonoObject* obj);
 float uscript_ucameracomponent_fov_get(MonoObject* obj);
 void uscript_ucameracomponent_fov_set(MonoObject* obj, float fov);

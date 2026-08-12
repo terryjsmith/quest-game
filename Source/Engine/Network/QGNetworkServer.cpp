@@ -246,6 +246,7 @@ void QGNetworkServer::HandleAckPacket(QGNetworkPacket* packet) {
 		avg += (*it);
 	}
 	avg /= client->rtts.size();
+	client->avgRTT = avg;
 
 	// Remove from ackable packet list
 	server->m_clients[client_index]->m_ackPacketTicks.erase(sequence_num);

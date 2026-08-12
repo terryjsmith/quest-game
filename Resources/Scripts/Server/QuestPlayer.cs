@@ -8,7 +8,7 @@ namespace QuestGame {
         private float turnSpeed = 0.0f;
 
         private float moveModifier = 1.0f;
-        private float turnModifier = 20.0f;
+        private float turnModifier = 30.0f;
 
         public override void Initialize() {
             QGEventSystem.Subscribe<QGInputCommand>(InputCommandCallback, this.gameObject);

@@ -6,7 +6,7 @@ matrix4 QGCameraComponent::ProjectionMatrix() {
 }
 
 matrix4 QGCameraComponent::ViewMatrix() {
-	return(glm::lookAt(transform.position, transform.position + transform.Forward(), transform.Up()));
+	return(glm::lookAt(transform.position, m_target, vector3(0, 1, 0)));
 }
 
 void QGCameraComponent::Serialize(QGDataRecord* record) {

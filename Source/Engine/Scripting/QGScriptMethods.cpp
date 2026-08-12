@@ -42,7 +42,8 @@ void qgscripting_register_monomethods() {
 	mono_add_internal_call("QGEngine.QGInputCommand::get_type", uscript_uinputcommand_type_get);
 	mono_add_internal_call("QGEngine.QGInputCommand::get_state", uscript_uinputcommand_state_get);
 
-	// QGCameraComponent
+	// 
+	mono_add_internal_call("QGEngine.QGCameraComponent::SetTargetPosition", uscript_ucameracomponent_settargetposition);
 	mono_add_internal_call("QGEngine.QGCameraComponent::get_transform", uscript_ucameracomponent_transform_get);
 	mono_add_internal_call("QGEngine.QGCameraComponent::get_fov", uscript_ucameracomponent_fov_get);
 	mono_add_internal_call("QGEngine.QGCameraComponent::set_fov", uscript_ucameracomponent_fov_set);
@@ -102,7 +103,7 @@ MonoArray* uscript_uentity_components_get(MonoObject* obj) {
 	std::vector<QGComponent*> components = entity->GetComponents();
 	std::map<QGObject*, std::string> objs;
 	for (auto it = components.begin(); it != components.end(); it++) {
-		QGObjectType* type = metaSystem->GetType(*it);
+		QGObjectType* type = (*it)->Type();
 		objs[*it] = type->className;
 	}
 
@@ -267,4 +268,10 @@ float uscript_ucameracomponent_fov_get(MonoObject* obj) {
 void uscript_ucameracomponent_fov_set(MonoObject* obj, float fov) {
 	QGCameraComponent* camera = UMonoMethods_GetLocalObject<QGCameraComponent>(obj);
 	camera->fov = fov;
+}
+
+void uscript_ucameracomponent_settargetposition(MonoObject* obj, MonoObject* amount) {
+	QGCameraComponent* camera = UMonoMethods_GetLocalObject<QGCameraComponent>(obj);
+	vector3 position = UMonoMethods_MonoObjectToVariant(amount).AsVector3();
+	camera->SetTargetPosition(position);
 }

@@ -116,7 +116,7 @@ void QGReplicationClient::Update(float delta) {
 			std::vector<QGComponent*> components = entity->GetComponents();
 			std::map<uint32_t, QGComponent*> componentTypes;
 			for (auto tit = components.begin(); tit != components.end(); tit++) {
-				QGObjectType* type = metaSystem->GetType(*tit);
+				QGObjectType* type = (*tit)->Type();
 				componentTypes[type->typeID] = *tit;
 			}
 
@@ -127,8 +127,7 @@ void QGReplicationClient::Update(float delta) {
 					tit->second->Deserialize(&cit->second.record);
 				}
 				else {
-					QGObjectType* newType = metaSystem->GetType(cit->second.type);
-					QGComponent* component = (QGComponent*)newType->ctor();
+					QGComponent* component = (QGComponent*)metaSystem->CreateObject(cit->second.type);
 					component->Deserialize(&cit->second.record);
 					entity->AddComponent(component);
 				}
