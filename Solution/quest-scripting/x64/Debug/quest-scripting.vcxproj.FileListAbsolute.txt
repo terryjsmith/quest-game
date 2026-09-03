@@ -1,0 +1,5 @@
+C:\Users\terry\source\repos\quest-game\Build\Ijwhost.dll
+C:\Users\terry\source\repos\quest-game\Build\quest-scripting.deps.json
+C:\Users\terry\source\repos\quest-game\Build\quest-scripting.runtimeconfig.json
+C:\Users\terry\source\repos\quest-game\Solution\quest-scripting\x64\Debug\quest-scripting.sourcelink.json
+C:\Users\terry\source\repos\quest-game\Solution\quest-scripting\x64\Debug\quest-scripting.genruntimeconfig.cache

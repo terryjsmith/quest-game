@@ -14,9 +14,6 @@
     <Filter Include="IO">
       <UniqueIdentifier>{62d6c0a8-fb4f-41e8-943d-b94df1e59f43}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scripting">
-      <UniqueIdentifier>{78a4251c-5278-40c6-a2d0-681e92be3f5a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Render">
       <UniqueIdentifier>{dc50372c-ae73-40c3-8061-8312517c815b}</UniqueIdentifier>
     </Filter>
@@ -28,6 +25,9 @@
     </Filter>
     <Filter Include="Physics">
       <UniqueIdentifier>{c18ce79c-94fe-424d-9a16-2d50bc0df454}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripting">
+      <UniqueIdentifier>{103b4e82-57f9-44a4-928b-a64493b3b7ba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -69,15 +69,6 @@
     </ClCompile>
     <ClCompile Include="..\Source\Engine\Network\QGReplicationServer.cpp">
       <Filter>Network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Engine\Scripting\QGScriptingSystem.cpp">
-      <Filter>Scripting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Engine\Scripting\QGScriptMethods.cpp">
-      <Filter>Scripting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Engine\Scripting\QGScriptComponent.cpp">
-      <Filter>Scripting</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\Engine\Core\QGTransform.cpp">
       <Filter>Core</Filter>
@@ -148,11 +139,29 @@
     <ClCompile Include="..\Source\Engine\Core\QGCameraComponent.cpp">
       <Filter>Core</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\Engine\Scripting\QGMonoComponent.cpp">
-      <Filter>Scripting</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\Engine\Core\QGObject.cpp">
       <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Physics\QGSphereCollider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Physics\QGCollisionSystem.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Physics\QGCollisionComponent.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Scripting\QGScriptComponent.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Scripting\QGScriptingSystem.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Network\QGRpcServer.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Engine\Network\QGRpcClient.cpp">
+      <Filter>Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -233,24 +242,6 @@
     </ClInclude>
     <ClInclude Include="..\Source\Engine\Network\QGNetworkEvents.h">
       <Filter>Network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Engine\Scripting\QGScript.h">
-      <Filter>Scripting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Engine\Scripting\QGScriptObject.h">
-      <Filter>Scripting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Engine\Scripting\QGMonoIncludes.h">
-      <Filter>Scripting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Engine\Scripting\QGScriptingSystem.h">
-      <Filter>Scripting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Engine\Scripting\QGScriptMethods.h">
-      <Filter>Scripting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Engine\Scripting\QGScriptComponent.h">
-      <Filter>Scripting</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Engine\Core\QGTransform.h">
       <Filter>Core</Filter>
@@ -348,14 +339,32 @@
     <ClInclude Include="..\Source\Engine\Render\Passes\QGForwardRenderPass.h">
       <Filter>Render\Passes</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\Engine\Scripting\QGMonoComponent.h">
-      <Filter>Scripting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Engine\Scripting\QGMonoComponentType.h">
-      <Filter>Scripting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Engine\Physics\QGColliderComponent.h">
+    <ClInclude Include="..\Source\Engine\Physics\QGCollisionComponent.h">
       <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Physics\QGSphereCollider.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Physics\QGCollisionSystem.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Physics\QGCollisionShape.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Physics\QGPhysicsEvents.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Scripting\QGScriptComponent.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Scripting\QGScriptingSystem.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Network\QGRpcClient.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Engine\Network\QGRpcServer.h">
+      <Filter>Network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

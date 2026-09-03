@@ -47,6 +47,7 @@ void QGReplicationServer::Update(float delta) {
 				foundSnapshot = true;
 				replayTick = possibleReplayTick;
 				m_replayTicks.clear();
+				break;
 			}
 			possibleReplayTick--;
 			attempts++;

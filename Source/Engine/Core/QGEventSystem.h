@@ -39,8 +39,8 @@ public:
 	void Publish(T* event, QGObject* ptr = 0) {
 		std::type_index ix = typeid(*event);
 
-		auto it = m_handlers.begin();
-		for (; it != m_handlers.end(); it++) {
+		std::vector<QGEventHandler*> handlers = m_handlers;
+		for (auto it = handlers.begin(); it != handlers.end(); it++) {
 			if (ix == (*it)->type) {
 				if ((*it)->ptr == 0 || (*it)->ptr == ptr) {
 					(*it)->callback(event, ptr);

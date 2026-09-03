@@ -3,13 +3,16 @@
 #define qgnetworkpackets_h
 
 #include <Core/QGObject.h>
+#include <Core/QGDataRecord.h>
 
 enum QGNetworkPackets {
 	QGPACKET_STARTUP			= 10,
 	QGPACKET_ACK				= 20,
 	QGPACKET_SYNC				= 30,
 	QGPACKET_INPUTCOMMAND		= 40,
-	QGPACKET_ENTITYSNAPSHOT		= 50
+	QGPACKET_ENTITYSNAPSHOT		= 50,
+	QGPACKET_RPCREQUEST			= 60,
+	QGPACKET_RPCRESPONSE		= 70
 };
 
 /**
@@ -55,6 +58,16 @@ struct QGNetworkSyncPacket {
 struct QGNetworkAckPacket {
 	uint64_t sequence_num;
 	uint64_t tick;
+};
+
+struct QGNetworkRpcRequestPacket {
+	std::string function;
+	unsigned char* args;
+};
+
+struct QGNetworkRpcResponsePacket {
+	std::string function;
+	std::string response;
 };
 
 #endif

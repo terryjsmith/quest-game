@@ -7,7 +7,7 @@
 
 class QUEST_API QGRenderPass : public QGObject {
 public:
-	QGRenderPass() = default;
+	QGRenderPass() : m_program(0) {}
 	virtual ~QGRenderPass() = default;
 
 	virtual void Initialize(int width, int height) = 0;

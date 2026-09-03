@@ -35,6 +35,11 @@ public:
 	 */
 	int AverageRTT(int client_index);
 
+	/**
+	 * Get client index from client ID
+	 */
+	int ClientIndexFromID(uint64_t id) { return m_clientIDtoIndex[id]; }
+
 protected:
 	// Callbacks
 	static void HandleConnectDisconnect(void* context, int client_index, int connected);

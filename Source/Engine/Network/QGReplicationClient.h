@@ -11,7 +11,7 @@
 
 class QUEST_API QGReplicationClient : public QGSystem {
 public:
-	QGReplicationClient() : m_playerID(0) {}
+	QGReplicationClient() : m_playerID(0), m_playerEntity(0) {}
 	~QGReplicationClient() = default;
 
 	/**

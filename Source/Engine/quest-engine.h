@@ -1,7 +1,9 @@
 
 #define WIN32_LEAN_AND_MEAN
-#define QUEST_API
 #define _CRT_SECURE_NO_WARNINGS
+
+#pragma warning(disable : 4244)
+#pragma warning(disable : 4251)
 
 #include <Windows.h>
 
@@ -13,6 +15,12 @@
 #include <filesystem>
 
 #include <assert.h>
+
+#ifdef QUEST_ENGINE_EXPORTS
+#define QUEST_API __declspec(dllexport)
+#else
+#define QUEST_API __declspec(dllimport)
+#endif
 
 #define GLM_FORCE_RADIANS
 #define GLM_ENABLE_EXPERIMENTAL
@@ -27,5 +35,7 @@ typedef glm::vec4 vector4;
 typedef glm::quat quaternion;
 typedef glm::mat3 matrix3;
 typedef glm::mat4 matrix4;
+
+#include <nlohmann/json.hpp>
 
 #define QGASSERT(test, msg) { assert(test); }

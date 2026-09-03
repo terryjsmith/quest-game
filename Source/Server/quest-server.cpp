@@ -8,9 +8,7 @@
 #include <Network/QGNetworkServer.h>
 #include <Core/QGTimeSystem.h>
 #include <Network/QGReplicationServer.h>
-#include <Scripting/QGScriptingSystem.h>
 #include <Core/QGMetaSystem.h>
-#include <Scripting/QGScriptComponent.h>
 #include <Network/QGNetworkEvents.h>
 #include <Render/QGMeshComponent.h>
 #include <Render/QGRenderSystem.h>
@@ -19,22 +17,32 @@
 #include <Render/QGMeshLoader.h>
 #include <Core/QGCameraComponent.h>
 #include <Render/QGShaderLoader.h>
-#include <Scripting/QGMonoComponent.h>
+#include <Physics/QGCollisionSystem.h>
+#include <Physics/QGSphereCollider.h>
+#include <Scripting/QGScriptComponent.h>
+#include <Scripting/QGScriptingSystem.h>
+#include <Network/QGRpcServer.h>
 
 // Callback for newly connected players
 void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
     QGPlayerConnectedEvent* event = (QGPlayerConnectedEvent*)ev;
 
     // Add the player script component
-    QGScriptingSystem* scriptingSystem = GetQGSystem<QGScriptingSystem>();
-    QGScriptComponent* script = event->entity->CreateComponent<QGScriptComponent>();
-    script->Initialize(scriptingSystem->GetScript("QuestPlayer"));
+    QGMetaSystem* metaSystem = GetQGSystem<QGMetaSystem>();
+    QGScriptComponent* script = (QGScriptComponent*)metaSystem->CreateObject("QuestPlayer");
+    script->Initialize();
+    event->entity->AddComponent(script);
 
     QGResourceSystem* resourceSystem = GetQGSystem<QGResourceSystem>();
     QGMeshComponent* mesh = event->entity->CreateComponent<QGMeshComponent>();
     mesh->mesh = (QGMesh*)resourceSystem->Load("Resources/Meshes/box.fbx", "Mesh");
 
-    printf("Added mesh and script component to new entity for client ID %llu.\n", event->clientID);
+    QGCollisionComponent* colliderComponent = event->entity->CreateComponent<QGCollisionComponent>();
+    QGSphereCollider* collisionShape = new QGSphereCollider();
+    collisionShape->Initialize(1.0f);
+    colliderComponent->Shape(collisionShape);
+
+    printf("Added components to new entity for client ID %llu.\n", event->clientID);
 }
 
 int main()
@@ -55,6 +63,8 @@ int main()
     QGMetaSystem* metaSystem = application->CreateSystem<QGMetaSystem>();
     QGRenderSystem* renderSystem = application->CreateSystem<QGRenderSystem>();
     QGResourceSystem* resourceSystem = application->CreateSystem<QGResourceSystem>();
+    QGCollisionSystem* collisionSystem = application->CreateSystem<QGCollisionSystem>(60);
+    QGRpcServer* rpcServer = application->CreateSystem<QGRpcServer>();
 
     // Initialize systems
     application->Initialize();
@@ -62,12 +72,14 @@ int main()
     // Create command mappings
     inputSystem->RegisterCommand(10, "MOVE");
     inputSystem->RegisterCommand(20, "TURN");
+    inputSystem->RegisterCommand(30, "INTERACT");
 
     // Register components types
     metaSystem->RegisterType<QGEntity>(1000, "QGEntity");
-    metaSystem->RegisterType<QGScriptComponent>(1010, "QGScriptComponent", false);
+    //metaSystem->RegisterType<QGScriptComponent>(1010, "QGScriptComponent");
     metaSystem->RegisterType<QGMeshComponent>(1020, "QGMeshComponent");
     metaSystem->RegisterType<QGCameraComponent>(1030, "QGCameraComponent", false);
+    metaSystem->RegisterType<QGCollisionComponent>(1040, "QGCollisionComponent");
 
     resourceSystem->RegisterResourceLoader<QGTextureLoader>("Texture2D");
     resourceSystem->RegisterResourceLoader<QGMeshLoader>("Mesh");
@@ -78,7 +90,8 @@ int main()
     networkSystem->Listen(address);
 
     // Load game library
-    scriptingSystem->LoadScriptLibrary("QuestServer.dll");
+    // scriptingSystem->LoadScriptLibrary("QuestServer.dll");
+    HINSTANCE hDll = LoadLibrary(TEXT("quest-gamed.dll"));
 
     // Listen for newly connected players
     eventSystem->Subscribe<QGPlayerConnectedEvent>(initialize_player_prefab, 0);
@@ -93,8 +106,10 @@ int main()
     qmeshc->mesh = (QGMesh*)resourceSystem->Load("Resources/Meshes/box.fbx", "Mesh");
     questGiver->transform.position = vector3(5, 0, 5);
 
-    QGMonoComponent* giverc = (QGMonoComponent*)metaSystem->CreateObject("QuestGiver");
-    questGiver->AddComponent(giverc);
+    QGCollisionComponent* colliderc = questGiver->CreateComponent<QGCollisionComponent>();
+    QGSphereCollider* collisionShape = new QGSphereCollider();
+    collisionShape->Initialize(1.0f);
+    colliderc->Shape(collisionShape);
 
     // Get start time of loop
     timespec lastTimestamp;

@@ -64,6 +64,9 @@ public:
     QGVariant(std::string value);
     QGVariant(QGObject* value);
     QGVariant(const QGVariant& value);
+    template<typename T> QGVariant(std::vector<T> list) {
+        *this = list;
+    }
 
     /**
      * Set operators
