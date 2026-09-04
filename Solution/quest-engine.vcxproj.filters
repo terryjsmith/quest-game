@@ -163,6 +163,9 @@
     <ClCompile Include="..\Source\Engine\Network\QGRpcClient.cpp">
       <Filter>Network</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Engine\Render\QGRenderDefines.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Engine\quest-engine.h">

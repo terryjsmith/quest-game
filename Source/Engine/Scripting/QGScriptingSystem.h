@@ -18,6 +18,11 @@ public:
 	 * Update, calls update for all objects
 	 */
 	void Update(float delta);
+
+	/**
+	 * Load a script library
+	 */
+	void LoadScriptLibrary(std::string filename);
 };
 
 #endif

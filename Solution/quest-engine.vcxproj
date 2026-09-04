@@ -56,6 +56,7 @@
     <ClCompile Include="..\Source\Engine\Render\QGMesh.cpp" />
     <ClCompile Include="..\Source\Engine\Render\QGMeshComponent.cpp" />
     <ClCompile Include="..\Source\Engine\Render\QGMeshLoader.cpp" />
+    <ClCompile Include="..\Source\Engine\Render\QGRenderDefines.cpp" />
     <ClCompile Include="..\Source\Engine\Render\QGRenderSystem.cpp" />
     <ClCompile Include="..\Source\Engine\Render\QGShaderLoader.cpp" />
     <ClCompile Include="..\Source\Engine\Render\QGTextureLoader.cpp" />

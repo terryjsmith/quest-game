@@ -21,6 +21,10 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 set (ENGINE_LIBS "")
 set (ENGINE_INCLUDE_DIRS "")
 
+# library options
+option(USE_OPENGL "Build OpenGL library support" OFF)
+option(BUILD_GAME_CLIENT "Build game client" OFF)
+
 # add platform specific libraries
 IF(WIN32)
 	list (APPEND ENGINE_LIBS "legacy_stdio_definitions.lib")
@@ -59,13 +63,18 @@ add_subdirectory(Source/ThirdParty/bullet3-3.25)
 list (APPEND ENGINE_LIBS BulletCollision BulletDynamics LinearMath)
 list (APPEND ENGINE_INCLUDE_DIRS "Source/ThirdParty/bullet3-3.25/src")
 
-add_subdirectory(Source/ThirdParty/gl3w)
-list (APPEND ENGINE_LIBS gl3w)
 list (APPEND ENGINE_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/Source/ThirdParty/gl3w/include")
-
-add_subdirectory(Source/ThirdParty/glfw-3.4)
-list (APPEND ENGINE_LIBS glfw)
 list (APPEND ENGINE_INCLUDE_DIRS "Source/ThirdParty/glfw-3.4/include")
+
+if(USE_OPENGL)
+	add_subdirectory(Source/ThirdParty/gl3w)
+	list (APPEND ENGINE_LIBS gl3w)
+
+	add_subdirectory(Source/ThirdParty/glfw-3.4)
+	list (APPEND ENGINE_LIBS glfw)
+	
+	add_definitions(-DUSE_OPENGL=1)
+ENDIF()
 
 add_subdirectory(Source/ThirdParty/json-3.12.0)
 list (APPEND ENGINE_LIBS ${NLOHMANN_JSON_TARGET_NAME})
@@ -142,6 +151,8 @@ clear_source_files()
 ## game client
 ##
 
+IF(BUILD_GAME_CLIENT)
+
 add_executable(quest-cli Source/Client/quest-game.cpp)
 
 set_property(TARGET quest-cli APPEND PROPERTY COMPILE_DEFINITIONS)
@@ -154,6 +165,8 @@ target_include_directories(quest-cli PRIVATE "Source/Engine" ${ENGINE_INCLUDE_DI
 add_dependencies(quest-cli quest-engine)
 
 clear_source_files()
+
+ENDIF()
 
 ##
 ## game server

@@ -81,8 +81,7 @@ int main()
     resourceSystem->RegisterResourceLoader<QGShaderLoader>("Shader", false);
 
     // Load game library
-    // scriptingSystem->LoadScriptLibrary("QuestClient.dll");
-    HINSTANCE hDll = LoadLibrary(TEXT("quest-gamed.dll"));
+    scriptingSystem->LoadScriptLibrary("quest-gamed");
 
     // Initialize OpenGL
     renderSystem->Initialize(window->Width(), window->Height());
@@ -102,7 +101,7 @@ int main()
     eventSystem->Subscribe<QGPlayerConnectedEvent>(PlayerConnectedCallback, 0);
 
     // Initialize server
-    const char* address = "127.0.0.1:35325";
+    const char* address = "192.81.208.200:35325";
     networkSystem->Connect(address);
 
     // Set player ID

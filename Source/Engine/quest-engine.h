@@ -2,10 +2,12 @@
 #define WIN32_LEAN_AND_MEAN
 #define _CRT_SECURE_NO_WARNINGS
 
-#pragma warning(disable : 4244)
-#pragma warning(disable : 4251)
+#ifdef _WIN32
+	#pragma warning(disable : 4244)
+	#pragma warning(disable : 4251)
 
-#include <Windows.h>
+	#include <Windows.h>
+#endif
 
 #include <iostream>
 #include <vector>
@@ -16,10 +18,14 @@
 
 #include <assert.h>
 
-#ifdef QUEST_ENGINE_EXPORTS
-#define QUEST_API __declspec(dllexport)
+#ifdef _WIN32
+	#ifdef QUEST_ENGINE_EXPORTS
+		#define QUEST_API __declspec(dllexport)
+	#else
+		#define QUEST_API __declspec(dllimport)
+	#endif
 #else
-#define QUEST_API __declspec(dllimport)
+	#define QUEST_API
 #endif
 
 #define GLM_FORCE_RADIANS

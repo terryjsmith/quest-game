@@ -90,8 +90,7 @@ int main()
     networkSystem->Listen(address);
 
     // Load game library
-    // scriptingSystem->LoadScriptLibrary("QuestServer.dll");
-    HINSTANCE hDll = LoadLibrary(TEXT("quest-gamed.dll"));
+    scriptingSystem->LoadScriptLibrary("quest-gamed");
 
     // Listen for newly connected players
     eventSystem->Subscribe<QGPlayerConnectedEvent>(initialize_player_prefab, 0);

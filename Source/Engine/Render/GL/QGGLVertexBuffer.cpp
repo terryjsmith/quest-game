@@ -1,4 +1,6 @@
 
+#ifdef USE_OPENGL
+
 #include <Render/GL/QGGLVertexBuffer.h>
 #include <Render/GL/QGGL.h>
 
@@ -13,3 +15,5 @@ void QGGLVertexBuffer::Bind() {
 
 	GL_CHECK(glBindBuffer(GL_ARRAY_BUFFER, m_buffer));
 }
+
+#endif

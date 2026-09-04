@@ -1,4 +1,6 @@
 
+#ifdef USE_OPENGL
+
 #include <Render/GL/QGGLRenderSystem.h>
 #include <Render/GL/QGGL.h>
 
@@ -41,3 +43,5 @@ void QGGLRenderSystem::EnableDepthTest(int type) {
 void QGGLRenderSystem::DisableDepthTest() {
 	GL_CHECK(glDisable(GL_DEPTH_TEST));
 }
+
+#endif

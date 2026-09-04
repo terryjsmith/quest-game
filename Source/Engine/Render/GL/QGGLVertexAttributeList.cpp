@@ -1,4 +1,6 @@
 
+#ifdef USE_OPENGL
+
 #include <Render/GL/QGGLVertexAttributeList.h>
 #include <Render/GL/QGGL.h>
 
@@ -19,3 +21,5 @@ void QGGLVertexAttributeList::Bind() {
 
 	GL_CHECK(glBindVertexArray(m_vao));
 }
+
+#endif

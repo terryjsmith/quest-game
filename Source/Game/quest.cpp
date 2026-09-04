@@ -1,43 +1,14 @@
 
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#include "quest-game.h"
+#include "QuestPlayer.h"
+#include "QuestManager.h"
 
 #include <Core/QGObject.h>
 #include <Core/QGMetaSystem.h>
 #include <Network/QGNetworkServer.h>
 #include <Core/QGApplication.h>
 
-#include "QuestPlayer.h"
-#include "QuestManager.h"
-
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
-    // Perform actions based on the reason for calling.
-    switch (fdwReason)
-    {
-    case DLL_PROCESS_ATTACH:
-        // Initialize once for each new process.
-        // Return FALSE to fail DLL load.
-        break;
-
-    case DLL_THREAD_ATTACH:
-        // Do thread-specific initialization.
-        break;
-
-    case DLL_THREAD_DETACH:
-        // Do thread-specific cleanup.
-        break;
-
-    case DLL_PROCESS_DETACH:
-
-        if (lpvReserved != nullptr)
-        {
-            break; // do not do cleanup if process termination scenario
-        }
-
-        // Perform any necessary cleanup.
-        break;
-    }
-    
+void qg_init_library() {
     // Register types
     QGMetaSystem* metaSystem = GetQGSystem<QGMetaSystem>();
     metaSystem->RegisterType<QuestPlayer>(5010, "QuestPlayer");
@@ -53,6 +24,4 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
         QGRpcServer* rpc = GetQGSystem<QGRpcServer>();
         rpc->Bind("get_available_quests", QuestPlayer::ServerAvailableQuestsCB);
     }
-
-    return TRUE;  // Successful DLL_PROCESS_ATTACH.
 }

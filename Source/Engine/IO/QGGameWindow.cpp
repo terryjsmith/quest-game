@@ -1,4 +1,6 @@
 
+#ifdef USE_OPENGL
+
 #include <IO/QGGameWindow.h>
 
 QGGameWindow* QGGameWindow::m_instance = 0;
@@ -42,3 +44,5 @@ void QGGameWindow::ProcessMessages() {
 void QGGameWindow::SwapBuffers() {
 	glfwSwapBuffers(m_handle);
 }
+
+#endif

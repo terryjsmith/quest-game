@@ -1,4 +1,6 @@
 
+#ifdef USE_OPENGL
+
 #include <IO/QGKeyboard.h>
 #include <IO/QGGameWindow.h>
 #include <IO/QGInputSystem.h>
@@ -134,3 +136,5 @@ void QGKeyboard::SetButtonState(int button, float state) {
 		GetQGSystem<QGEventSystem>()->Publish(new QGInputEvent(this, button, state));
 	}
 }
+
+#endif

@@ -1,4 +1,6 @@
 
+#ifdef USE_OPENGL
+
 #include <Render/GL/QGGLShaderProgram.h>
 #include <Render/GL/QGGL.h>
 
@@ -240,3 +242,5 @@ void QGGLShaderProgram::Set(std::string name, matrix3 value) {
 
 	GL_CHECK(glUniformMatrix3fv(uit->second, 1, GL_FALSE, &(value)[0][0]));
 }
+
+#endif

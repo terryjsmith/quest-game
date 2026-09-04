@@ -1,4 +1,6 @@
 
+#ifdef USE_OPENGL
+
 #include <Render/GL/QGGLTexture2D.h>
 #include <Render/GL/QGGL.h>
 
@@ -53,3 +55,5 @@ void QGGLTexture2D::Bind(int slot) {
 	GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minificationFilter));
 	GL_CHECK(glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magnificationFilter));
 }
+
+#endif
