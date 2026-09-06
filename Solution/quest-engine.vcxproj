@@ -33,6 +33,7 @@
     <ClCompile Include="..\Source\Engine\IO\QGKeyboard.cpp" />
     <ClCompile Include="..\Source\Engine\IO\QGResourceSystem.cpp" />
     <ClCompile Include="..\Source\Engine\Network\QGEntitySnapshot.cpp" />
+    <ClCompile Include="..\Source\Engine\Network\QGHttpRequest.cpp" />
     <ClCompile Include="..\Source\Engine\Network\QGNetworkClient.cpp" />
     <ClCompile Include="..\Source\Engine\Network\QGNetworkServer.cpp" />
     <ClCompile Include="..\Source\Engine\Network\QGNetworkSystem.cpp" />
@@ -95,6 +96,7 @@
     <ClInclude Include="..\Source\Engine\Network\QGNetworkClient.h" />
     <ClInclude Include="..\Source\Engine\Network\QGNetworkEvents.h" />
     <ClInclude Include="..\Source\Engine\Network\QGNetworkPackets.h" />
+    <ClInclude Include="..\Source\Engine\Network\QGHttpRequest.h" />
     <ClInclude Include="..\Source\Engine\Network\QGNetworkServer.h" />
     <ClInclude Include="..\Source\Engine\Network\QGNetworkSystem.h" />
     <ClInclude Include="..\Source\Engine\Network\QGReplicationClient.h" />
@@ -231,7 +233,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\Source\Engine;..\Source\ThirdParty\glm\include;..\Build\gl3w\include;..\Source\ThirdParty\bullet3-3.25\src;..\Source\ThirdParty\assimp-6.0.5\include;..\Build\assimp\include;..\Source\ThirdParty\netcode-1.3.3;..\Source\ThirdParty\stb;..\Source\ThirdParty\glfw-3.4\include;..\Source\ThirdParty\json-3.12.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Source\Engine;..\Source\ThirdParty\glm\include;..\Build\gl3w\include;..\Source\ThirdParty\bullet3-3.25\src;..\Source\ThirdParty\assimp-6.0.5\include;..\Build\assimp\include;..\Source\ThirdParty\netcode-1.3.3;..\Source\ThirdParty\stb;..\Source\ThirdParty\glfw-3.4\include;..\Source\ThirdParty\curl-8.22.0\include;..\Source\ThirdParty\json-3.12.0\include</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>

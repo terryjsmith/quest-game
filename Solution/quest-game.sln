@@ -22,6 +22,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "quest", "quest.vcxproj", "{
 		{EFF89DA7-A02D-451B-BF30-FA957096F244} = {EFF89DA7-A02D-451B-BF30-FA957096F244}
 	EndProjectSection
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "installer", "..\installer\installer.vdproj", "{B3724FF1-63B2-8EB6-790C-41E05982363C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +82,12 @@ Global
 		{83508F7D-22B6-44F6-BE89-9579AF4626E4}.Release|x64.Build.0 = Release|x64
 		{83508F7D-22B6-44F6-BE89-9579AF4626E4}.Release|x86.ActiveCfg = Release|Win32
 		{83508F7D-22B6-44F6-BE89-9579AF4626E4}.Release|x86.Build.0 = Release|Win32
+		{B3724FF1-63B2-8EB6-790C-41E05982363C}.Debug|Any CPU.ActiveCfg = Debug
+		{B3724FF1-63B2-8EB6-790C-41E05982363C}.Debug|x64.ActiveCfg = Debug
+		{B3724FF1-63B2-8EB6-790C-41E05982363C}.Debug|x86.ActiveCfg = Debug
+		{B3724FF1-63B2-8EB6-790C-41E05982363C}.Release|Any CPU.ActiveCfg = Release
+		{B3724FF1-63B2-8EB6-790C-41E05982363C}.Release|x64.ActiveCfg = Release
+		{B3724FF1-63B2-8EB6-790C-41E05982363C}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

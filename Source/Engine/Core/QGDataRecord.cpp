@@ -104,7 +104,11 @@ void QGDataRecord::Deserialize(unsigned char* bytes, unsigned int size) {
 
 		// Property
 		QGVariant v;
-		QGASSERT(psize > 0 || (psize == 0 && type == QGVariant::VAR_STRING), "Unexpected zero size value");
+		if ((psize > 0 || (psize == 0 && type == QGVariant::VAR_STRING)) == false) {
+			printf("Unexpected zero size value for type %d in property %s.\n", type, name);
+			QGASSERT(false, "Unexpected zero size value for type");
+		}
+		
 		if (psize == 0) {
 			// Should be only strings
 			v = "";

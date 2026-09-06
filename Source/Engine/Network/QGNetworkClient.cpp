@@ -11,7 +11,7 @@ void QGNetworkClient::Initialize() {
     this->RegisterPacketCallback(QGNetworkPackets::QGPACKET_SYNC, &HandleSyncPacket);
 }
 
-void QGNetworkClient::Connect(const char* address) {
+void QGNetworkClient::Connect(const char* address, std::string token) {
     m_time = 0.0;
 
     static uint8_t private_key[NETCODE_KEY_BYTES] = { 0x60, 0x6a, 0xbe, 0x6e, 0xc9, 0x19, 0x10, 0xea,
@@ -28,7 +28,8 @@ void QGNetworkClient::Connect(const char* address) {
     printf("client id is %llu\n", m_clientID);
 
     uint8_t user_data[NETCODE_USER_DATA_BYTES];
-    netcode_random_bytes(user_data, NETCODE_USER_DATA_BYTES);
+    memset(user_data, 0, NETCODE_USER_DATA_BYTES);
+    memcpy(user_data, token.c_str(), token.length());
 
     uint8_t connect_token[NETCODE_CONNECT_TOKEN_BYTES];
 
@@ -71,7 +72,7 @@ void QGNetworkClient::Update(float delta) {
         memcpy(&qgpacket.env.ack, packet + offset, sizeof(uint8_t));
         offset += sizeof(uint8_t);
 
-        QGASSERT(packet_bytes - offset == qgpacket.env.size, "Packet size mismatch.");
+        QGASSERT(packet_bytes - offset == qgpacket.env.size, "Packet size mismatch: %d - %d = %d.", packet_bytes, offset, qgpacket.env.size);
 
         qgpacket.bytes = (unsigned char*)malloc(qgpacket.env.size);
         memcpy(qgpacket.bytes, packet + offset, qgpacket.env.size);

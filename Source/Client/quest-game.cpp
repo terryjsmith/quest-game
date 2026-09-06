@@ -23,6 +23,7 @@
 #include <Scripting/QGScriptComponent.h>
 #include <Scripting/QGScriptingSystem.h>
 #include <Network/QGRpcClient.h>
+#include <Network/QGHttpRequest.h>
 
 void PlayerConnectedCallback(QGEvent* ev, QGObject* obj) {
     QGPlayerConnectedEvent* event = (QGPlayerConnectedEvent*)ev;
@@ -56,6 +57,27 @@ int main()
     // Initialize systems
     application->Initialize();
 
+    // Login
+    char email[255];
+    char password[255];
+    memset(email, 0, 255);
+    memset(password, 0, 255);
+
+    printf("Email Address: ");
+    scanf("%s", email);
+    printf("Password: ");
+    scanf("%s", password);
+
+    std::string datastr = "email=";
+    datastr += email;
+    datastr += "&password=";
+    datastr += password;
+
+    QGHttpRequest* request = new QGHttpRequest("https://api.grokitgames.terryjsmith.com/api/auth/login");
+    std::string response = request->Post(datastr.c_str());
+
+    nlohmann::json jsonresp = nlohmann::json::parse(response);
+
     // Create main game window
     QGGameWindow* window = QGGameWindow::GetInstance();
     window->Create("Game Window", 800, 600, false);
@@ -81,7 +103,7 @@ int main()
     resourceSystem->RegisterResourceLoader<QGShaderLoader>("Shader", false);
 
     // Load game library
-    scriptingSystem->LoadScriptLibrary("quest-gamed");
+    scriptingSystem->LoadScriptLibrary("quest-game");
 
     // Initialize OpenGL
     renderSystem->Initialize(window->Width(), window->Height());
@@ -102,7 +124,7 @@ int main()
 
     // Initialize server
     const char* address = "192.81.208.200:35325";
-    networkSystem->Connect(address);
+    networkSystem->Connect(address, jsonresp.at("id").get<std::string>());
 
     // Set player ID
     replClient->PlayerID(networkSystem->ClientID());

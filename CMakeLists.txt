@@ -63,6 +63,10 @@ add_subdirectory(Source/ThirdParty/bullet3-3.25)
 list (APPEND ENGINE_LIBS BulletCollision BulletDynamics LinearMath)
 list (APPEND ENGINE_INCLUDE_DIRS "Source/ThirdParty/bullet3-3.25/src")
 
+add_subdirectory(Source/ThirdParty/curl-8.11.0)
+list (APPEND ENGINE_LIBS libcurl)
+list (APPEND ENGINE_INCLUDE_DIRS "Source/ThirdParty/curl-8.11.0/include")
+
 list (APPEND ENGINE_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/Source/ThirdParty/gl3w/include")
 list (APPEND ENGINE_INCLUDE_DIRS "Source/ThirdParty/glfw-3.4/include")
 
@@ -140,7 +144,6 @@ group_source_files("Source/Scripting" "Source/Engine/Scripting")
 add_library(quest-engine SHARED ${ENGINE_SOURCE_FILES})
 target_link_libraries(quest-engine ${ENGINE_LIBS})
 
-set_property(TARGET quest-engine APPEND PROPERTY COMPILE_DEFINITIONS "USE_OPENGL")
 set_property(TARGET quest-engine APPEND PROPERTY COMPILE_DEFINITIONS "QUEST_ENGINE_EXPORTS")
 set_property(TARGET quest-engine APPEND PROPERTY COMPILE_DEFINITIONS "GLFW_INCLUDE_GLCOREARB")
 target_include_directories(quest-engine PRIVATE "Source/Engine" ${ENGINE_INCLUDE_DIRS})
@@ -157,7 +160,6 @@ add_executable(quest-cli Source/Client/quest-game.cpp)
 
 set_property(TARGET quest-cli APPEND PROPERTY COMPILE_DEFINITIONS)
 set_property(TARGET quest-cli APPEND PROPERTY COMPILE_DEFINITIONS "CURL_STATICLIB")
-set_property(TARGET quest-cli APPEND PROPERTY COMPILE_DEFINITIONS "USE_OPENGL")
 set_property(TARGET quest-cli APPEND PROPERTY COMPILE_DEFINITIONS "GLFW_INCLUDE_GLCOREARB")
 
 target_link_libraries(quest-cli ${ENGINE_LIBS} quest-engine)

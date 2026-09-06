@@ -3,7 +3,7 @@
 #include <Scripting/QGScriptComponent.h>
 #include <Core/QGWorld.h>
 
-typedef void(__cdecl* QGScriptLibraryInitFunc)(void);
+typedef void(*QGScriptLibraryInitFunc)(void);
 
 #ifndef _WIN32
 	#define Sleep sleep
@@ -24,12 +24,12 @@ void QGScriptingSystem::Update(float delta) {
 void QGScriptingSystem::LoadScriptLibrary(std::string filename) {
 	// All platform specific code
 #ifdef _WIN32
-	std::string fullname = filename + ".dll";
+	std::string fullname = filename + "d.dll";
 	HINSTANCE hDll = LoadLibrary(TEXT(fullname.c_str()));
 	QGScriptLibraryInitFunc initFunc = (QGScriptLibraryInitFunc)GetProcAddress(hDll, "qg_init_library");
 	initFunc();
 #else
-	std::string fullname = filename + ".so";
+	std::string fullname = "lib" + filename + ".so";
 	void* handle = dlopen(fullname.c_str(), RTLD_NOW);
 	QGScriptLibraryInitFunc initFunc = (QGScriptLibraryInitFunc)dlsym(handle, "qg_init_library");
 	initFunc();

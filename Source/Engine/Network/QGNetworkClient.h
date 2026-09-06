@@ -18,7 +18,7 @@ public:
 	/**
 	 * Connect securely to a server
 	 */
-	void Connect(const char* address);
+	void Connect(const char* address, std::string token);
 
 	/**
 	 * Send a packet to the server

@@ -8,7 +8,7 @@
 #include <Network/QGNetworkServer.h>
 #include <Core/QGApplication.h>
 
-void qg_init_library() {
+extern "C" void QUEST_GAME qg_init_library() {
     // Register types
     QGMetaSystem* metaSystem = GetQGSystem<QGMetaSystem>();
     metaSystem->RegisterType<QuestPlayer>(5010, "QuestPlayer");

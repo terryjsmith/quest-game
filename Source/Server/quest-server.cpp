@@ -23,6 +23,10 @@
 #include <Scripting/QGScriptingSystem.h>
 #include <Network/QGRpcServer.h>
 
+#ifndef _WIN32
+    #define Sleep sleep
+#endif
+
 // Callback for newly connected players
 void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
     QGPlayerConnectedEvent* event = (QGPlayerConnectedEvent*)ev;
@@ -86,11 +90,11 @@ int main()
     resourceSystem->RegisterResourceLoader<QGShaderLoader>("Shader", false);
 
     // Initialize server
-    const char* address = "127.0.0.1:35325";
+    const char* address = "192.81.208.200:35325";
     networkSystem->Listen(address);
 
     // Load game library
-    scriptingSystem->LoadScriptLibrary("quest-gamed");
+    scriptingSystem->LoadScriptLibrary("quest-game");
 
     // Listen for newly connected players
     eventSystem->Subscribe<QGPlayerConnectedEvent>(initialize_player_prefab, 0);

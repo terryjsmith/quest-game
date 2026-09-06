@@ -44,4 +44,5 @@ typedef glm::mat4 matrix4;
 
 #include <nlohmann/json.hpp>
 
-#define QGASSERT(test, msg) { assert(test); }
+#define assertm(exp, msg) assert((void(msg), exp))
+#define QGASSERT(test, msg, ...) { if(test == false) { printf(msg, ##__VA_ARGS__); printf("\n"); assertm(test, msg); } }
