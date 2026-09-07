@@ -222,15 +222,13 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
     memcpy(&nsec, packet->bytes + offset, sizeof(uint64_t));
     offset += sizeof(uint64_t);
 
-    timespec ts;
-    ts.tv_sec = sec;
-    ts.tv_nsec = nsec;
+    timespec serverts;
+    serverts.tv_sec = sec;
+    serverts.tv_nsec = nsec;
 
     // Get current tick time
     QGTimeSystem* timeSystem = GetQGSystem<QGTimeSystem>();
     uint64_t currentTick = timeSystem->Tick();
-
-
 
     // Use to establish a rough RTT based on one direction
     uint64_t diff = ((float)currentTick - sequence_num) * (1.0f / QG_TICKS_PER_SECOND) * 1000 * 2.0f;
@@ -253,7 +251,21 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
     avg /= points;
     client->m_avgRTT = avg;
 
-    printf("Average RTT: %d ms.\n", avg);
+    // Figure out what our current timestamp should be
+    uint64_t expectedDiff = currentTick - sequence_num;
+    uint64_t actualDiff = currentTick - packetTick;
+    int adjust = ((float)(actualDiff - expectedDiff) / QG_TICKS_PER_SECOND) * 1000.0;
+
+    timespec clientts = timeSystem->StartupTime();
+    int nanoadjust = adjust * 1000000;
+    if (clientts.tv_nsec > nanoadjust) {
+        clientts.tv_nsec -= nanoadjust;
+    }
+    else {
+        clientts.tv_nsec -= 1;
+        clientts.tv_nsec = (clientts.tv_nsec + 1000000000) - nanoadjust;
+    }
+    timeSystem->StartupTime(clientts);
 
     // Remove from ackable packet list
     m_ackPacketTicks.erase(sequence_num);
@@ -279,8 +291,6 @@ void QGNetworkClient::SendSyncPacket() {
 
     memcpy(bytes + offset, &packet.tick, sizeof(uint64_t));
     offset += sizeof(uint64_t);
-
-    printf("Sending sync packet for tick %llu.\n", packet.tick);
 
     this->Send(QGPACKET_SYNC, bytes, offset, true);
 
