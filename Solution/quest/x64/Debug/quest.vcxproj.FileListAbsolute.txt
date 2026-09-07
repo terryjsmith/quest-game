@@ -1,0 +1,3 @@
+C:\Users\terry\source\repos\quest-game\Build\libcurl-d.dll
+C:\Users\terry\source\repos\quest-game\Build\zd.dll
+C:\Users\terry\source\repos\quest-game\Solution\quest\x64\Debug\quest.vcxproj.Up2Date

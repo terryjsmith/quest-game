@@ -21,6 +21,9 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 set (ENGINE_LIBS "")
 set (ENGINE_INCLUDE_DIRS "")
 
+find_path(MYSQL_LIB_DIR NAMES "libmysql.lib")
+find_path(MYSQL_INCLUDE_DIR NAMES "mysql.h")
+
 # library options
 option(USE_OPENGL "Build OpenGL library support" OFF)
 option(BUILD_GAME_CLIENT "Build game client" OFF)
@@ -89,6 +92,9 @@ list (APPEND ENGINE_INCLUDE_DIRS "Source/ThirdParty/glm/include")
 add_subdirectory(Source/ThirdParty/netcode-1.3.3)
 list (APPEND ENGINE_LIBS netcode)
 list (APPEND ENGINE_INCLUDE_DIRS "Source/ThirdParty/netcode-1.3.3")
+
+list (APPEND ENGINE_LIBS "${MYSQL_LIB_DIR}/libmysql.lib")
+list (APPEND ENGINE_INCLUDE_DIRS "${MYSQL_INCLUDE_DIR}")
 
 list (APPEND ENGINE_INCLUDE_DIRS "Source/ThirdParty/stb")
 

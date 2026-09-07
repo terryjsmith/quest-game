@@ -22,6 +22,7 @@
 #include <Scripting/QGScriptComponent.h>
 #include <Scripting/QGScriptingSystem.h>
 #include <Network/QGRpcServer.h>
+#include <IO/QGMySQLDataLoader.h>
 
 #ifndef _WIN32
     #define Sleep sleep
@@ -69,6 +70,7 @@ int main()
     QGResourceSystem* resourceSystem = application->CreateSystem<QGResourceSystem>();
     QGCollisionSystem* collisionSystem = application->CreateSystem<QGCollisionSystem>(60);
     QGRpcServer* rpcServer = application->CreateSystem<QGRpcServer>();
+    QGMySQLDataLoader* mysql = application->CreateSystem<QGMySQLDataLoader>();
 
     // Initialize systems
     application->Initialize();
@@ -90,8 +92,11 @@ int main()
     resourceSystem->RegisterResourceLoader<QGShaderLoader>("Shader", false);
 
     // Initialize server
-    const char* address = "192.81.208.200:35325";
+    const char* address = "127.0.0.1:35325";
     networkSystem->Listen(address);
+
+    // Connect to database
+    mysql->Open("127.0.0.1");
 
     // Load game library
     scriptingSystem->LoadScriptLibrary("quest-game");

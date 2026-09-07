@@ -31,6 +31,7 @@
     <ClCompile Include="..\Source\Engine\IO\QGGameWindow.cpp" />
     <ClCompile Include="..\Source\Engine\IO\QGInputSystem.cpp" />
     <ClCompile Include="..\Source\Engine\IO\QGKeyboard.cpp" />
+    <ClCompile Include="..\Source\Engine\IO\QGMySQLDataLoader.cpp" />
     <ClCompile Include="..\Source\Engine\IO\QGResourceSystem.cpp" />
     <ClCompile Include="..\Source\Engine\Network\QGEntitySnapshot.cpp" />
     <ClCompile Include="..\Source\Engine\Network\QGHttpRequest.cpp" />
@@ -88,6 +89,7 @@
     <ClInclude Include="..\Source\Engine\IO\QGInputSystem.h" />
     <ClInclude Include="..\Source\Engine\IO\QGKeyboard.h" />
     <ClInclude Include="..\Source\Engine\IO\QGGameWindow.h" />
+    <ClInclude Include="..\Source\Engine\IO\QGMySQLDataLoader.h" />
     <ClInclude Include="..\Source\Engine\IO\QGResource.h" />
     <ClInclude Include="..\Source\Engine\IO\QGResourceLoader.h" />
     <ClInclude Include="..\Source\Engine\IO\QGResourceObject.h" />

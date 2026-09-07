@@ -15,8 +15,12 @@ public:
 	void Serialize(unsigned char* bytes, unsigned int& size);
 	void Deserialize(unsigned char* bytes, unsigned int size);
 
+	void ID(uint64_t id) { m_id = id; }
+	uint64_t ID() { return m_id; }
+
 protected:
 	std::map<std::string, QGVariant> m_properties;
+	uint64_t m_id;
 };
 
 #endif

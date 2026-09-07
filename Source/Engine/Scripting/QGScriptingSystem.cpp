@@ -29,9 +29,22 @@ void QGScriptingSystem::LoadScriptLibrary(std::string filename) {
 	QGScriptLibraryInitFunc initFunc = (QGScriptLibraryInitFunc)GetProcAddress(hDll, "qg_init_library");
 	initFunc();
 #else
-	std::string fullname = "lib" + filename + ".so";
-	void* handle = dlopen(fullname.c_str(), RTLD_NOW);
+	std::string fullname = "./lib" + filename + ".so";
+	void* handle = dlopen(fullname.c_str(), RTLD_LAZY);
+	if (handle == 0) {
+		QGASSERT(false, "Unable to load library: %s", fullname.c_str());
+		return;
+	}
+
+	dlerror();
+
 	QGScriptLibraryInitFunc initFunc = (QGScriptLibraryInitFunc)dlsym(handle, "qg_init_library");
+	const char* dlsym_error = dlerror();
+	if (dlsym_error) {
+		QGASSERT(false, "Unable to load script function.");
+		dlclose(handle);
+	}
+
 	initFunc();
 #endif
 }
