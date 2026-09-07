@@ -9,6 +9,7 @@
 #include <Network/QGReplicationServer.h>
 #include <Core/QGWorld.h>
 #include <Network/QGNetworkEvents.h>
+#include <Core/QGTimeSystem.h>
 
 #include "QuestPlayer.h"
 #include "QuestGiver.h"
@@ -25,7 +26,7 @@ void QuestPlayer::Initialize() {
         if (entity->id != client->PlayerID()) return;
 
         QGEventSystem* eventSystem = GetQGSystem<QGEventSystem>();
-        eventSystem->Subscribe<QGInputCommand>(InputCommandCallback, entity);
+        eventSystem->Subscribe<QGInputCommand>(InputCommandCallback, 0);
 
         // Also request available quests
         this->GetAvailableQuests();
@@ -96,15 +97,17 @@ void QuestPlayer::InputCommandCallback(QGEvent* ev, QGObject* obj) {
     }
 
     QuestPlayer* player = entity->GetComponent<QuestPlayer>();
+    QGTimeSystem* timeSystem = GetQGSystem<QGTimeSystem>();
+    uint64_t tick = timeSystem->Tick();
     if (command->command == "MOVE")
     {
-        printf("Setting move speed for player ID %llu to %f.\n", entity->id, command->state);
+        printf("Setting move speed for player ID %llu to %f at tick %llu.\n", entity->id, command->state, tick);
         player->moveSpeed = command->state;
     }
 
     if (command->command == "TURN")
     {
-        printf("Setting turn speed for player ID %llu to %f.\n", entity->id, command->state);
+        printf("Setting turn speed for player ID %llu to %f at tick %llu.\n", entity->id, command->state, tick);
         player->turnSpeed = command->state;
     }
 
