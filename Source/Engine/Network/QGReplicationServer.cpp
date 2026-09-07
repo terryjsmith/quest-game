@@ -225,14 +225,6 @@ void QGReplicationServer::HandleInputCommandReceived(QGNetworkPacket* packet) {
 	int oneWayRTT = std::ceil(((float)avgRTT / 1000.0f) / (1.0f / QG_TICKS_PER_SECOND) / 2.0f);
 	uint64_t tick = timeSystem->Tick() - oneWayRTT - QG_REPLICATION_CLIENT_LAG;
 
-	// Adjust to match client duration
-	if (inputCommand.state == 0) {
-		tick++;
-	}
-	else {
-		tick--;
-	}
-
 	// Store
 	auto it = server->m_eventHistory.find(tick);
 	if (it == server->m_eventHistory.end()) {
