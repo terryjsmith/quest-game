@@ -201,6 +201,8 @@ void QGNetworkServer::SendAckPacket(uint64_t sequence_num, int client_index) {
 	memcpy(bytes + offset, &packet.nsec, sizeof(uint64_t));
 	offset += sizeof(uint64_t);
 
+	printf("Sending ack packet to client %d for seq %llu.\n", client_index, sequence_num);
+
 	this->Send(client_index, QGPACKET_ACK, bytes, offset, false);
 
 	free(bytes);
