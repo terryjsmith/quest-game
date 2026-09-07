@@ -248,7 +248,7 @@ void QGNetworkServer::HandleAckPacket(QGNetworkPacket* packet) {
 
 	// Get ackable packet tick
 	uint64_t ackTick = client->m_ackPacketTicks[sequence_num];
-	uint64_t diff = ((float)tick - ackTick) * (1.0f / QG_TICKS_PER_SECOND) * 1000;
+	uint64_t diff = ((float)tick - sequence_num) * (1.0f / QG_TICKS_PER_SECOND) * 1000;
 
 	// Push on and take one off
 	client->rtts.push_back((int)diff);

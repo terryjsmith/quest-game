@@ -226,10 +226,14 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
     ts.tv_sec = sec;
     ts.tv_nsec = nsec;
 
-    // Use to establish a rough RTT based on one direction
+    // Get current tick time
     QGTimeSystem* timeSystem = GetQGSystem<QGTimeSystem>();
     uint64_t currentTick = timeSystem->Tick();
-    uint64_t diff = ((float)currentTick - packetTick) * (1.0f / QG_TICKS_PER_SECOND) * 1000 * 2.0f;
+
+
+
+    // Use to establish a rough RTT based on one direction
+    uint64_t diff = ((float)currentTick - sequence_num) * (1.0f / QG_TICKS_PER_SECOND) * 1000 * 2.0f;
 
     // Push on and take one off
     QGNetworkClient* client = GetQGSystem<QGNetworkClient>();
@@ -275,6 +279,8 @@ void QGNetworkClient::SendSyncPacket() {
 
     memcpy(bytes + offset, &packet.tick, sizeof(uint64_t));
     offset += sizeof(uint64_t);
+
+    printf("Sending sync packet for tick %llu.\n", packet.tick);
 
     this->Send(QGPACKET_SYNC, bytes, offset, true);
 

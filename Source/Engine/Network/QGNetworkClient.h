@@ -9,7 +9,7 @@
 
 class QUEST_API QGNetworkClient : public QGNetworkSystem {
 public:
-	QGNetworkClient() : m_client(0), m_clientID(0), m_avgRTT(0) { }
+	QGNetworkClient() : m_client(0), m_clientID(0), m_avgRTT(0), m_lastSyncTick(0) { }
 	~QGNetworkClient() = default;
 
 	/**
