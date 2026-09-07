@@ -2,7 +2,7 @@
 #include <IO/QGMySQLDataLoader.h>
 
 void QGMySQLDataLoader::Open(std::string address) {
-	mysql_init(m_dbconn);
+	m_dbconn = mysql_init(NULL);
 	if (mysql_real_connect(m_dbconn, address.c_str(), "qgdb", "Y9Cq1J1k9W07", "questgame", 3306, 0, 0) == NULL) {
 		QGASSERT(false, "Unable to connect to database address %s", address.c_str());
 		return;

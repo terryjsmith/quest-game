@@ -28,28 +28,6 @@
     #define Sleep sleep
 #endif
 
-// Callback for newly connected players
-void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
-    QGPlayerConnectedEvent* event = (QGPlayerConnectedEvent*)ev;
-
-    // Add the player script component
-    QGMetaSystem* metaSystem = GetQGSystem<QGMetaSystem>();
-    QGScriptComponent* script = (QGScriptComponent*)metaSystem->CreateObject("QuestPlayer");
-    script->Initialize();
-    event->entity->AddComponent(script);
-
-    QGResourceSystem* resourceSystem = GetQGSystem<QGResourceSystem>();
-    QGMeshComponent* mesh = event->entity->CreateComponent<QGMeshComponent>();
-    mesh->mesh = (QGMesh*)resourceSystem->Load("Resources/Meshes/box.fbx", "Mesh");
-
-    QGCollisionComponent* colliderComponent = event->entity->CreateComponent<QGCollisionComponent>();
-    QGSphereCollider* collisionShape = new QGSphereCollider();
-    collisionShape->Initialize(1.0f);
-    colliderComponent->Shape(collisionShape);
-
-    printf("Added components to new entity for client ID %llu.\n", event->clientID);
-}
-
 int main()
 {
     // Create application
@@ -100,9 +78,6 @@ int main()
 
     // Load game library
     scriptingSystem->LoadScriptLibrary("quest-game");
-
-    // Listen for newly connected players
-    eventSystem->Subscribe<QGPlayerConnectedEvent>(initialize_player_prefab, 0);
 
     // Create a static entity
     QGEntity* floor = world->CreateEntity("floor", 10);

@@ -25,14 +25,6 @@
 #include <Network/QGRpcClient.h>
 #include <Network/QGHttpRequest.h>
 
-void PlayerConnectedCallback(QGEvent* ev, QGObject* obj) {
-    QGPlayerConnectedEvent* event = (QGPlayerConnectedEvent*)ev;
-    QGEntity* entity = event->entity;
-
-    // Add a camera component
-    QGCameraComponent* camera = entity->CreateComponent<QGCameraComponent>();
-}
-
 int main()
 {
     // Create application
@@ -118,9 +110,6 @@ int main()
     inputSystem->AssociateCommandInput("TURN", keyboard, QGKeys::KEY_RIGHT, -1.0f);
     inputSystem->AssociateCommandInput("TURN", keyboard, QGKeys::KEY_LEFT,  1.0f);
     inputSystem->AssociateCommandInput("INTERACT", keyboard, QGKeys::KEY_X);
-
-    // Subscribe to a player connection event
-    eventSystem->Subscribe<QGPlayerConnectedEvent>(PlayerConnectedCallback, 0);
 
     // Initialize server
     const char* address = "192.81.208.200:35325";

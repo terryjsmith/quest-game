@@ -40,6 +40,11 @@ public:
 	 */
 	int ClientIndexFromID(uint64_t id) { return m_clientIDtoIndex[id]; }
 
+	/**
+	 * Get client connect token from client ID
+	 */
+	std::string ConnectTokenFromID(uint64_t id) { return m_connectTokens[id]; }
+
 protected:
 	// Callbacks
 	static void HandleConnectDisconnect(void* context, int client_index, int connected);
@@ -66,6 +71,7 @@ protected:
 	// Ack packets
 	std::map<int, QGConnectedClient*> m_clients;
 	std::map<uint64_t, int> m_clientIDtoIndex;
+	std::map<uint64_t, std::string> m_connectTokens;
 };
 
 #endif

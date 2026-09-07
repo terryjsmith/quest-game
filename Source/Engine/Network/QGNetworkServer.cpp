@@ -15,6 +15,7 @@ void QGNetworkServer::HandleConnectDisconnect(void* context, int client_index, i
 	if (connected == 1) {
 		// Get connection token
 		std::string token = (char*)netcode_server_client_user_data(server->m_server, client_index);
+		server->m_connectTokens[client_id] = token;
 
 		// Publish connected event
 		eventSystem->Publish(new QGNetworkClientConnectEvent(client_index, client_id));
