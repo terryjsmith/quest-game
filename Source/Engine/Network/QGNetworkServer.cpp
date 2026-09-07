@@ -181,6 +181,11 @@ void QGNetworkServer::SendAckPacket(uint64_t sequence_num, int client_index) {
 	packet.sequence_num = sequence_num;
 	packet.tick = timeSystem->Tick();
 
+	timespec ts;
+	timeSystem->Timestamp(&ts);
+	packet.sec = ts.tv_sec;
+	packet.nsec = ts.tv_nsec;
+
 	unsigned char* bytes = (unsigned char*)malloc(sizeof(QGNetworkAckPacket));
 	int offset = 0;
 
@@ -188,6 +193,12 @@ void QGNetworkServer::SendAckPacket(uint64_t sequence_num, int client_index) {
 	offset += sizeof(uint64_t);
 
 	memcpy(bytes + offset, &packet.tick, sizeof(uint64_t));
+	offset += sizeof(uint64_t);
+
+	memcpy(bytes + offset, &packet.sec, sizeof(uint32_t));
+	offset += sizeof(uint32_t);
+
+	memcpy(bytes + offset, &packet.nsec, sizeof(uint64_t));
 	offset += sizeof(uint64_t);
 
 	this->Send(client_index, QGPACKET_ACK, bytes, offset, false);
@@ -253,6 +264,8 @@ void QGNetworkServer::HandleAckPacket(QGNetworkPacket* packet) {
 	}
 	avg /= points;
 	client->avgRTT = avg;
+
+	printf("Average RTT: %d ms.\n", avg);
 
 	// Remove from ackable packet list
 	server->m_clients[client_index]->m_ackPacketTicks.erase(sequence_num);

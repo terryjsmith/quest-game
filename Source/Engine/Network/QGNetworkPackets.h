@@ -58,6 +58,8 @@ struct QGNetworkSyncPacket {
 struct QGNetworkAckPacket {
 	uint64_t sequence_num;
 	uint64_t tick;
+	uint32_t nsec;
+	uint64_t sec;
 };
 
 struct QGNetworkRpcRequestPacket {

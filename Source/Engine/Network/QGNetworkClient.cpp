@@ -172,6 +172,11 @@ void QGNetworkClient::SendAckPacket(uint64_t sequence_num) {
     packet.sequence_num = sequence_num;
     packet.tick = timeSystem->Tick();
 
+    timespec ts;
+    timeSystem->Timestamp(&ts);
+    packet.sec = ts.tv_sec;
+    packet.nsec = ts.tv_nsec;
+
     unsigned char* bytes = (unsigned char*)malloc(sizeof(QGNetworkAckPacket));
     int offset = 0;
 
@@ -179,6 +184,12 @@ void QGNetworkClient::SendAckPacket(uint64_t sequence_num) {
     offset += sizeof(uint64_t);
 
     memcpy(bytes + offset, &packet.tick, sizeof(uint64_t));
+    offset += sizeof(uint64_t);
+
+    memcpy(bytes + offset, &packet.sec, sizeof(uint32_t));
+    offset += sizeof(uint32_t);
+
+    memcpy(bytes + offset, &packet.nsec, sizeof(uint64_t));
     offset += sizeof(uint64_t);
 
     this->Send(QGPACKET_ACK, bytes, offset, false);
@@ -190,6 +201,7 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
     // Read packet tick and ID
     uint64_t sequence_num;
     uint64_t packetTick;
+    uint32_t sec; uint64_t nsec;
     int offset = 0;
 
     memcpy(&sequence_num, packet->bytes + offset, sizeof(uint64_t));
@@ -197,6 +209,16 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
 
     memcpy(&packetTick, packet->bytes + offset, sizeof(uint64_t));
     offset += sizeof(uint64_t);
+
+    memcpy(&sec, packet->bytes + offset, sizeof(uint32_t));
+    offset += sizeof(uint32_t);
+
+    memcpy(&nsec, packet->bytes + offset, sizeof(uint64_t));
+    offset += sizeof(uint64_t);
+
+    timespec ts;
+    ts.tv_sec = sec;
+    ts.tv_nsec = nsec;
 
     // Remove from ackable packet list
     m_ackPacketTicks.erase(sequence_num);
@@ -229,10 +251,14 @@ void QGNetworkClient::HandleSyncPacket(QGNetworkPacket* packet) {
 
     // Recalc RTT
     int avg = 0;
-    auto it = client->m_rtts.begin();
-    for (; it != client->m_rtts.end(); it++) {
-        avg += (*it);
+    int points = 0;
+    int weight = client->m_rtts.size();
+    for (auto it = client->m_rtts.begin(); it != client->m_rtts.end(); it++) {
+        avg += (*it) * weight;
+        points += weight;
     }
-    avg /= client->m_rtts.size();
+    avg /= points;
     client->m_avgRTT = avg;
+
+    printf("Average RTT: %d ms.\n", avg);
 }
