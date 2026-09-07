@@ -70,11 +70,11 @@ int main()
     resourceSystem->RegisterResourceLoader<QGShaderLoader>("Shader", false);
 
     // Initialize server
-    const char* address = "127.0.0.1:35325";
+    const char* address = "192.81.208.200:35325";
     networkSystem->Listen(address);
 
     // Connect to database
-    mysql->Open("127.0.0.1");
+    mysql->Open("localhost");
 
     // Load game library
     scriptingSystem->LoadScriptLibrary("quest-game");

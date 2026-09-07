@@ -20,6 +20,7 @@ void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
     QGNetworkServer* server = GetQGSystem<QGNetworkServer>();
     if (server) {
         QGPlayerConnectedEvent* event = (QGPlayerConnectedEvent*)ev;
+        QGEntity* entity = event->entity;
 
         // Add the player script component
         QGMetaSystem* metaSystem = GetQGSystem<QGMetaSystem>();
@@ -47,7 +48,7 @@ void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
         printf("Querying characters... ");
         params.clear();
         params["user_id"] = user_id;
-        std::vector<QGDataRecord*> records = mysql->Load("characters", params);
+        records = mysql->Load("characters", params);
         printf("got back %d records.\n", records.size());
 
         std::string model = records[0]->Get("type").AsString();
@@ -57,6 +58,18 @@ void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
         QGMeshComponent* mesh = event->entity->CreateComponent<QGMeshComponent>();
         mesh->mesh = (QGMesh*)resourceSystem->Load("Resources/Meshes/" + model + ".fbx", "Mesh");
 
+        // Set name, position, rotation
+        entity->name = records[0]->Get("name").AsString();
+
+        vector3 position;
+        sscanf(records[0]->Get("position").AsString().c_str(), "(%f, %f, %f)", &position.x, &position.y, &position.z);
+        entity->transform.position = position;
+
+        quaternion rotation;
+        sscanf(records[0]->Get("rotation").AsString().c_str(), "(%f, %f, %f, %f)", &rotation.w, &rotation.x, &rotation.y, &rotation.z);
+        entity->transform.rotation = rotation;
+
+        // Create collider
         QGCollisionComponent* colliderComponent = event->entity->CreateComponent<QGCollisionComponent>();
         QGSphereCollider* collisionShape = new QGSphereCollider();
         collisionShape->Initialize(1.0f);
