@@ -64,4 +64,5 @@ protected:
 	std::vector<int> m_availableQuests;
 	std::map<int, bool> m_completedQuests;
 	bool m_initialized;
+	static bool m_subscribed;
 };

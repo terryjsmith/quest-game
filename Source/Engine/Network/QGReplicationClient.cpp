@@ -128,8 +128,8 @@ void QGReplicationClient::Update(float delta) {
 				}
 				else {
 					QGComponent* component = (QGComponent*)metaSystem->CreateObject(cit->second.type);
-					component->Deserialize(&cit->second.record);
 					entity->AddComponent(component);
+					component->Deserialize(&cit->second.record);
 				}
 			}
 		}

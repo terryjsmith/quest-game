@@ -6,6 +6,7 @@
 #include <Physics/QGCollisionSystem.h>
 #include <Network/QGRpcClient.h>
 #include <Network/QGReplicationClient.h>
+#include <Network/QGReplicationServer.h>
 #include <Core/QGWorld.h>
 #include <Network/QGNetworkEvents.h>
 
@@ -13,14 +14,33 @@
 #include "QuestGiver.h"
 #include "QuestManager.h"
 
+bool QuestPlayer::m_subscribed = false;
+
 void QuestPlayer::Initialize() {
     QGEntity* entity = this->Entity();
 
-    QGEventSystem* eventSystem = GetQGSystem<QGEventSystem>();
-    eventSystem->Subscribe<QGInputCommand>(InputCommandCallback, entity);
+    // As a client, we only care about our own events, not those of other players
+    QGReplicationClient* client = GetQGSystem<QGReplicationClient>();
+    if (client) {
+        if (entity->id != client->PlayerID()) return;
 
-    // Also request available quests
-    this->GetAvailableQuests();
+        QGEventSystem* eventSystem = GetQGSystem<QGEventSystem>();
+        eventSystem->Subscribe<QGInputCommand>(InputCommandCallback, entity);
+
+        // Also request available quests
+        this->GetAvailableQuests();
+
+        return;
+    }
+
+    QGReplicationServer* server = GetQGSystem<QGReplicationServer>();
+    if (server) {
+        if (m_subscribed == false) {
+            QGEventSystem* eventSystem = GetQGSystem<QGEventSystem>();
+            eventSystem->Subscribe<QGInputCommand>(InputCommandCallback, 0);
+            m_subscribed = true;
+        }
+    }
 }
 
 void QuestPlayer::Serialize(QGDataRecord* record) {
@@ -69,16 +89,13 @@ void QuestPlayer::InputCommandCallback(QGEvent* ev, QGObject* obj) {
     QGEntity* entity = (QGEntity*)obj;
 
     // If run on client, get player entity
-    if (obj == 0) {
-        QGReplicationClient* replClient = GetQGSystem<QGReplicationClient>();
+    QGReplicationClient* client = GetQGSystem<QGReplicationClient>();
+    if (client) {
         QGWorld* world = QGWorld::GetInstance();
-
-        // Get player
-        entity = world->FindEntity(replClient->PlayerID());
+        entity = world->FindEntity(client->PlayerID());
     }
 
     QuestPlayer* player = entity->GetComponent<QuestPlayer>();
-
     if (command->command == "MOVE")
     {
         printf("Setting move speed for player ID %llu to %f.\n", entity->id, command->state);
