@@ -97,6 +97,12 @@ void QGNetworkClient::Update(float delta) {
     QGTimeSystem* timeSystem = GetQGSystem<QGTimeSystem>();
     uint64_t currentTick = timeSystem->Tick();
 
+    // Check the last sync time for clients and send sync where needed
+    if (m_lastSyncTick < (currentTick - QGNETWORK_CLIENT_SYNC_TICKS)) {
+        this->SendSyncPacket();
+        m_lastSyncTick = currentTick;
+    }
+
     // Determine response time from average RTT (plus 20%)
     int avgRTTTicks = std::ceil(std::ceil(((float)m_avgRTT / 1000.0f) * (float)QG_TICKS_PER_SECOND) * 1.2f);
     auto it = m_ackPackets.begin();
@@ -220,30 +226,13 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
     ts.tv_sec = sec;
     ts.tv_nsec = nsec;
 
-    // Remove from ackable packet list
-    m_ackPacketTicks.erase(sequence_num);
-
-    // Clean up
-    QGNetworkPacket* packetcopy = m_ackPackets[sequence_num];
-    delete packetcopy;
-    m_ackPackets.erase(sequence_num);
-}
-
-void QGNetworkClient::HandleSyncPacket(QGNetworkPacket* packet) {
-    QGTimeSystem* timeSystem = GetQGSystem<QGTimeSystem>();
-    QGNetworkClient* client = GetQGSystem<QGNetworkClient>();
-
-    uint64_t packetTick;
-    int offset = 0;
-
-    memcpy(&packetTick, packet->bytes + offset, sizeof(uint64_t));
-    offset += sizeof(uint64_t);
-
     // Use to establish a rough RTT based on one direction
+    QGTimeSystem* timeSystem = GetQGSystem<QGTimeSystem>();
     uint64_t currentTick = timeSystem->Tick();
     uint64_t diff = ((float)currentTick - packetTick) * (1.0f / QG_TICKS_PER_SECOND) * 1000 * 2.0f;
 
     // Push on and take one off
+    QGNetworkClient* client = GetQGSystem<QGNetworkClient>();
     client->m_rtts.push_back((int)diff);
     if (client->m_rtts.size() > 10) {
         client->m_rtts.erase(client->m_rtts.begin());
@@ -261,4 +250,33 @@ void QGNetworkClient::HandleSyncPacket(QGNetworkPacket* packet) {
     client->m_avgRTT = avg;
 
     printf("Average RTT: %d ms.\n", avg);
+
+    // Remove from ackable packet list
+    m_ackPacketTicks.erase(sequence_num);
+
+    // Clean up
+    QGNetworkPacket* packetcopy = m_ackPackets[sequence_num];
+    delete packetcopy;
+    m_ackPackets.erase(sequence_num);
+}
+
+void QGNetworkClient::HandleSyncPacket(QGNetworkPacket* packet) {
+
+}
+
+void QGNetworkClient::SendSyncPacket() {
+    QGTimeSystem* timeSystem = GetQGSystem<QGTimeSystem>();
+
+    QGNetworkSyncPacket packet;
+    packet.tick = timeSystem->Tick();
+
+    unsigned char* bytes = (unsigned char*)malloc(sizeof(QGNetworkSyncPacket));
+    int offset = 0;
+
+    memcpy(bytes + offset, &packet.tick, sizeof(uint64_t));
+    offset += sizeof(uint64_t);
+
+    this->Send(QGPACKET_SYNC, bytes, offset, true);
+
+    free(bytes);
 }
