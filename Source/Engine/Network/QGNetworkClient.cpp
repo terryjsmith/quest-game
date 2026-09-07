@@ -256,6 +256,8 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
     uint64_t actualDiff = currentTick - packetTick;
     int adjust = ((float)(actualDiff - expectedDiff) / QG_TICKS_PER_SECOND) * 1000.0;
 
+    printf("Average RTT: %d ms, expected: %llu, actual: %llu, adjust: %d ms.\n", avg, expectedDiff, actualDiff, adjust);
+
     timespec clientts = timeSystem->StartupTime();
     int nanoadjust = adjust * 1000000;
     if (clientts.tv_nsec > nanoadjust) {
