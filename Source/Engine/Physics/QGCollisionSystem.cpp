@@ -66,7 +66,7 @@ void QGCollisionSystem::Update(float delta) {
     // Remove objects no longer in use
     for (auto it = trackedColliders.begin(); it != trackedColliders.end(); it++) {
         m_collisionObjects.erase(it->first);
-        //m_dynamicsWorld->removeCollisionObject(it->first->m_collider);
+        m_dynamicsWorld->removeCollisionObject(it->first->m_collider);
     }
 
     // Run simulation
@@ -123,7 +123,7 @@ void QGCollisionSystem::Update(float delta) {
             it = m_collisions.erase(it);
         }
         else {
-            it++;
+            ++it;
         }
     }
 }

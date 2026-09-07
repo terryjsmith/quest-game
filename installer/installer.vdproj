@@ -15,6 +15,18 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_03A2469EBC95495198182CE85189FEEB"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_10F3E5F004A64605AF3ECA40B57F7708"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_198F46D2C1FD48C18F15C9510F670257"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -33,14 +45,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_34D67B6AB39841E9BF0F15F98234B472"
+        "MsmKey" = "8:_27F2612CC18A41D694F54A3441DC50A6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_374474D9CD7E44C0D4769BB1B159DFC8"
-        "OwnerKey" = "8:_729A77821F5A4B0499A9DAE0188B6CCF"
+        "MsmKey" = "8:_34D67B6AB39841E9BF0F15F98234B472"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -53,6 +65,12 @@
         {
         "MsmKey" = "8:_374474D9CD7E44C0D4769BB1B159DFC8"
         "OwnerKey" = "8:_BF827EFC6FCD4D1691BEDDC447EA488C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_374474D9CD7E44C0D4769BB1B159DFC8"
+        "OwnerKey" = "8:_729A77821F5A4B0499A9DAE0188B6CCF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -75,6 +93,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_80C8DAE27AF849619ADD067382FA4A3D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9B25099D71F44709B0EFC71F8427744E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -82,12 +106,6 @@
         "Entry"
         {
         "MsmKey" = "8:_9D6338A540431B3437479A0834DDE980"
-        "OwnerKey" = "8:_729A77821F5A4B0499A9DAE0188B6CCF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9D6338A540431B3437479A0834DDE980"
         "OwnerKey" = "8:_34D67B6AB39841E9BF0F15F98234B472"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -99,8 +117,20 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_BA289592234015C7117AEA4EA9AD20DC"
+        "MsmKey" = "8:_9D6338A540431B3437479A0834DDE980"
         "OwnerKey" = "8:_729A77821F5A4B0499A9DAE0188B6CCF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9D9C4DB89F54487B97CB2F0E68B670CF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9DA851ACE4D04011B8D0CDB2E26BBC9D"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -113,6 +143,12 @@
         {
         "MsmKey" = "8:_BA289592234015C7117AEA4EA9AD20DC"
         "OwnerKey" = "8:_BF827EFC6FCD4D1691BEDDC447EA488C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BA289592234015C7117AEA4EA9AD20DC"
+        "OwnerKey" = "8:_729A77821F5A4B0499A9DAE0188B6CCF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -129,8 +165,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E1620DA5013F4A1A7F91894BC7A17392"
-        "OwnerKey" = "8:_729A77821F5A4B0499A9DAE0188B6CCF"
+        "MsmKey" = "8:_CF12A8BC02B54ACCAD451FFE9BB795FE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D9C359D460334F8F8E7DE777980963FB"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -143,6 +185,12 @@
         {
         "MsmKey" = "8:_E1620DA5013F4A1A7F91894BC7A17392"
         "OwnerKey" = "8:_BF827EFC6FCD4D1691BEDDC447EA488C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E1620DA5013F4A1A7F91894BC7A17392"
+        "OwnerKey" = "8:_729A77821F5A4B0499A9DAE0188B6CCF"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -163,6 +211,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -179,6 +243,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -200,6 +272,46 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_03A2469EBC95495198182CE85189FEEB"
+            {
+            "SourcePath" = "8:..\\..\\quest\\assimp-vc143-mtd.dll"
+            "TargetName" = "8:assimp-vc143-mtd.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F59661820B244F07A9703E3D8771C674"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_10F3E5F004A64605AF3ECA40B57F7708"
+            {
+            "SourcePath" = "8:..\\Resources\\Meshes\\teddybear.fbx"
+            "TargetName" = "8:teddybear.fbx"
+            "Tag" = "8:"
+            "Folder" = "8:_B525A4B8FFFF4A49AC5C44C4C9F66D0D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_198F46D2C1FD48C18F15C9510F670257"
             {
             "SourcePath" = "8:..\\Resources\\Shaders\\forward.vs"
@@ -246,6 +358,26 @@
             "TargetName" = "8:woodcrate.png"
             "Tag" = "8:"
             "Folder" = "8:_B525A4B8FFFF4A49AC5C44C4C9F66D0D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_27F2612CC18A41D694F54A3441DC50A6"
+            {
+            "SourcePath" = "8:..\\..\\quest\\glfw3d.dll"
+            "TargetName" = "8:glfw3d.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F59661820B244F07A9703E3D8771C674"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -320,6 +452,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_80C8DAE27AF849619ADD067382FA4A3D"
+            {
+            "SourcePath" = "8:..\\..\\quest\\libcurld.dll"
+            "TargetName" = "8:libcurld.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F59661820B244F07A9703E3D8771C674"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9B25099D71F44709B0EFC71F8427744E"
             {
             "SourcePath" = "8:..\\Resources\\Shaders\\forward.fs"
@@ -360,6 +512,46 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9D9C4DB89F54487B97CB2F0E68B670CF"
+            {
+            "SourcePath" = "8:..\\..\\quest\\LinearMathd.dll"
+            "TargetName" = "8:LinearMathd.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F59661820B244F07A9703E3D8771C674"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9DA851ACE4D04011B8D0CDB2E26BBC9D"
+            {
+            "SourcePath" = "8:..\\..\\quest\\libmysql.dll"
+            "TargetName" = "8:libmysql.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F59661820B244F07A9703E3D8771C674"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BA289592234015C7117AEA4EA9AD20DC"
             {
             "SourcePath" = "8:MSVCP140D.dll"
@@ -384,6 +576,46 @@
             {
             "SourcePath" = "8:..\\Resources\\Meshes\\floor.fbx"
             "TargetName" = "8:floor.fbx"
+            "Tag" = "8:"
+            "Folder" = "8:_B525A4B8FFFF4A49AC5C44C4C9F66D0D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CF12A8BC02B54ACCAD451FFE9BB795FE"
+            {
+            "SourcePath" = "8:..\\..\\quest\\netcoded.dll"
+            "TargetName" = "8:netcoded.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F59661820B244F07A9703E3D8771C674"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D9C359D460334F8F8E7DE777980963FB"
+            {
+            "SourcePath" = "8:..\\Resources\\Meshes\\teddy bear.png"
+            "TargetName" = "8:teddy bear.png"
             "Tag" = "8:"
             "Folder" = "8:_B525A4B8FFFF4A49AC5C44C4C9F66D0D"
             "Condition" = "8:"
@@ -510,7 +742,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:installer"
         "ProductCode" = "8:{F19EDB8C-B336-42F5-9AA3-970D52D6571B}"
-        "PackageCode" = "8:{DB9CEE91-D259-4E24-A0E8-716E6001C447}"
+        "PackageCode" = "8:{3EC70D60-CDB0-4999-A339-704EEF5A10E3}"
         "UpgradeCode" = "8:{8A2D4B32-6FB3-4988-98BF-244631EE67A5}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
