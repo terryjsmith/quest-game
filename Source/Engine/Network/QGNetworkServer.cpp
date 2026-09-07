@@ -265,7 +265,7 @@ void QGNetworkServer::HandleAckPacket(QGNetworkPacket* packet) {
 	avg /= points;
 	client->avgRTT = avg;
 
-	printf("Average RTT: %d ms.\n", avg);
+	printf("Average RTT: %d ms, current tick %llu.\n", avg, tick);
 
 	// Remove from ackable packet list
 	server->m_clients[client_index]->m_ackPacketTicks.erase(sequence_num);
