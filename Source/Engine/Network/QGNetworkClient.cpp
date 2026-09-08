@@ -8,7 +8,7 @@
 
 void QGNetworkClient::Initialize() {
     this->QGNetworkSystem::Initialize();
-    this->RegisterPacketCallback(QGNetworkPackets::QGPACKET_SYNC, &HandleSyncPacket);
+    this->RegisterPacketCallback(QGNetworkPackets::QGPACKET_STARTUP, &HandleStartupPacket);
 }
 
 void QGNetworkClient::Connect(const char* address, std::string token) {
@@ -104,21 +104,23 @@ void QGNetworkClient::Update(float delta) {
     }
 
     // Determine response time from average RTT (plus 20%)
-    int avgRTTTicks = std::ceil(std::ceil(((float)m_avgRTT / 1000.0f) * (float)QG_TICKS_PER_SECOND) * 1.2f);
-    auto it = m_ackPackets.begin();
-    for (; it != m_ackPackets.end(); it++) {
-        if (it->first < (currentTick - avgRTTTicks)) {
-            // Resend
-            printf("Resending packet type %d from tick %llu.\n", it->second->env.type, it->first);
-            this->Send(it->second->env.type, it->second->bytes, it->second->env.size, it->second->env.ack);
+    if (m_avgRTT) {
+        int avgRTTTicks = std::ceil(std::ceil(((float)m_avgRTT / 1000.0f) * (float)QG_TICKS_PER_SECOND) * 1.2f);
+        auto it = m_ackPackets.begin();
+        for (; it != m_ackPackets.end(); it++) {
+            if (it->first < (currentTick - avgRTTTicks)) {
+                // Resend
+                printf("Resending packet type %d from tick %llu.\n", it->second->env.type, it->first);
+                this->Send(it->second->env.type, it->second->bytes, it->second->env.size, it->second->env.ack);
+            }
+            else {
+                break;
+            }
         }
-        else {
-            break;
-        }
-    }
 
-    // Remove any re-sent packets
-    if (it != m_ackPackets.begin()) m_ackPackets.erase(m_ackPackets.begin(), it);
+        // Remove any re-sent packets
+        if (it != m_ackPackets.begin()) m_ackPackets.erase(m_ackPackets.begin(), it);
+    }
 }
 
 void QGNetworkClient::Send(uint32_t type, unsigned char* data, uint32_t size, bool ack) {
@@ -230,45 +232,62 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
     QGTimeSystem* timeSystem = GetQGSystem<QGTimeSystem>();
     uint64_t currentTick = timeSystem->Tick();
 
-    // Use to establish a rough RTT based on one direction
-    uint64_t diff = ((float)currentTick - sequence_num) * (1.0f / QG_TICKS_PER_SECOND) * 1000 * 2.0f;
+    // Check packet type
+    if (m_ackPackets.find(sequence_num) == m_ackPackets.end()) return;
+    QGNetworkPacket* ackPacket = m_ackPackets[sequence_num];
+    if (ackPacket->env.type == QGPACKET_SYNC) {
+        // Use to establish a rough RTT based on one direction
+        uint64_t diff = ((float)currentTick - sequence_num) * (1.0f / QG_TICKS_PER_SECOND) * 1000;
 
-    // Push on and take one off
-    QGNetworkClient* client = GetQGSystem<QGNetworkClient>();
-    client->m_rtts.push_back((int)diff);
-    if (client->m_rtts.size() > 10) {
-        client->m_rtts.erase(client->m_rtts.begin());
+        // Push on and take one off
+        QGNetworkClient* client = GetQGSystem<QGNetworkClient>();
+        client->m_rtts.push_back((int)diff);
+        if (client->m_rtts.size() > 10) {
+            client->m_rtts.erase(client->m_rtts.begin());
+        }
+
+        // Recalc RTT
+        int avg = 0;
+        int points = 0;
+        int weight = client->m_rtts.size();
+        for (auto it = client->m_rtts.begin(); it != client->m_rtts.end(); it++) {
+            avg += (*it) * weight;
+            points += weight;
+        }
+        avg /= points;
+        client->m_avgRTT = avg;
+
+        printf("Average RTT: %d ms\n", avg);
+
+        // Figure out what our current timestamp should be
+        if (client->m_rtts.size() >= 5) {
+            uint64_t expectedDiff = currentTick - sequence_num;
+            uint64_t actualDiff = (currentTick - packetTick) * 2;
+            int adjust = ((float)(actualDiff - expectedDiff) / QG_TICKS_PER_SECOND) * 1000;
+
+            timespec clientts = timeSystem->StartupTime();
+            int nanoadjust = adjust * 1000000;
+            if (nanoadjust > 0) {
+                if (clientts.tv_nsec > nanoadjust) {
+                    clientts.tv_nsec -= nanoadjust;
+                }
+                else {
+                    clientts.tv_nsec -= 1;
+                    clientts.tv_nsec = (clientts.tv_nsec + 1000000000) - nanoadjust;
+                }
+            }
+            else {
+                if (clientts.tv_nsec + nanoadjust > 1000000000) {
+                    clientts.tv_sec += 1;
+                    clientts.tv_nsec = (clientts.tv_nsec + nanoadjust) - 1000000000;
+                }
+                else {
+                    clientts.tv_nsec += nanoadjust;
+                }
+            }
+            timeSystem->StartupTime(clientts);
+        }
     }
-
-    // Recalc RTT
-    int avg = 0;
-    int points = 0;
-    int weight = client->m_rtts.size();
-    for (auto it = client->m_rtts.begin(); it != client->m_rtts.end(); it++) {
-        avg += (*it) * weight;
-        points += weight;
-    }
-    avg /= points;
-    client->m_avgRTT = avg;
-
-    // Figure out what our current timestamp should be
-    uint64_t expectedDiff = currentTick - sequence_num;
-    uint64_t actualDiff = currentTick - packetTick;
-    int adjust = ((float)(actualDiff - expectedDiff) / QG_TICKS_PER_SECOND) * 1000.0;
-
-    timespec clientts = timeSystem->StartupTime();
-    int nanoadjust = adjust * 1000000;
-    if (clientts.tv_nsec > nanoadjust) {
-        clientts.tv_nsec -= nanoadjust;
-    }
-    else {
-        clientts.tv_nsec -= 1;
-        clientts.tv_nsec = (clientts.tv_nsec + 1000000000) - nanoadjust;
-    }
-    timeSystem->StartupTime(clientts);
-
-    uint64_t adjustedTick = timeSystem->Tick();
-    printf("Average RTT: %d ms, original tick %llu, current tick %llu.\n", avg, currentTick, adjustedTick);
 
     // Remove from ackable packet list
     m_ackPacketTicks.erase(sequence_num);
@@ -279,8 +298,11 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
     m_ackPackets.erase(sequence_num);
 }
 
-void QGNetworkClient::HandleSyncPacket(QGNetworkPacket* packet) {
+void QGNetworkClient::HandleStartupPacket(QGNetworkPacket* packet) {
+    QGNetworkClient* client = GetQGSystem<QGNetworkClient>();
+    QGTimeSystem* timeSystem = GetQGSystem<QGTimeSystem>();
 
+    client->m_lastSyncTick = timeSystem->Tick() + QGNETWORK_CLIENT_SYNC_TICKS;
 }
 
 void QGNetworkClient::SendSyncPacket() {

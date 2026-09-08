@@ -11,7 +11,7 @@
 
 class QUEST_API QGReplicationClient : public QGSystem {
 public:
-	QGReplicationClient() : m_playerID(0), m_playerEntity(0) {}
+	QGReplicationClient() : m_playerID(0), m_playerEntity(0), m_clientInterpolating(false), m_clientInterpolationTick(0), m_inputMask(0) {}
 	~QGReplicationClient() = default;
 
 	/**
@@ -47,6 +47,11 @@ protected:
 
 	// Player entity
 	QGEntity* m_playerEntity;
+
+	// Determine whether the client is currently in charge of interpolation
+	uint64_t m_clientInterpolationTick;
+	bool m_clientInterpolating;
+	int m_inputMask;
 };
 
 #endif

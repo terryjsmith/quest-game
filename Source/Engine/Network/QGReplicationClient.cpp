@@ -23,6 +23,7 @@ void QGReplicationClient::Initialize() {
 
 void QGReplicationClient::InputCommandReceived(QGEvent* ev, QGObject* obj) {
 	QGNetworkClient* client = GetQGSystem<QGNetworkClient>();
+	QGReplicationClient* replClient = GetQGSystem<QGReplicationClient>();
 
 	// Get the command object
 	QGInputCommand* command = dynamic_cast<QGInputCommand*>(ev);
@@ -31,6 +32,13 @@ void QGReplicationClient::InputCommandReceived(QGEvent* ev, QGObject* obj) {
 	QGNetworkCommandPacket packet;
 	packet.command = command->type;
 	packet.state = command->state;
+
+	if (packet.state) {
+		replClient->m_inputMask |= packet.command;
+	}
+	else {
+		replClient->m_inputMask &= ~packet.command;
+	}
 
 	unsigned char* bytes = (unsigned char*)malloc(sizeof(QGNetworkCommandPacket));
 
@@ -41,8 +49,7 @@ void QGReplicationClient::InputCommandReceived(QGEvent* ev, QGObject* obj) {
 	memcpy(bytes + sizeof(uint32_t), &packet.state, sizeof(float));
 	offset += sizeof(float);
 
-	QGNetworkClient* networkSystem = GetQGSystem<QGNetworkClient>();
-	networkSystem->Send(QGPACKET_INPUTCOMMAND, bytes, offset, true);
+	client->Send(QGPACKET_INPUTCOMMAND, bytes, offset, true);
 
 	uint64_t client_id = client->ClientID();
 	printf("Sent an input command of type %d set to value %f from client ID %llu.\n", packet.command, packet.state, client_id);
@@ -60,6 +67,21 @@ void QGReplicationClient::Update(float delta) {
 
 	// If we have no snapshots yet, return
 	if (m_snapshots.size() == 0) return;
+
+	// Set interpolation
+	if (m_inputMask == 0) {
+		if (m_clientInterpolating && m_clientInterpolationTick == 0) {
+			m_clientInterpolationTick = currentTick + QG_REPLICATION_CLIENT_LAG;
+		}
+	}
+	else {
+		m_clientInterpolating = true;
+	}
+
+	if (currentTick == m_clientInterpolationTick) {
+		m_clientInterpolating = false;
+		m_clientInterpolationTick = 0;
+	}
 
 	// Get "current" time (need fractional resolution)
 	timespec currentTime;
@@ -97,6 +119,14 @@ void QGReplicationClient::Update(float delta) {
 
 		// Iterate over entities
 		for (auto eit = snapshot->entities.begin(); eit != snapshot->entities.end(); eit++) {
+			// If this the player and the client is interpolating input, skip
+			if (eit->first == m_playerID && m_clientInterpolating == true) {
+				// Remove from copy of entity list
+				worldEntities.erase(eit->first);
+
+				continue;
+			}
+
 			// Find entity
 			QGEntity* entity = world->FindEntity(eit->first);
 			if (entity == 0) {

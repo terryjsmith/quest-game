@@ -5,11 +5,11 @@
 #include <Network/QGNetworkSystem.h>
 #include <Network/QGNetworkPackets.h>
 
-#define QGNETWORK_CLIENT_SYNC_TICKS	20
+#define QGNETWORK_CLIENT_SYNC_TICKS	60
 
 class QUEST_API QGNetworkClient : public QGNetworkSystem {
 public:
-	QGNetworkClient() : m_client(0), m_clientID(0), m_avgRTT(0), m_lastSyncTick(0) { }
+	QGNetworkClient() : m_client(0), m_clientID(0), m_avgRTT(0), m_lastSyncTick(10000000000) { }
 	~QGNetworkClient() = default;
 
 	/**
@@ -42,7 +42,7 @@ protected:
 	void SendSyncPacket();
 	void SendAckPacket(uint64_t sequence_num);
 	void HandleAckPacket(QGNetworkPacket* packet);
-	static void HandleSyncPacket(QGNetworkPacket* packet);
+	static void HandleStartupPacket(QGNetworkPacket* packet);
 
 protected:
 	struct netcode_client_t* m_client;
