@@ -10,7 +10,7 @@ public:
 	QGMeshComponent() {
 		mesh = 0;
 	}
-	~QGMeshComponent() = default;
+	virtual ~QGMeshComponent() = default;
 
 	virtual void Serialize(QGDataRecord* record);
 	virtual void Deserialize(QGDataRecord* record);
