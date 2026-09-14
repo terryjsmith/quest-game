@@ -2,6 +2,7 @@
 #include <Render/QGAnimatedMeshComponent.h>
 #include <Core/QGTimeSystem.h>
 #include <Core/QGApplication.h>
+#include <IO/QGResourceSystem.h>
 
 void QGAnimatedMeshComponent::Play(std::string animationName, bool loop, uint64_t startTick) {
 	auto it = animations.find(animationName);
@@ -27,7 +28,11 @@ void QGAnimatedMeshComponent::AddAnimation(std::string name, QGAnimation* animat
 void QGAnimatedMeshComponent::Serialize(QGDataRecord* record) {
 	QGMeshComponent::Serialize(record);
 
-	record->Set("active", activeAnimation == 0 ? std::string("") : activeAnimation->name);
+	std::string activeAnim = "";
+	if (activeAnimation) {
+		activeAnim = activeAnimation->name + "|" + activeAnimation->resource->path + "/" + activeAnimation->resource->filename;
+	}
+	record->Set("active", activeAnim);
 	record->Set("loop", looping);
 	record->Set("start", startTime);
 }
@@ -44,8 +49,22 @@ void QGAnimatedMeshComponent::Deserialize(QGDataRecord* record) {
 		return;
 	}
 
+	// Parse animation name from filename
+	std::string animationName = active.substr(0, active.find_last_of("|"));
+	std::string filename = active.substr(active.find_last_of("|") + 1);
+
+	// Make sure it's loaded
+	auto it = this->animations.find(animationName);
+	if (it == this->animations.end()) {
+		QGResourceSystem* resourceSystem = GetQGSystem<QGResourceSystem>();
+		QGAnimation* animation = (QGAnimation*)resourceSystem->Load(filename, "Animation");
+		this->animations[animationName] = animation;
+	}
+
 	// Ensure we are playing this animation
 	bool loop = record->Get("loop").AsBool();
 	uint64_t start = record->Get("start").AsUInt64();
-	this->Play(active, loop, start);
+
+	// If playing, play
+	this->Play(animationName, loop, start);
 }
