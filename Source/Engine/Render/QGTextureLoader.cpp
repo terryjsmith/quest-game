@@ -12,6 +12,11 @@ QGResourceObject* QGTextureLoader::LoadResource(QGResource* resource, std::strin
 	QGRenderSystem* renderSystem = GetQGSystem<QGRenderSystem>();
 	QGTexture2D* texture = renderSystem->CreateTexture2D();
 
+	if (resource->extension == "png")
+		stbi_set_flip_vertically_on_load(true);
+	else
+		stbi_set_flip_vertically_on_load(false);
+
 	int width, height, channels;
 	unsigned char *data = stbi_load_from_memory(resource->Data(), resource->filesize, &width, &height, &channels, 0);
 

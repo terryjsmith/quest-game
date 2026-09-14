@@ -166,8 +166,10 @@ void QGGLShaderProgram::Bind() {
 void QGGLShaderProgram::Set(std::string name, float value) {
 	auto uit = m_uniforms.find(name);
 	if (uit == m_uniforms.end()) {
-		QGASSERT(false, "Bad shader variable name.");
-		return;
+		int location = glGetUniformLocation(m_program, name.c_str());
+		QGASSERT(location != -1, "Bad shader variable name.");
+		m_uniforms[name] = location;
+		uit = m_uniforms.find(name);
 	}
 
 	GL_CHECK(glUniform1f(uit->second, value));
@@ -176,8 +178,10 @@ void QGGLShaderProgram::Set(std::string name, float value) {
 void QGGLShaderProgram::Set(std::string name, vector3 value) {
 	auto uit = m_uniforms.find(name);
 	if (uit == m_uniforms.end()) {
-		QGASSERT(false, "Bad shader variable name.");
-		return;
+		int location = glGetUniformLocation(m_program, name.c_str());
+		QGASSERT(location != -1, "Bad shader variable name.");
+		m_uniforms[name] = location;
+		uit = m_uniforms.find(name);
 	}
 
 	GL_CHECK(glUniform3fv(uit->second, 1, &(value)[0]));
@@ -186,8 +190,10 @@ void QGGLShaderProgram::Set(std::string name, vector3 value) {
 void QGGLShaderProgram::Set(std::string name, vector2 value) {
 	auto uit = m_uniforms.find(name);
 	if (uit == m_uniforms.end()) {
-		QGASSERT(false, "Bad shader variable name.");
-		return;
+		int location = glGetUniformLocation(m_program, name.c_str());
+		QGASSERT(location != -1, "Bad shader variable name.");
+		m_uniforms[name] = location;
+		uit = m_uniforms.find(name);
 	}
 
 	GL_CHECK(glUniform2fv(uit->second, 1, &(value)[0]));
@@ -196,8 +202,10 @@ void QGGLShaderProgram::Set(std::string name, vector2 value) {
 void QGGLShaderProgram::Set(std::string name, vector4 value) {
 	auto uit = m_uniforms.find(name);
 	if (uit == m_uniforms.end()) {
-		QGASSERT(false, "Bad shader variable name.");
-		return;
+		int location = glGetUniformLocation(m_program, name.c_str());
+		QGASSERT(location != -1, "Bad shader variable name.");
+		m_uniforms[name] = location;
+		uit = m_uniforms.find(name);
 	}
 
 	GL_CHECK(glUniform4fv(uit->second, 1, &(value)[0]));
@@ -206,8 +214,10 @@ void QGGLShaderProgram::Set(std::string name, vector4 value) {
 void QGGLShaderProgram::Set(std::string name, int value) {
 	auto uit = m_uniforms.find(name);
 	if (uit == m_uniforms.end()) {
-		QGASSERT(false, "Bad shader variable name.");
-		return;
+		int location = glGetUniformLocation(m_program, name.c_str());
+		QGASSERT(location != -1, "Bad shader variable name.");
+		m_uniforms[name] = location;
+		uit = m_uniforms.find(name);
 	}
 
 	GL_CHECK(glUniform1i(uit->second, value));
@@ -216,8 +226,10 @@ void QGGLShaderProgram::Set(std::string name, int value) {
 void QGGLShaderProgram::Set(std::string name, unsigned int value) {
 	auto uit = m_uniforms.find(name);
 	if (uit == m_uniforms.end()) {
-		QGASSERT(false, "Bad shader variable name.");
-		return;
+		int location = glGetUniformLocation(m_program, name.c_str());
+		QGASSERT(location != -1, "Bad shader variable name.");
+		m_uniforms[name] = location;
+		uit = m_uniforms.find(name);
 	}
 
 	GL_CHECK(glUniform1ui(uit->second, value));
@@ -226,8 +238,10 @@ void QGGLShaderProgram::Set(std::string name, unsigned int value) {
 void QGGLShaderProgram::Set(std::string name, matrix4 value) {
 	auto uit = m_uniforms.find(name);
 	if (uit == m_uniforms.end()) {
-		QGASSERT(false, "Bad shader variable name.");
-		return;
+		int location = glGetUniformLocation(m_program, name.c_str());
+		QGASSERT(location != -1, "Bad shader variable name.");
+		m_uniforms[name] = location;
+		uit = m_uniforms.find(name);
 	}
 
 	GL_CHECK(glUniformMatrix4fv(uit->second, 1, GL_FALSE, &(value)[0][0]));
@@ -236,8 +250,10 @@ void QGGLShaderProgram::Set(std::string name, matrix4 value) {
 void QGGLShaderProgram::Set(std::string name, matrix3 value) {
 	auto uit = m_uniforms.find(name);
 	if (uit == m_uniforms.end()) {
-		//QGASSERT(false, "Bad shader variable name.");
-		return;
+		int location = glGetUniformLocation(m_program, name.c_str());
+		QGASSERT(location != -1, "Bad shader variable name.");
+		m_uniforms[name] = location;
+		uit = m_uniforms.find(name);
 	}
 
 	GL_CHECK(glUniformMatrix3fv(uit->second, 1, GL_FALSE, &(value)[0][0]));

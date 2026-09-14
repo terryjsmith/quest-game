@@ -13,7 +13,7 @@ public:
 	void Render(QGScene* scene);
 
 protected:
-	void RecursiveRender(QGMesh* mesh, bool animated, matrix4 parentTransform = matrix4(1.0f));
+	void RecursiveRender(QGMesh* mesh, bool animated, QGShaderProgram* program, matrix4 parentTransform = matrix4(1.0f));
 
 protected:
 	int m_width, m_height;

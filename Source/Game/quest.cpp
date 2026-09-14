@@ -14,6 +14,7 @@
 #include <Physics/QGCollisionComponent.h>
 #include <Physics/QGSphereCollider.h>
 #include <IO/QGMySQLDataLoader.h>
+#include <Render/QGAnimationLoader.h>
 
 // Callback for newly connected players
 void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
@@ -58,6 +59,12 @@ void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
         QGAnimatedMeshComponent* mesh = event->entity->CreateComponent<QGAnimatedMeshComponent>();
         mesh->mesh = (QGMesh*)resourceSystem->Load("Resources/Meshes/" + model + ".fbx", "Mesh");
 
+        // Load animation
+        QGAnimation* idleAnim = (QGAnimation*)resourceSystem->Load("Resources/Meshes/Neutral_Idle_Anim.fbx", "Animation");
+
+        QGAnimatedMeshComponent* mc = entity->GetComponent<QGAnimatedMeshComponent>();
+        mc->AddAnimation("idle", idleAnim);
+
         // Set name, position, rotation
         entity->name = records[0]->Get("name").AsString();
 
@@ -83,6 +90,13 @@ void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
 
         // Add a camera component
         QGCameraComponent* camera = entity->CreateComponent<QGCameraComponent>();
+
+        // Load animation
+        QGResourceSystem* resourceSystem = GetQGSystem<QGResourceSystem>();
+        QGAnimation* idleAnim = (QGAnimation*)resourceSystem->Load("Resources/Meshes/Neutral_Idle_Anim.fbx", "Animation");
+
+        QGAnimatedMeshComponent* mc = entity->GetComponent<QGAnimatedMeshComponent>();
+        mc->AddAnimation("idle", idleAnim);
     }
 }
 

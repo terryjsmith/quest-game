@@ -15,6 +15,7 @@
 #include <stb_image.h>
 
 static inline glm::mat4 mat4_convert(const aiMatrix4x4& m) { return glm::transpose(glm::make_mat4(&m.a1)); }
+QGNode3D* ProcessNodeHierarchy(aiNode* node);
 
 QGTexture2D* LoadTexture(aiTextureType type, const aiMaterial* pMaterial, std::string currentPath, const aiScene* scene) {
 	QGRenderSystem* renderSystem = GetQGSystem<QGRenderSystem>();
@@ -28,6 +29,13 @@ QGTexture2D* LoadTexture(aiTextureType type, const aiMaterial* pMaterial, std::s
 			int width, height, components;
 			unsigned char* data = 0;
 			if (embeddedTexture->mHeight == 0) {
+				std::filesystem::path p = Path.C_Str();
+				std::string ext = p.extension().string();
+				if (ext == ".png")
+					stbi_set_flip_vertically_on_load(true);
+				else
+					stbi_set_flip_vertically_on_load(false);
+
 				data = stbi_load_from_memory(
 					reinterpret_cast<const unsigned char*>(embeddedTexture->pcData),
 					static_cast<int>(embeddedTexture->mWidth),
@@ -112,6 +120,8 @@ QGMesh* ProcessMesh(aiMesh* paiMesh, std::vector<QGMaterial*>& materials, matrix
 			QGBone3D* bone = new QGBone3D();
 			bone->name = paiMesh->mBones[i]->mName.C_Str();
 			bone->offsetMatrix = mat4_convert(paiMesh->mBones[i]->mOffsetMatrix);
+
+			mesh->bones[boneName] = bone;
 		}
 	}
 

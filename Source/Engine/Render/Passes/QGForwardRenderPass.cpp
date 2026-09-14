@@ -59,10 +59,8 @@ void QGForwardRenderPass::Render(QGScene* scene) {
 
 		QGEntity* entity = meshc->Entity();
 		matrix4 transform = entity->transform.Matrix();
-		this->RecursiveRender(mesh, false, transform);
+		this->RecursiveRender(mesh, false, m_program, transform);
 	}
-
-	return;
 
 	// Repeat for animated meshes
 	m_animatedMeshProgram->Bind();
@@ -81,31 +79,31 @@ void QGForwardRenderPass::Render(QGScene* scene) {
 		// Set bone matrices
 		int counter = 0;
 		for (auto bit = meshc->boneMatrix.begin(); bit != meshc->boneMatrix.end(); bit++) {
-			QGASSERT(counter <= 64, "Overflow - too many bones.");
+			QGASSERT(counter < 100, "Overflow - too many bones.");
 			m_animatedMeshProgram->Set("finalBoneMatrices[" + std::to_string(counter) + "]", bit->second);
 			counter++;
 		}
 
 		QGEntity* entity = meshc->Entity();
 		matrix4 transform = entity->transform.Matrix();
-		this->RecursiveRender(mesh, true, transform);
+		this->RecursiveRender(mesh, true, m_animatedMeshProgram, transform);
 	}
 }
 
-void QGForwardRenderPass::RecursiveRender(QGMesh* mesh, bool animated, matrix4 parentTransform) {
+void QGForwardRenderPass::RecursiveRender(QGMesh* mesh, bool animated, QGShaderProgram* program, matrix4 parentTransform) {
 	QGRenderSystem* renderSystem = GetQGSystem<QGRenderSystem>();
 	matrix4 modelMatrix = parentTransform * mesh->transform.Matrix();
 
 	if (mesh->children.size() > 0) {
 		// recurse instead
 		for (auto it = mesh->children.begin(); it != mesh->children.end(); it++) {
-			this->RecursiveRender(*it, animated, modelMatrix);
+			this->RecursiveRender(*it, animated, program, modelMatrix);
 		}
 		return;
 	}
 
 	//modelMatrix = matrix4(1.0f);
-	m_program->Set("modelMatrix", modelMatrix);
+	program->Set("modelMatrix", modelMatrix);
 
 	// Bind vertex buffer and layout
 	QGVertexAttributeList* attribListObject = mesh->vertexBuffer->VertexAttributeList();
@@ -129,7 +127,7 @@ void QGForwardRenderPass::RecursiveRender(QGMesh* mesh, bool animated, matrix4 p
 	// Bind textures
 	if (mesh->diffuseTexture) {
 		mesh->diffuseTexture->Bind(0);
-		m_program->Set("diffuseTexture", 0);
+		program->Set("diffuseTexture", 0);
 	}
 
 	if (mesh->indexBuffer) {

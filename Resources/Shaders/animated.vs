@@ -14,7 +14,7 @@ layout(location = 4) in vec4 vertex_boneweights;
  */
 
 // Animation
-uniform mat4 finalBoneMatrices[64];
+uniform mat4 finalBoneMatrices[100];
 
 // Matrices
 uniform mat4 projectionMatrix;
@@ -38,7 +38,8 @@ void main () {
     boneTransform      += finalBoneMatrices[int(vertex_boneids.w)] * vertex_boneweights.w;
 
     // Transform position and normal
-    vec4 localPosition = boneTransform * vec4(vertex_position, 1.0);
+	// vec4 localPosition = vec4(vertex_position.xyz, 1.0);
+    vec4 localPosition = boneTransform * vec4(vertex_position.xyz, 1.0);
     // vec4 localNormal   = boneTransform * vec4(normal, 0.0);
 	
     gl_Position = projectionMatrix * viewMatrix * modelMatrix * localPosition;
