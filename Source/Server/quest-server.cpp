@@ -23,6 +23,9 @@
 #include <Scripting/QGScriptingSystem.h>
 #include <Network/QGRpcServer.h>
 #include <IO/QGMySQLDataLoader.h>
+#include <Render/QGAnimatedMeshComponent.h>
+#include <Render/QGAnimationLoader.h>
+#include <Render/QGAnimationSystem.h>
 
 #ifndef _WIN32
     #define Sleep sleep
@@ -49,6 +52,7 @@ int main()
     QGCollisionSystem* collisionSystem = application->CreateSystem<QGCollisionSystem>(60);
     QGRpcServer* rpcServer = application->CreateSystem<QGRpcServer>();
     QGMySQLDataLoader* mysql = application->CreateSystem<QGMySQLDataLoader>();
+    QGAnimationSystem* animationSystem = application->CreateSystem<QGAnimationSystem>(60);
 
     // Initialize systems
     application->Initialize();
@@ -64,10 +68,12 @@ int main()
     metaSystem->RegisterType<QGMeshComponent>(1020, "QGMeshComponent");
     metaSystem->RegisterType<QGCameraComponent>(1030, "QGCameraComponent", false);
     metaSystem->RegisterType<QGCollisionComponent>(1040, "QGCollisionComponent");
+    metaSystem->RegisterType<QGAnimatedMeshComponent>(1050, "QGAnimatedMeshComponent");
 
     resourceSystem->RegisterResourceLoader<QGTextureLoader>("Texture2D");
     resourceSystem->RegisterResourceLoader<QGMeshLoader>("Mesh");
     resourceSystem->RegisterResourceLoader<QGShaderLoader>("Shader", false);
+    resourceSystem->RegisterResourceLoader<QGAnimationLoader>("Animation");
 
     // Initialize server
     const char* address = "192.81.208.200:35325";

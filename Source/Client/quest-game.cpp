@@ -24,6 +24,9 @@
 #include <Scripting/QGScriptingSystem.h>
 #include <Network/QGRpcClient.h>
 #include <Network/QGHttpRequest.h>
+#include <Render/QGAnimatedMeshComponent.h>
+#include <Render/QGAnimationLoader.h>
+#include <Render/QGAnimationSystem.h>
 
 int main()
 {
@@ -45,6 +48,7 @@ int main()
     QGCollisionSystem* collisionSystem = application->CreateSystem<QGCollisionSystem>(60);
     QGScriptingSystem* scriptingSystem = application->CreateSystem<QGScriptingSystem>(60);
     QGRpcClient* rpcClient = application->CreateSystem<QGRpcClient>();
+    QGAnimationSystem* animationSystem = application->CreateSystem<QGAnimationSystem>(60);
 
     // Initialize systems
     application->Initialize();
@@ -89,10 +93,12 @@ int main()
     metaSystem->RegisterType<QGMeshComponent>(1020, "QGMeshComponent");
     metaSystem->RegisterType<QGCameraComponent>(1030, "QGCameraComponent", false);
     metaSystem->RegisterType<QGCollisionComponent>(1040, "QGCollisionComponent");
+    metaSystem->RegisterType<QGAnimatedMeshComponent>(1050, "QGAnimatedMeshComponent");
 
     resourceSystem->RegisterResourceLoader<QGTextureLoader>("Texture2D");
     resourceSystem->RegisterResourceLoader<QGMeshLoader>("Mesh");
-    resourceSystem->RegisterResourceLoader<QGShaderLoader>("Shader", false);
+    resourceSystem->RegisterResourceLoader<QGShaderLoader>("Shader", false); 
+    resourceSystem->RegisterResourceLoader<QGAnimationLoader>("Animation");
 
     // Load game library
     scriptingSystem->LoadScriptLibrary("quest-game");

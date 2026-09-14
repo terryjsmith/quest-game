@@ -10,7 +10,7 @@
 #include <Network/QGNetworkEvents.h>
 #include <Core/QGApplication.h>
 #include <IO/QGResourceSystem.h>
-#include <Render/QGMeshComponent.h>
+#include <Render/QGAnimatedMeshComponent.h>
 #include <Physics/QGCollisionComponent.h>
 #include <Physics/QGSphereCollider.h>
 #include <IO/QGMySQLDataLoader.h>
@@ -55,7 +55,7 @@ void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
         printf("Found model named: %s.\n", model.c_str());
 
         QGResourceSystem* resourceSystem = GetQGSystem<QGResourceSystem>();
-        QGMeshComponent* mesh = event->entity->CreateComponent<QGMeshComponent>();
+        QGAnimatedMeshComponent* mesh = event->entity->CreateComponent<QGAnimatedMeshComponent>();
         mesh->mesh = (QGMesh*)resourceSystem->Load("Resources/Meshes/" + model + ".fbx", "Mesh");
 
         // Set name, position, rotation

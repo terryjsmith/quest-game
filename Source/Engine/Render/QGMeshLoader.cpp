@@ -12,17 +12,59 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 
+#include <stb_image.h>
+
 static inline glm::mat4 mat4_convert(const aiMatrix4x4& m) { return glm::transpose(glm::make_mat4(&m.a1)); }
 
-QGTexture2D* LoadTexture(aiTextureType type, const aiMaterial* pMaterial, std::string currentPath) {
+QGTexture2D* LoadTexture(aiTextureType type, const aiMaterial* pMaterial, std::string currentPath, const aiScene* scene) {
+	QGRenderSystem* renderSystem = GetQGSystem<QGRenderSystem>();
+
 	aiString Path;
 	if (pMaterial->GetTexture(type, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
 		// Is this an embedded texture or an actual path to a file?
 		std::string firstChar = std::string(Path.C_Str()).substr(0, 1);
 		if (firstChar == "*") {
 			// Embedded texture, skip?
-			QGASSERT(false, "Embedded texture, please help me!");
-			return(0);
+			const aiTexture* embeddedTexture = scene->GetEmbeddedTexture(Path.C_Str());
+			QGASSERT(embeddedTexture != NULL, "Unable to load embedded texture.");
+
+			// Case 1: Compressed data (PNG, JPEG, etc.)
+			int width, height, components;
+			unsigned char* data = 0;
+			if (embeddedTexture->mHeight == 0) {
+				data = stbi_load_from_memory(
+					reinterpret_cast<const unsigned char*>(embeddedTexture->pcData),
+					static_cast<int>(embeddedTexture->mWidth),
+					&width, &height, &components, 0
+				);
+			}
+			// Case 2: Uncompressed raw BGRA8888 data
+			else {
+				width = static_cast<int>(embeddedTexture->mWidth);
+				height = static_cast<int>(embeddedTexture->mHeight);
+				data = reinterpret_cast<unsigned char*>(embeddedTexture->pcData);
+				components = 4;
+
+				// Need to re-arrange bytes
+				unsigned char* newData = (unsigned char*)(width * height * 4);
+				for (int y = 0; y < height; y++) {
+					for (int x = 0; x < width; x++) {
+						int offset = ((y * width) + x) * components;
+						newData[offset + 0] = data[offset + 2]; // R
+						newData[offset + 1] = data[offset + 1]; // G
+						newData[offset + 2] = data[offset + 0]; // B
+						newData[offset + 3] = data[offset + 3]; // A
+					}
+				}
+
+				data = newData;
+			}
+
+			QGTexture2D* texture = renderSystem->CreateTexture2D();
+			texture->Create(width, height, components, QGTexture2D::QGTEXTURE_BYTE, data);
+
+			free(data);
+			return(texture);
 		}
 		else {
 			// Otherwise, it is a path, record the texture file
@@ -287,18 +329,18 @@ QGResourceObject* QGMeshLoader::LoadResource(QGResource* resource, std::string t
 		std::string currentPath = p.string();
 
 		// Could be in PBR version
-		material->diffuseTexture = LoadTexture(aiTextureType_BASE_COLOR, pMaterial, currentPath);
-		material->normalTexture = LoadTexture(aiTextureType_NORMAL_CAMERA, pMaterial, currentPath);
-		material->specularTexture = LoadTexture(aiTextureType_SPECULAR, pMaterial, currentPath);
+		material->diffuseTexture = LoadTexture(aiTextureType_BASE_COLOR, pMaterial, currentPath, scene);
+		material->normalTexture = LoadTexture(aiTextureType_NORMAL_CAMERA, pMaterial, currentPath, scene);
+		material->specularTexture = LoadTexture(aiTextureType_SPECULAR, pMaterial, currentPath, scene);
 
 		// Fallback to legacy locations
-		if (material->diffuseTexture == 0) material->diffuseTexture = LoadTexture(aiTextureType_DIFFUSE, pMaterial, currentPath);
-		if (material->normalTexture == 0) material->normalTexture = LoadTexture(aiTextureType_NORMALS, pMaterial, currentPath);
+		if (material->diffuseTexture == 0) material->diffuseTexture = LoadTexture(aiTextureType_DIFFUSE, pMaterial, currentPath, scene);
+		if (material->normalTexture == 0) material->normalTexture = LoadTexture(aiTextureType_NORMALS, pMaterial, currentPath, scene);
 
-		material->emissiveTexture = LoadTexture(aiTextureType_EMISSION_COLOR, pMaterial, currentPath);
-		material->metalnessTexture = LoadTexture(aiTextureType_METALNESS, pMaterial, currentPath);
-		material->roughnessTexture = LoadTexture(aiTextureType_DIFFUSE_ROUGHNESS, pMaterial, currentPath);
-		material->aoTexture = LoadTexture(aiTextureType_AMBIENT_OCCLUSION, pMaterial, currentPath);
+		material->emissiveTexture = LoadTexture(aiTextureType_EMISSION_COLOR, pMaterial, currentPath, scene);
+		material->metalnessTexture = LoadTexture(aiTextureType_METALNESS, pMaterial, currentPath, scene);
+		material->roughnessTexture = LoadTexture(aiTextureType_DIFFUSE_ROUGHNESS, pMaterial, currentPath, scene);
+		material->aoTexture = LoadTexture(aiTextureType_AMBIENT_OCCLUSION, pMaterial, currentPath, scene);
 	}
 
 	if (scene->HasMeshes()) {
