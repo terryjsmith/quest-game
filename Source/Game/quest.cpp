@@ -65,6 +65,9 @@ void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
         QGAnimatedMeshComponent* mc = entity->GetComponent<QGAnimatedMeshComponent>();
         mc->AddAnimation("idle", idleAnim);
 
+        // Play idle animation
+        mc->Play("idle", true);
+
         // Set name, position, rotation
         entity->name = records[0]->Get("name").AsString();
 
