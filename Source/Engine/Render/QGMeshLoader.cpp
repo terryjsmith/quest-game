@@ -22,12 +22,8 @@ QGTexture2D* LoadTexture(aiTextureType type, const aiMaterial* pMaterial, std::s
 	aiString Path;
 	if (pMaterial->GetTexture(type, 0, &Path, NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS) {
 		// Is this an embedded texture or an actual path to a file?
-		std::string firstChar = std::string(Path.C_Str()).substr(0, 1);
-		if (firstChar == "*") {
-			// Embedded texture, skip?
-			const aiTexture* embeddedTexture = scene->GetEmbeddedTexture(Path.C_Str());
-			QGASSERT(embeddedTexture != NULL, "Unable to load embedded texture.");
-
+		const aiTexture* embeddedTexture = scene->GetEmbeddedTexture(Path.C_Str());
+		if (embeddedTexture != 0) {
 			// Case 1: Compressed data (PNG, JPEG, etc.)
 			int width, height, components;
 			unsigned char* data = 0;

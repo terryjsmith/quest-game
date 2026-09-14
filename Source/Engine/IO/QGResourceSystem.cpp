@@ -18,7 +18,7 @@ QGResourceObject* QGResourceSystem::Load(std::string filename, std::string type)
 	// If we do not, attempt to load it
 	bool isBinary = m_resourceIsBinary[type];
 	FILE* fp = fopen(filename.c_str(), isBinary ? "rb" : "r");
-	QGASSERT(fp != 0, "Unable to open file for reading.");
+	QGASSERT(fp != 0, "Unable to open file for reading: %s", filename.c_str());
 
 	// Get the filesize
 	fseek(fp, 0, SEEK_END);
