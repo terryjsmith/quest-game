@@ -10,6 +10,7 @@
 #include <Core/QGWorld.h>
 #include <Network/QGNetworkEvents.h>
 #include <Core/QGTimeSystem.h>
+#include <Render/QGAnimatedMeshComponent.h>
 
 #include "QuestPlayer.h"
 #include "QuestGiver.h"
@@ -101,6 +102,16 @@ void QuestPlayer::InputCommandCallback(QGEvent* ev, QGObject* obj) {
     uint64_t tick = timeSystem->Tick();
     if (command->command == "MOVE")
     {
+        if (player->moveSpeed == 0.0f && command->state != 0.0f) {
+            QGAnimatedMeshComponent* mc = entity->GetComponent<QGAnimatedMeshComponent>();
+            mc->Play("walk", true);
+        }
+
+        if (player->moveSpeed != 0.0f && command->state == 0.0f) {
+            QGAnimatedMeshComponent* mc = entity->GetComponent<QGAnimatedMeshComponent>();
+            mc->Play("idle", true);
+        }
+
         printf("Setting move speed for player ID %llu to %f at tick %llu.\n", entity->id, command->state, tick);
         player->moveSpeed = command->state;
     }
