@@ -76,6 +76,7 @@ void QGAnimationSystem::ProcessNodeHierarchy(QGNode3D* node, QGAnimatedMeshCompo
 
 				// Compute difference
 				float difference = ((float)currentFrame - scalingKey1->time) / ((float)scalingKey2->time - scalingKey1->time);
+				QGASSERT(difference >= 0.0f && difference <= 1.0f, "Error");
 
 				// Interpolate
 				vector3 scalediff = scalingKey2->scaling - scalingKey1->scaling;
@@ -100,6 +101,7 @@ void QGAnimationSystem::ProcessNodeHierarchy(QGNode3D* node, QGAnimatedMeshCompo
 
 				// Compute difference
 				float difference = ((float)currentFrame - positionKey1->time) / ((float)positionKey2->time - positionKey1->time);
+				QGASSERT(difference >= 0.0f && difference <= 1.0f, "Error");
 
 				// Interpolate
 				vector3 posdiff = positionKey2->position - positionKey1->position;
@@ -123,6 +125,7 @@ void QGAnimationSystem::ProcessNodeHierarchy(QGNode3D* node, QGAnimatedMeshCompo
 
 				// Compute difference
 				float difference = ((float)currentFrame - rotationKey1->time) / ((float)rotationKey2->time - rotationKey1->time);
+				QGASSERT(difference >= 0.0f && difference <= 1.0f, "Error");
 
 				// Interpolate
 				rotation = glm::slerp(rotationKey1->rotation, rotationKey2->rotation, difference);

@@ -59,11 +59,14 @@ void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
         QGAnimatedMeshComponent* mesh = event->entity->CreateComponent<QGAnimatedMeshComponent>();
         mesh->mesh = (QGMesh*)resourceSystem->Load("Resources/Meshes/" + model + ".fbx", "Mesh");
 
-        // Load animation
-        QGAnimation* idleAnim = (QGAnimation*)resourceSystem->Load("Resources/Meshes/Neutral_Idle_Anim.fbx", "Animation");
-
+        // Load animations
         QGAnimatedMeshComponent* mc = entity->GetComponent<QGAnimatedMeshComponent>();
+
+        QGAnimation* idleAnim = (QGAnimation*)resourceSystem->Load("Resources/Meshes/Neutral_Idle_Anim.fbx", "Animation");
         mc->AddAnimation("idle", idleAnim);
+
+        QGAnimation* walkAnim = (QGAnimation*)resourceSystem->Load("Resources/Meshes/Walking_Anim.fbx", "Animation");
+        mc->AddAnimation("walk", walkAnim);
 
         // Play idle animation
         mc->Play("idle", true);
