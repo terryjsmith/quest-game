@@ -12,8 +12,8 @@ public:
 	}
 	~QGMeshComponent() = default;
 
-	void Serialize(QGDataRecord* record);
-	void Deserialize(QGDataRecord* record);
+	virtual void Serialize(QGDataRecord* record);
+	virtual void Deserialize(QGDataRecord* record);
 
 public:
 	QGMesh* mesh;

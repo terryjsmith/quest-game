@@ -8,6 +8,8 @@
 #include <Render/QGTexture2D.h>
 #include <Render/QGMaterial.h>
 #include <Core/QGTransform.h>
+#include <Render/QGNode3D.h>
+#include <Render/QGBone3D.h>
 
 class QUEST_API QGMesh : public QGResourceObject {
 public:
@@ -15,6 +17,7 @@ public:
 		vertexBuffer = 0;
 		indexBuffer = 0;
 		diffuseTexture = 0;
+		nodes = 0;
 	}
 
 	~QGMesh() {
@@ -33,6 +36,9 @@ public:
 	QGTransform transform;
 
 	std::vector<QGMesh*> children;
+
+	QGNode3D* nodes;
+	std::map<std::string, QGBone3D*> bones;
 };
 
 #endif

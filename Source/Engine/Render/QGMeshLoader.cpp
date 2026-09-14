@@ -3,6 +3,7 @@
 #include <Render/QGRenderSystem.h>
 #include <Core/QGApplication.h>
 #include <IO/QGResourceSystem.h>
+#include <Render/QGNode3D.h>
 
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
@@ -62,6 +63,19 @@ QGMesh* ProcessMesh(aiMesh* paiMesh, std::vector<QGMaterial*>& materials, matrix
 
 	// Assign material
 	mesh->diffuseTexture = materials[paiMesh->mMaterialIndex]->diffuseTexture;
+
+	// Load bones
+	if (paiMesh->HasBones()) {
+		for (int i = 0; i < paiMesh->mNumBones; i++) {
+			std::string boneName = paiMesh->mBones[i]->mName.C_Str();
+			auto it = mesh->bones.find(boneName);
+			if (it != mesh->bones.end()) continue;
+
+			QGBone3D* bone = new QGBone3D();
+			bone->name = paiMesh->mBones[i]->mName.C_Str();
+			bone->offsetMatrix = mat4_convert(paiMesh->mBones[i]->mOffsetMatrix);
+		}
+	}
 
 	// Create a vertex layout spec
 	QGVertexAttributeList* vertexAttributeList = renderSystem->CreateVertexAttributeList();
@@ -130,6 +144,53 @@ QGMesh* ProcessMesh(aiMesh* paiMesh, std::vector<QGMaterial*>& materials, matrix
 		}
 	}
 
+	if (paiMesh->HasBones()) {
+		for (int i = 0; i < paiMesh->mNumBones; i++) {
+			// Get the new bone index
+			char* boneName = paiMesh->mBones[i]->mName.data;
+			auto bi = mesh->bones.find(boneName);
+			int boneIndex = std::distance(mesh->bones.begin(), bi);
+
+			// Save the vertex weights
+			for (int j = 0; j < paiMesh->mBones[i]->mNumWeights; j++) {
+				unsigned int vertexID = paiMesh->mBones[i]->mWeights[j].mVertexId;
+				float weight = paiMesh->mBones[i]->mWeights[j].mWeight;
+
+				int offsetToBoneIDs = (vertexID * vertexSize) + vertexSize - 8;
+				int offsetToBoneWeights = (vertexID * vertexSize) + vertexSize - 8 + 4;
+
+				bool foundSlot = false;
+				for (int k = 0; k < 4; k++) {
+					if (vertex_data[offsetToBoneWeights + k] == 0.0f) {
+						vertex_data[offsetToBoneIDs + k] = boneIndex;
+						vertex_data[offsetToBoneWeights + k] = weight;
+
+						foundSlot = true;
+						break;
+					}
+				}
+
+				if (foundSlot == false) {
+					// If we get here, more bones than slots, need to take highest one by replacing the one with the
+					// least weight
+					int index = 0;
+					float minFactor = 1.0f;
+					for (int k = 0; k < 4; k++) {
+						if (vertex_data[offsetToBoneWeights + k] < minFactor) {
+							index = k;
+							minFactor = vertex_data[offsetToBoneWeights + k];
+						}
+					}
+
+					if (minFactor < weight) {
+						vertex_data[offsetToBoneIDs + index] = boneIndex;
+						vertex_data[offsetToBoneWeights + index] = weight;
+					}
+				}
+			}
+		}
+	}
+
 	// Load index data
 	std::vector<unsigned int> index_data;
 	index_data.resize(paiMesh->mNumFaces * 3);
@@ -175,16 +236,27 @@ std::vector<QGMesh*> ProcessNode(const aiScene* scene, aiNode* node, std::vector
 	return(meshes);
 }
 
-QGResourceObject* QGMeshLoader::LoadResource(QGResource* resource, std::string type) {
-	// Create a new mesh
-	QGMesh* mesh = new QGMesh();
-	std::vector<QGMaterial*> materials;
+QGNode3D* ProcessNodeHierarchy(aiNode* node) {
+	QGNode3D* n = new QGNode3D();
+	n->name = node->mName.C_Str();
+	n->transform = mat4_convert(node->mTransformation);
 
+	for (int i = 0; i < node->mNumChildren; i++) {
+		QGNode3D* c = ProcessNodeHierarchy(node->mChildren[i]);
+		c->parent = n;
+		n->children.push_back(c);
+	}
+
+	return(n);
+}
+
+QGResourceObject* QGMeshLoader::LoadResource(QGResource* resource, std::string type) {
 	// Import the scene
 	const struct aiScene* scene = aiImportFileFromMemory((const char*)resource->Data(), resource->filesize, aiProcess_Triangulate, resource->extension.c_str());
 	assert(scene != 0);
 
 	// Process materials
+	std::vector<QGMaterial*> materials;
 	for (int i = 0; i < scene->mNumMaterials; i++) {
 		// Create a new material
 		QGMaterial* material = new QGMaterial();
@@ -229,7 +301,13 @@ QGResourceObject* QGMeshLoader::LoadResource(QGResource* resource, std::string t
 		material->aoTexture = LoadTexture(aiTextureType_AMBIENT_OCCLUSION, pMaterial, currentPath);
 	}
 
-	mesh->children = ProcessNode(scene, scene->mRootNode, materials, matrix4(1.0f), resource->extension);
+	if (scene->HasMeshes()) {
+		// Create a new mesh
+		QGMesh* mesh = new QGMesh();
+		mesh->children = ProcessNode(scene, scene->mRootNode, materials, matrix4(1.0f), resource->extension);
+		mesh->nodes = ProcessNodeHierarchy(scene->mRootNode);
+		return(mesh);
+	}
 
-	return(mesh);
+	return(0);
 }
