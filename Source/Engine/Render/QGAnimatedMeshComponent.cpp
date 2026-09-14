@@ -21,6 +21,7 @@ void QGAnimatedMeshComponent::Stop() {
 
 void QGAnimatedMeshComponent::AddAnimation(std::string name, QGAnimation* animation) {
 	animations[name] = animation;
+	animation->name = name;
 }
 
 void QGAnimatedMeshComponent::Serialize(QGDataRecord* record) {
