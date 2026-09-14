@@ -58,7 +58,7 @@ void QGAnimatedMeshComponent::Deserialize(QGDataRecord* record) {
 	if (it == this->animations.end()) {
 		QGResourceSystem* resourceSystem = GetQGSystem<QGResourceSystem>();
 		QGAnimation* animation = (QGAnimation*)resourceSystem->Load(filename, "Animation");
-		this->animations[animationName] = animation;
+		this->AddAnimation(animationName, animation);
 	}
 
 	// Ensure we are playing this animation

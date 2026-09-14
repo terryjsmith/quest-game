@@ -28,30 +28,30 @@ QGResourceObject* QGAnimationLoader::LoadResource(QGResource* resource, std::str
 
 				QGAnimationTransforms* transforms = new QGAnimationTransforms();
 				for (int s = 0; s < nodeAnim->mNumScalingKeys; s++) {
-					QGAnimationTransforms::ScalingKey scaling;
-					scaling.time = nodeAnim->mScalingKeys[s].mTime;
+					QGAnimationTransforms::ScalingKey* scaling = new QGAnimationTransforms::ScalingKey();
+					scaling->time = nodeAnim->mScalingKeys[s].mTime;
 					aiVector3D vec = nodeAnim->mScalingKeys[s].mValue;
-					scaling.scaling = vector3(vec.x, vec.y, vec.z);
+					scaling->scaling = vector3(vec.x, vec.y, vec.z);
 
-					transforms->scalingKeys[scaling.time] = scaling;
+					transforms->scalingKeys.push_back(scaling);
 				}
 
 				for (int s = 0; s < nodeAnim->mNumPositionKeys; s++) {
-					QGAnimationTransforms::TranslationKey translate;
-					translate.time = nodeAnim->mPositionKeys[s].mTime;
+					QGAnimationTransforms::TranslationKey* translate = new QGAnimationTransforms::TranslationKey();
+					translate->time = nodeAnim->mPositionKeys[s].mTime;
 					aiVector3D vec = nodeAnim->mPositionKeys[s].mValue;
-					translate.position = vector3(vec.x, vec.y, vec.z);
+					translate->position = vector3(vec.x, vec.y, vec.z);
 
-					transforms->translationKeys[translate.time] = translate;
+					transforms->translationKeys.push_back(translate);
 				}
 
 				for (int s = 0; s < nodeAnim->mNumRotationKeys; s++) {
-					QGAnimationTransforms::RotationKey rotation;
-					rotation.time = nodeAnim->mRotationKeys[s].mTime;
+					QGAnimationTransforms::RotationKey* rotation = new QGAnimationTransforms::RotationKey();
+					rotation->time = nodeAnim->mRotationKeys[s].mTime;
 					aiQuaternion quat = nodeAnim->mRotationKeys[s].mValue;
-					rotation.rotation = quaternion(quat.w, quat.x, quat.y, quat.z);
+					rotation->rotation = quaternion(quat.w, quat.x, quat.y, quat.z);
 
-					transforms->rotationKeys[rotation.time] = rotation;
+					transforms->rotationKeys.push_back(rotation);
 				}
 
 				animation->transforms[nodeName] = transforms;

@@ -31,10 +31,10 @@ void QGAnimationSystem::Update(float delta) {
 		QGAnimation* animation = (*it)->activeAnimation;
 
 		// Compute how far we are into the animation playback
-		double currentTime = ((currentTick - (*it)->startTime) / QG_TICKS_PER_SECOND);
+		double currentTime = ((float)(currentTick - (*it)->startTime) / QG_TICKS_PER_SECOND);
 
 		// Convert to current frame
-		int currentFrame = (currentTime * animation->speed);
+		int currentFrame = ((float)currentTime * animation->speed);
 
 		// If we are past the end, and not looping, then stop
 		if (currentFrame > animation->duration) {
@@ -44,7 +44,7 @@ void QGAnimationSystem::Update(float delta) {
 			}
 			
 			// Adjust time back to beginning
-			currentFrame -= animation->duration;
+			currentFrame = std::fmod(currentFrame, animation->duration);
 		}
 
 		this->ProcessNodeHierarchy(mesh->nodes, *it, currentFrame);
@@ -63,51 +63,73 @@ void QGAnimationSystem::ProcessNodeHierarchy(QGNode3D* node, QGAnimatedMeshCompo
 			QGAnimationTransforms* transforms = bit->second;
 
 			// Find the relevant keys
-			double scalingKey1 = transforms->scalingKeys.begin()->first;
-			double scalingKey2 = transforms->scalingKeys.begin()->first;
-			for (auto sit = transforms->scalingKeys.begin(); sit != transforms->scalingKeys.end(); sit++) {
-				scalingKey2 = sit->first;
-				if (scalingKey2 >= currentFrame) break;
-				scalingKey1 = sit->first;
+			vector3 scaling;
+			if (transforms->scalingKeys.size() > 1) {
+				auto sit = transforms->scalingKeys.begin();
+				QGAnimationTransforms::ScalingKey* scalingKey1 = (*sit);
+				QGAnimationTransforms::ScalingKey* scalingKey2 = (*sit);
+				for (; sit != transforms->scalingKeys.end(); sit++) {
+					scalingKey2 = (*sit);
+					if (scalingKey2->time >= currentFrame) break;
+					scalingKey1 = (*sit);
+				}
+
+				// Compute difference
+				float difference = ((float)currentFrame - scalingKey1->time) / ((float)scalingKey2->time - scalingKey1->time);
+
+				// Interpolate
+				vector3 scalediff = scalingKey2->scaling - scalingKey1->scaling;
+				scaling = scalingKey1->scaling + (scalediff * difference);
 			}
-
-			// Compute difference
-			float difference = (currentFrame - scalingKey1) / (scalingKey2 - scalingKey1);
-
-			// Interpolate
-			vector3 scalediff = transforms->scalingKeys[scalingKey2].scaling - transforms->scalingKeys[scalingKey1].scaling;
-			vector3 scaling = transforms->scalingKeys[scalingKey1].scaling + (scalediff * difference);
+			else {
+				scaling = (*transforms->scalingKeys.begin())->scaling;
+			}
 
 			// Next up: position
-			double positionKey1 = transforms->translationKeys.begin()->first;
-			double positionKey2 = transforms->translationKeys.begin()->first;
-			for (auto tit = transforms->translationKeys.begin(); tit != transforms->translationKeys.end(); tit++) {
-				positionKey2 = tit->first;
-				if (positionKey2 >= currentFrame) break;
-				positionKey1 = tit->first;
+			vector3 position;
+			if (transforms->translationKeys.size() > 1) {
+				auto tit = transforms->translationKeys.begin();
+				QGAnimationTransforms::TranslationKey* positionKey1 = (*tit);
+				QGAnimationTransforms::TranslationKey* positionKey2 = (*tit);
+				
+				for (; tit != transforms->translationKeys.end(); tit++) {
+					positionKey2 = (*tit);
+					if (positionKey2->time >= currentFrame) break;
+					positionKey1 = (*tit);
+				}
+
+				// Compute difference
+				float difference = ((float)currentFrame - positionKey1->time) / ((float)positionKey2->time - positionKey1->time);
+
+				// Interpolate
+				vector3 posdiff = positionKey2->position - positionKey1->position;
+				position = positionKey1->position + (posdiff * difference);
 			}
-
-			// Compute difference
-			difference = (currentFrame - positionKey1) / (positionKey2 - positionKey1);
-
-			// Interpolate
-			vector3 posdiff = transforms->translationKeys[positionKey2].position - transforms->translationKeys[positionKey1].position;
-			vector3 position = transforms->translationKeys[positionKey1].position + (posdiff * difference);
+			else {
+				position = (*transforms->translationKeys.begin())->position;
+			}
 
 			// Finally, rotation
-			double rotationKey1 = transforms->rotationKeys.begin()->first;
-			double rotationKey2 = transforms->rotationKeys.begin()->first;
-			for (auto rit = transforms->rotationKeys.begin(); rit != transforms->rotationKeys.end(); rit++) {
-				rotationKey2 = rit->first;
-				if (rotationKey2 >= currentFrame) break;
-				rotationKey1 = rit->first;
+			quaternion rotation;
+			if (transforms->rotationKeys.size() > 1) {
+				auto rit = transforms->rotationKeys.begin();
+				QGAnimationTransforms::RotationKey* rotationKey1 = (*rit);
+				QGAnimationTransforms::RotationKey* rotationKey2 = (*rit);
+				for (; rit != transforms->rotationKeys.end(); rit++) {
+					rotationKey2 = (*rit);
+					if (rotationKey2->time >= currentFrame) break;
+					rotationKey1 = (*rit);
+				}
+
+				// Compute difference
+				float difference = ((float)currentFrame - rotationKey1->time) / ((float)rotationKey2->time - rotationKey1->time);
+
+				// Interpolate
+				rotation = glm::slerp(rotationKey1->rotation, rotationKey2->rotation, difference);
 			}
-
-			// Compute difference
-			difference = (currentFrame - rotationKey1) / (rotationKey2 - rotationKey1);
-
-			// Interpolate
-			quaternion rotation = glm::slerp(transforms->rotationKeys[rotationKey1].rotation, transforms->rotationKeys[rotationKey2].rotation, difference);
+			else {
+				rotation = (*transforms->rotationKeys.begin())->rotation;
+			}
 
 			matrix4 transformM = glm::translate(matrix4(1.0f), position);
 			matrix4 scalingM = glm::scale(matrix4(1.0f), scaling);
