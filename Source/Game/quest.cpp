@@ -96,6 +96,16 @@ void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
 
         // Add a camera component
         QGCameraComponent* camera = entity->CreateComponent<QGCameraComponent>();
+
+        // Load animations
+        QGResourceSystem* resourceSystem = GetQGSystem<QGResourceSystem>();
+        QGAnimatedMeshComponent* mc = entity->GetComponent<QGAnimatedMeshComponent>();
+
+        QGAnimation* idleAnim = (QGAnimation*)resourceSystem->Load("Resources/Meshes/Neutral_Idle_Anim.fbx", "Animation");
+        mc->AddAnimation("idle", idleAnim);
+
+        QGAnimation* walkAnim = (QGAnimation*)resourceSystem->Load("Resources/Meshes/Walking_Anim.fbx", "Animation");
+        mc->AddAnimation("walk", walkAnim);
     }
 }
 

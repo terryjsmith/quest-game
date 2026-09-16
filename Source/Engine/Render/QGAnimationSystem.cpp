@@ -56,7 +56,7 @@ void QGAnimationSystem::ProcessNodeHierarchy(QGNode3D* node, QGAnimatedMeshCompo
 	matrix4 localMatrix = node->transform;
 	
 	// Is this animation actively playing?
-	if (currentFrame > 0) {
+	if (currentFrame >= 0) {
 		// Does this node have a transform in this animation?
 		auto bit = mc->activeAnimation->transforms.find(node->name);
 		if (bit != mc->activeAnimation->transforms.end()) {
@@ -76,6 +76,7 @@ void QGAnimationSystem::ProcessNodeHierarchy(QGNode3D* node, QGAnimatedMeshCompo
 
 				// Compute difference
 				float difference = ((float)currentFrame - scalingKey1->time) / ((float)scalingKey2->time - scalingKey1->time);
+				if (scalingKey2->time - scalingKey1->time == 0) difference = 0;
 				QGASSERT(difference >= 0.0f && difference <= 1.0f, "Error");
 
 				// Interpolate
@@ -92,7 +93,7 @@ void QGAnimationSystem::ProcessNodeHierarchy(QGNode3D* node, QGAnimatedMeshCompo
 				auto tit = transforms->translationKeys.begin();
 				QGAnimationTransforms::TranslationKey* positionKey1 = (*tit);
 				QGAnimationTransforms::TranslationKey* positionKey2 = (*tit);
-				
+
 				for (; tit != transforms->translationKeys.end(); tit++) {
 					positionKey2 = (*tit);
 					if (positionKey2->time >= currentFrame) break;
@@ -101,6 +102,7 @@ void QGAnimationSystem::ProcessNodeHierarchy(QGNode3D* node, QGAnimatedMeshCompo
 
 				// Compute difference
 				float difference = ((float)currentFrame - positionKey1->time) / ((float)positionKey2->time - positionKey1->time);
+				if (positionKey2->time - positionKey1->time == 0) difference = 0;
 				QGASSERT(difference >= 0.0f && difference <= 1.0f, "Error");
 
 				// Interpolate
@@ -125,6 +127,7 @@ void QGAnimationSystem::ProcessNodeHierarchy(QGNode3D* node, QGAnimatedMeshCompo
 
 				// Compute difference
 				float difference = ((float)currentFrame - rotationKey1->time) / ((float)rotationKey2->time - rotationKey1->time);
+				if (rotationKey2->time - rotationKey1->time == 0) difference = 0;
 				QGASSERT(difference >= 0.0f && difference <= 1.0f, "Error");
 
 				// Interpolate

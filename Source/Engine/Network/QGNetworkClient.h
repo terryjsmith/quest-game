@@ -5,11 +5,12 @@
 #include <Network/QGNetworkSystem.h>
 #include <Network/QGNetworkPackets.h>
 
-#define QGNETWORK_CLIENT_SYNC_TICKS	60
+#define QGNETWORK_CLIENT_SYNC_TICKS		30
+#define QGNETWORK_CLIENT_RESYNC_TIME	5
 
 class QUEST_API QGNetworkClient : public QGNetworkSystem {
 public:
-	QGNetworkClient() : m_client(0), m_clientID(0), m_avgRTT(0), m_lastSyncTick(10000000000) { }
+	QGNetworkClient() : m_client(0), m_clientID(0), m_avgRTT(0), m_lastSyncTick(10000000000), m_lastTimeSet(0) { }
 	~QGNetworkClient() = default;
 
 	/**
@@ -52,6 +53,7 @@ protected:
 	std::map<uint64_t, QGNetworkPacket*> m_ackPackets;
 
 	uint64_t m_lastSyncTick;
+	uint64_t m_lastTimeSet;
 	std::vector<int> m_rtts;
 	int m_avgRTT;
 };

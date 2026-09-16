@@ -285,7 +285,13 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
                     clientts.tv_nsec += nanoadjust;
                 }
             }
-            timeSystem->StartupTime(clientts);
+
+            // After initial set, set every X seconds
+            if (currentTick > (m_lastTimeSet + (QG_TICKS_PER_SECOND * QGNETWORK_CLIENT_RESYNC_TIME))) {
+                timeSystem->StartupTime(clientts);
+                printf("Syncing startup time...\n");
+                m_lastTimeSet = currentTick;
+            }
         }
     }
 
