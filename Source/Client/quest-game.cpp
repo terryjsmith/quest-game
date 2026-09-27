@@ -120,7 +120,7 @@ int main()
     inputSystem->AssociateCommandInput("INTERACT", keyboard, QGKeys::KEY_X);
 
     // Initialize server
-    const char* address = "192.81.208.200:35325";
+    const char* address = "159.89.229.105:35325";
     networkSystem->Connect(address, jsonresp.at("id").get<std::string>());
 
     // Set player ID
