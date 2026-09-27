@@ -15,6 +15,10 @@
 #include <Physics/QGSphereCollider.h>
 #include <IO/QGMySQLDataLoader.h>
 #include <Render/QGAnimationLoader.h>
+#include <Render/UI/QGUISystem.h>
+#include <Render/UI/QGUIScreen.h>
+#include <Render/UI/QGUIButton.h>
+#include <Render/UI/QGUIContainer.h>
 
 // Callback for newly connected players
 void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
@@ -128,5 +132,27 @@ extern "C" void QUEST_GAME qg_init_library() {
     if (server) {
         QGRpcServer* rpc = GetQGSystem<QGRpcServer>();
         rpc->Bind("get_available_quests", QuestPlayer::ServerAvailableQuestsCB);
+    }
+
+    // Client only
+    QGUISystem* uiSystem = GetQGSystem<QGUISystem>();
+    if (uiSystem) {
+        // Build overlay screen
+        QGUIScreen* mainOverlayScreen = new QGUIScreen();
+
+        // Add container
+        QGUIContainer* container = new QGUIContainer();
+        container->BGColor(vector4(1.0f, 0.0f, 0.0f, 1.0f));
+        mainOverlayScreen->AddChild(container);
+
+        // Add button
+        QGUIButton* button = new QGUIButton();
+        button->FixedWidth(150);
+        button->FixedHeight(30);
+        button->BGColor(vector4(1.0f, 1.0f, 0.0f, 0.0f));
+        container->AddChild(button);
+
+        // Set as active
+        uiSystem->ActiveScreen(mainOverlayScreen);
     }
 }

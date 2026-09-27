@@ -27,6 +27,7 @@
 #include <Render/QGAnimatedMeshComponent.h>
 #include <Render/QGAnimationLoader.h>
 #include <Render/QGAnimationSystem.h>
+#include <Render/UI/QGUISystem.h>
 
 int main()
 {
@@ -49,6 +50,7 @@ int main()
     QGScriptingSystem* scriptingSystem = application->CreateSystem<QGScriptingSystem>(60);
     QGRpcClient* rpcClient = application->CreateSystem<QGRpcClient>();
     QGAnimationSystem* animationSystem = application->CreateSystem<QGAnimationSystem>(60);
+    QGUISystem* uiSystem = application->CreateSystem<QGUISystem>(60);
 
     // Initialize systems
     application->Initialize();

@@ -18,6 +18,7 @@ public:
 		channels = 0;
 		type = QGTextureDataType::QGTEXTURE_BYTE;
 		m_data = 0;
+		m_dirty = false;
 
 		minificationFilter = magnificationFilter = TEXTURE_FILTER_LINEAR;
 		wrapX = wrapY = false;
@@ -32,10 +33,14 @@ public:
 		this->height = height;
 		this->channels = channels;
 		this->type = type;
+
+		if (this->m_data) free(m_data);
 		
 		int bytesize = (type == QGTEXTURE_BYTE) ? sizeof(unsigned char) : sizeof(float);
 		this->m_data = (void*)malloc(width * height * channels * bytesize);
 		memcpy(this->m_data, data, width * height * channels * bytesize);
+
+		m_dirty = true;
 	}
 
 	/**
@@ -53,6 +58,8 @@ public:
 	int height;
 	int channels;
 	QGTextureDataType type;
+
+	bool m_dirty;
 
 	unsigned int minificationFilter, magnificationFilter;
 	bool wrapX, wrapY;

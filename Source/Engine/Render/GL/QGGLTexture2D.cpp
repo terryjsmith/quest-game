@@ -5,8 +5,10 @@
 #include <Render/GL/QGGL.h>
 
 void QGGLTexture2D::Bind(int slot) {
-	if (m_texture == 0) {
-		GL_CHECK(glGenTextures(1, &m_texture));
+	if (m_texture == 0 || m_dirty == true) {
+		if(m_texture == 0) {
+			GL_CHECK(glGenTextures(1, &m_texture));
+		}
 
 		// Set internal variables from format
 		unsigned int internalFormat = 0;
@@ -44,6 +46,8 @@ void QGGLTexture2D::Bind(int slot) {
 
 		float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 		glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+		m_dirty = false;
 	}
 
 	GL_CHECK(glActiveTexture(GL_TEXTURE0 + slot));

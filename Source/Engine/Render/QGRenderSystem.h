@@ -11,6 +11,7 @@
 #include <Render/QGShaderProgram.h>
 #include <Render/QGScene.h>
 #include <Render/QGRenderPass.h>
+#include <Render/UI/QGUIScreen.h>
 
 class QUEST_API QGRenderSystem : public QGSystem {
 public:
@@ -72,9 +73,18 @@ public:
 		m_passes[index] = pass;
 	}
 
+	/**
+	 * Get / set active screen
+	 */
+	QGUIScreen* ActiveScreen() { return m_activeScreen; }
+	void ActiveScreen(QGUIScreen* screen) { m_activeScreen = screen; }
+
 protected:
 	// Scene to be rendered
 	QGScene* m_scene;
+
+	// Active UI
+	QGUIScreen* m_activeScreen;
 
 	// Render passes
 	std::map<int, QGRenderPass*> m_passes;

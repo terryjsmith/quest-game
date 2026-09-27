@@ -7,7 +7,7 @@
 
 class QUEST_API QGScene : public QGObject {
 public:
-	QGScene() = default;
+	QGScene() : camera(0) {}
 	~QGScene() = default;
 
 public:
