@@ -19,14 +19,14 @@ void QGUIRenderPass::Initialize(int width, int height) {
 
 	// Populate our vertex buffer and type
 	float box[] = {
-		(float)width, 0, 1, 1,
-		0, 0, 0, 1,
-		(float)width, (float)height, 1, 0,
-		0, (float)height, 0, 0,
+		(float)width, 0, 1, 0,
+		0, 0, 0, 0,
+		(float)width, (float)height, 1, 1,
+		0, (float)height, 0, 1
 	};
 
 	m_vertexFormat = renderSystem->CreateVertexAttributeList();
-	m_vertexFormat->AddVertexAttribute(QGVertexAttribute::ATTRIB_POSITION, 2, 0);
+	m_vertexFormat->AddVertexAttribute(QGVertexAttribute::ATTRIB_POSITION, 0, 2);
 	m_vertexFormat->AddVertexAttribute(QGVertexAttribute::ATTRIB_TEXCOORD0, 2, 2);
 
 	m_vertexBuffer = renderSystem->CreateVertexBuffer();
@@ -60,6 +60,8 @@ void QGUIRenderPass::Render(QGScene* scene) {
 
 	// Disable depth testing
 	renderSystem->DisableDepthTest();
+	renderSystem->EnableBlending();
+	renderSystem->SetBlendFunc(BLEND_SRC_COLOR, BLEND_ONE_MINUS_SRC_COLOR);
 
 	// Bind shader program
 	m_program->Bind();
@@ -83,4 +85,6 @@ void QGUIRenderPass::Render(QGScene* scene) {
 	m_program->Set("inputTexture", 0);
 
 	renderSystem->Draw(DRAW_TRIANGLE_STRIP, vertexCount);
+
+	renderSystem->DisableBlending();
 }

@@ -62,6 +62,7 @@ void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
         QGResourceSystem* resourceSystem = GetQGSystem<QGResourceSystem>();
         QGAnimatedMeshComponent* mesh = event->entity->CreateComponent<QGAnimatedMeshComponent>();
         mesh->mesh = (QGMesh*)resourceSystem->Load("Resources/Meshes/" + model + ".fbx", "Mesh");
+        mesh->transform.Rotate(vector3(0, 1, 0), 180);
 
         // Load animations
         QGAnimatedMeshComponent* mc = entity->GetComponent<QGAnimatedMeshComponent>();
@@ -142,14 +143,14 @@ extern "C" void QUEST_GAME qg_init_library() {
 
         // Add container
         QGUIContainer* container = new QGUIContainer();
-        container->BGColor(vector4(1.0f, 0.0f, 0.0f, 1.0f));
+        container->BGColor(vector4(255.0f, 0.0f, 0.0f, 255.0f));
         mainOverlayScreen->AddChild(container);
 
         // Add button
         QGUIButton* button = new QGUIButton();
         button->FixedWidth(150);
         button->FixedHeight(30);
-        button->BGColor(vector4(1.0f, 1.0f, 0.0f, 0.0f));
+        button->BGColor(vector4(255.0f, 255.0f, 0.0f, 255.0f));
         container->AddChild(button);
 
         // Set as active

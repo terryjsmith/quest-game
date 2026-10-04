@@ -58,7 +58,7 @@ void QGForwardRenderPass::Render(QGScene* scene) {
 		QGMesh* mesh = meshc->mesh;
 
 		QGEntity* entity = meshc->Entity();
-		matrix4 transform = entity->transform.Matrix();
+		matrix4 transform = entity->transform.Matrix() * meshc->transform.Matrix();
 		this->RecursiveRender(mesh, false, m_program, transform);
 	}
 

@@ -53,6 +53,11 @@ public:
 	 */
 	virtual void* Data() { return m_data; }
 
+	/**
+	 * Save
+	 */
+	void Save(std::string filename);
+
 public:
 	int width;
 	int height;

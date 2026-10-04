@@ -57,6 +57,13 @@ public:
 	virtual void DisableDepthTest() {}
 
 	/**
+	 * Blending
+	 */
+	virtual void EnableBlending() {}
+	virtual void DisableBlending() {}
+	virtual void SetBlendFunc(int sourceFactor, int destFactor) {}
+
+	/**
 	 * Create resources
 	 */
 	virtual QGTexture2D* CreateTexture2D() { return new QGTexture2D(); }

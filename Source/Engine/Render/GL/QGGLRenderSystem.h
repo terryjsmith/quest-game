@@ -43,6 +43,13 @@ public:
 	void DisableDepthTest();
 
 	/**
+	 * Blending
+	 */
+	void EnableBlending();
+	void DisableBlending();
+	void SetBlendFunc(int sourceFactor, int destFactor);
+
+	/**
 	 * Create resources
 	 */
 	QGTexture2D* CreateTexture2D() { return new QGGLTexture2D(); }

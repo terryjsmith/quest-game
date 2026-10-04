@@ -1,3 +1,4 @@
+#version 400 core
 
 /**
  * Input variables

@@ -17,6 +17,7 @@ public:
 
 public:
 	QGMesh* mesh;
+	QGTransform transform;
 };
 
 #endif

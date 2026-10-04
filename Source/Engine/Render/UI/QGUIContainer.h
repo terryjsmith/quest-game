@@ -10,6 +10,7 @@ public:
 	QGUIContainer() {
 		m_maxHeight = m_maxWidth = 0;
 		m_scaleX = m_scaleY = true;
+		m_bgcolor = vector4(0.0f);
 	}
 	~QGUIContainer() = default;
 

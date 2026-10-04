@@ -40,8 +40,9 @@ QGResourceObject* QGResourceSystem::Load(std::string filename, std::string type)
 	resource->extension = resource->extension.substr(1, resource->extension.length() - 1);
 
 	// Load the data
-	resource->m_data = (unsigned char*)malloc(resource->filesize);
-	memset(resource->m_data, 0, resource->filesize);
+	int mfilesize = resource->filesize + (isBinary ? 0 : 1);
+	resource->m_data = (unsigned char*)malloc(mfilesize);
+	memset(resource->m_data, 0, mfilesize);
 	fread(resource->m_data, 1, resource->filesize, resource->m_fp);
 
 	m_resources[filename] = resource;

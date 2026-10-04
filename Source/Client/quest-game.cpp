@@ -28,6 +28,7 @@
 #include <Render/QGAnimationLoader.h>
 #include <Render/QGAnimationSystem.h>
 #include <Render/UI/QGUISystem.h>
+#include <Render/Passes/QGUIRenderPass.h>
 
 int main()
 {
@@ -83,6 +84,9 @@ int main()
     // Setup rendering pipeline
     QGForwardRenderPass* forwardRenderPass = new QGForwardRenderPass();
     renderSystem->AddRenderPass(0, forwardRenderPass);
+
+    QGUIRenderPass* uiRenderPass = new QGUIRenderPass();
+    renderSystem->AddRenderPass(1, uiRenderPass);
 
     // Create command mappings
     inputSystem->RegisterCommand(10, "MOVE");

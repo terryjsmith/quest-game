@@ -68,15 +68,17 @@ void QGUISystem::RecursiveRender(QGUIControl* node, vector2 topleft, vector2 bot
 
 	// Copy into data
 	unsigned char* bytes = node->Bytes();
-	for (int y = 0; y < node->Height(); y++) {
-		if (y >= bottomright.y || y >= m_height) continue;
-		for (int x = 0; x < node->Width(); x++) {
-			if (x >= bottomright.x || x >= node->Height()) continue;
+	if (bytes) {
+		for (int y = 0; y < node->Height(); y++) {
+			if (y >= bottomright.y || y >= m_height) continue;
+			for (int x = 0; x < node->Width(); x++) {
+				if (x >= bottomright.x || x >= m_width) continue;
 
-			int localoffset = ((y * node->Width()) + x) * 4;
-			int screenoffset = (((topleft.y + y) * m_width) + (topleft.x + x)) * 4;
+				int localoffset = ((y * node->Width()) + x) * 4;
+				int screenoffset = (((topleft.y + y) * m_width) + (topleft.x + x)) * 4;
 
-			memcpy(output + screenoffset, bytes + localoffset, 4);
+				memcpy(output + screenoffset, bytes + localoffset, 4);
+			}
 		}
 	}
 

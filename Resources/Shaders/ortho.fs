@@ -1,3 +1,4 @@
+#version 400 core
 
 /**
  * In variables
@@ -20,6 +21,6 @@ out vec4 out_diffuse;
  * Main
  */
 void main () {
-    out_diffuse = vec4(texture(inputTexture, frag_texcoord.st).rgb, 1.0);
+    out_diffuse = texture(inputTexture, frag_texcoord.st);
     //out_diffuse = vec4(0.0, 1.0, 1.0, 1.0);
 }

@@ -44,4 +44,17 @@ void QGGLRenderSystem::DisableDepthTest() {
 	GL_CHECK(glDisable(GL_DEPTH_TEST));
 }
 
+void QGGLRenderSystem::EnableBlending() {
+	GL_CHECK(glEnable(GL_BLEND));
+}
+
+void QGGLRenderSystem::DisableBlending() {
+	GL_CHECK(glDisable(GL_BLEND));
+}
+
+void QGGLRenderSystem::SetBlendFunc(int sourceFactor, int destFactor) {
+	GL_CHECK(glBlendFunc(sourceFactor, destFactor));
+}
+
+
 #endif
