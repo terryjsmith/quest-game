@@ -76,7 +76,7 @@ int main()
     resourceSystem->RegisterResourceLoader<QGAnimationLoader>("Animation");
 
     // Initialize server
-    const char* address = "159.89.229.105:35325";
+    const char* address = "165.227.195.108:35325";
     networkSystem->Listen(address);
 
     // Connect to database

@@ -19,3 +19,17 @@ void QGUIButton::Redraw() {
 
 	m_dirty = false;
 }
+
+void QGUIButton::OnMouseEvent(int type, QGUIMouseEvent* event) {
+	if (type == QGUI_MOUSE_ENTER) {
+		m_state = QGUI_STATE_HOVER;
+	}
+
+	if (type == QGUI_MOUSE_EXIT) {
+		m_state = QGUI_STATE_DEFAULT;
+	}
+
+	if (type == QGUI_MOUSE_CLICK) {
+		m_state = QGUI_STATE_CLICK;
+	}
+}

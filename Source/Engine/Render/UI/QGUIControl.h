@@ -9,6 +9,7 @@ class QUEST_API QGUIControl : public QGObject {
 public:
 	QGUIControl() {
 		m_width = m_height = -1;
+		m_xpos = m_ypos = 0;
 		m_alignment = ALIGN_TOP | ALIGN_LEFT;
 		m_xstretch = m_ystretch = false;
 		m_bytes = 0;
@@ -49,6 +50,12 @@ public:
 	bool Enabled() { return m_enabled; }
 	void Enabled(bool enabled) { m_enabled = enabled; }
 
+	int XPos() { return m_xpos; }
+	void XPos(int xpos) { m_xpos = xpos; }
+
+	int YPos() { return m_ypos; }
+	void YPos(int ypos) { m_ypos = ypos; }
+
 	/**
 	 * Hierarchy
 	 */
@@ -83,15 +90,28 @@ protected:
 	std::vector<QGUIControl*> m_children;
 
 protected:
-	int m_width, m_height;
+	// Alignment (vertical and horizontal bits)
 	int m_alignment;
+
+	// Stretch factor to fill area
 	bool m_xstretch, m_ystretch;
+
+	// Fixed width and height
 	int m_fixedWidth, m_fixedHeight;
+
+	// Alignment (horizontal and vertical bits)
 	QGUIAlign m_align;
+
+	// Position on screen (calculated, should not be set)
+	int m_xpos, m_ypos;
+
+	// Width and height (calculated, not set)
+	int m_width, m_height;
 
 	unsigned char* m_bytes;
 	bool m_dirty;
 
+	// Enabled or disabled (affects events and rendering)
 	bool m_enabled;
 
 	QGUIControl* m_parent;

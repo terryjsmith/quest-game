@@ -50,7 +50,7 @@ QGTexture2D* LoadTexture(aiTextureType type, const aiMaterial* pMaterial, std::s
 				components = 4;
 
 				// Need to re-arrange bytes
-				unsigned char* newData = (unsigned char*)(width * height * 4);
+				unsigned char* newData = (unsigned char*)malloc(width * height * 4);
 				for (int y = 0; y < height; y++) {
 					for (int x = 0; x < width; x++) {
 						int offset = ((y * width) + x) * components;

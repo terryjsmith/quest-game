@@ -257,39 +257,30 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
         avg /= points;
         client->m_avgRTT = avg;
 
-        printf("Average RTT: %d ms\n", avg);
+        printf("Average RTT: %d ms, tick %llu\n", avg, currentTick);
 
         // Figure out what our current timestamp should be
         if (client->m_rtts.size() >= 5) {
-            uint64_t expectedDiff = currentTick - sequence_num;
-            uint64_t actualDiff = (currentTick - packetTick) * 2;
-            int adjust = ((float)(actualDiff - expectedDiff) / QG_TICKS_PER_SECOND) * 1000;
+            int RTTinTicks = ((int64_t)currentTick - sequence_num);
+            int clientServerDiffinTicks = (int64_t)(currentTick - (RTTinTicks / 2) - packetTick);
 
+            float adjust = ((float)clientServerDiffinTicks / QG_TICKS_PER_SECOND);
+
+            printf("Adjust: %f seconds\n", adjust);
+
+            timespec startupTime = timeSystem->StartupTime();
             timespec clientts = timeSystem->StartupTime();
-            int nanoadjust = adjust * 1000000;
-            if (nanoadjust > 0) {
-                if (clientts.tv_nsec > nanoadjust) {
-                    clientts.tv_nsec -= nanoadjust;
-                }
-                else {
-                    clientts.tv_nsec -= 1;
-                    clientts.tv_nsec = (clientts.tv_nsec + 1000000000) - nanoadjust;
-                }
-            }
-            else {
-                if (clientts.tv_nsec + nanoadjust > 1000000000) {
-                    clientts.tv_sec += 1;
-                    clientts.tv_nsec = (clientts.tv_nsec + nanoadjust) - 1000000000;
-                }
-                else {
-                    clientts.tv_nsec += nanoadjust;
-                }
-            }
+            int seconds = std::floor(adjust);
+            int nanoseconds = std::floor((adjust - seconds) * 1000000000);
+            clientts.tv_sec += seconds;
+            clientts.tv_nsec = nanoseconds;
 
             // After initial set, set every X seconds
             if (currentTick > (m_lastTimeSet + (QG_TICKS_PER_SECOND * QGNETWORK_CLIENT_RESYNC_TIME))) {
                 timeSystem->StartupTime(clientts);
-                printf("Syncing startup time...\n");
+                uint64_t nowTick = timeSystem->Tick();
+                
+                printf("Syncing startup time, tick was %llu, adjust %f s, now %llu...\n", currentTick, adjust, nowTick);
                 m_lastTimeSet = currentTick;
             }
         }

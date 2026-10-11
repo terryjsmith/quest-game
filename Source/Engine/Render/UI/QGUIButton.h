@@ -8,7 +8,7 @@ class QUEST_API QGUIButton : public QGUIControl {
 public:
 	QGUIButton() {
 		m_bgcolors[QGUI_STATE_DEFAULT] = vector4(255.0f);
-		m_bgcolors[QGUI_STATE_HOVER] = vector4(0.0f);
+		m_bgcolors[QGUI_STATE_HOVER] = vector4(0.0f, 255.0f, 0.0f, 255.0f);
 		m_bgcolors[QGUI_STATE_CLICK] = vector4(255.0f, 0.0f, 0.0f, 255.0f);
 
 		m_state = QGUI_STATE_DEFAULT;
@@ -28,6 +28,11 @@ public:
 
 	vector4 ClickColor() { return m_bgcolors[2]; }
 	void ClickColor(vector4 color) { m_bgcolors[2] = color; }
+
+	/**
+	 * Callbacks / event handlers
+	 */
+	virtual void OnMouseEvent(int type, QGUIMouseEvent* event);
 
 	/**
 	 * Draw

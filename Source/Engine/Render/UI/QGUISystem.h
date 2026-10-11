@@ -12,6 +12,7 @@ public:
 		m_activeScreen = 0;
 		m_data = 0;
 		m_width = m_height = 0;
+		m_lastCursorPos = vector2(-1, -1);
 	}
 	~QGUISystem() = default;
 
@@ -38,11 +39,15 @@ public:
 
 protected:
 	void RecursiveRender(QGUIControl* node, vector2 topleft, vector2 bottomright, unsigned char* output);
+	void RecursiveCursorEventHandler(QGUIControl* node, int type, vector2 position);
 
 protected:
 	QGUIScreen* m_activeScreen;
 	unsigned char* m_data;
 	int m_width, m_height;
+
+	// Previous cursor position
+	vector2 m_lastCursorPos;
 };
 
 #endif
