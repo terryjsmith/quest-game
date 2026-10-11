@@ -2,7 +2,7 @@
 #ifndef qgmouse_h
 #define qgmouse_h
 
-#include <IO/QGInputDevice.h>
+#include <IO/QGCursor.h>
 
 enum QUEST_API QGMouseButtons {
 	MOUSE_BUTTON_LEFT = 0,
@@ -11,7 +11,7 @@ enum QUEST_API QGMouseButtons {
 	MOUSE_BUTTON_LAST
 };
 
-class QUEST_API QGMouse : public QGInputDevice {
+class QUEST_API QGMouse : public QGCursor {
 public:
 	QGMouse() = default;
 	~QGMouse() = default;

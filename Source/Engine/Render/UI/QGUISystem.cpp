@@ -2,18 +2,18 @@
 #include <Render/UI/QGUISystem.h>
 #include <IO/QGInputSystem.h>
 #include <Core/QGApplication.h>
-#include <IO/QGMouse.h>
+#include <IO/QGCursor.h>
 
 void QGUISystem::Update(float delta) {
 	// Process cursor position and update states
 	QGInputSystem* inputSystem = GetQGSystem<QGInputSystem>();
-	QGMouse* mouse = inputSystem->FindInputDevice<QGMouse>();
+	QGCursor* cursor = inputSystem->FindInputDevice<QGCursor>();
 
-	vector2 cursor = mouse->GetCursorPosition();
+	vector2 cursorpos = cursor->GetCursorPosition();
 
 	// Process hierarchy to look for intersections
-	RecursiveCursorEventHandler(m_activeScreen, QGUI_MOUSE_MOVE, cursor);
-	m_lastCursorPos = cursor;
+	RecursiveCursorEventHandler(m_activeScreen, QGUI_MOUSE_MOVE, cursorpos);
+	m_lastCursorPos = cursorpos;
 }
 
 void QGUISystem::Render(int width, int height) {
