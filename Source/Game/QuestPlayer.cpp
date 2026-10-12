@@ -153,6 +153,15 @@ void QuestPlayer::GetAvailableQuests() {
     rpcClient->Call("get_available_quests", &args, ClientAvailableQuestsCB);
 }
 
+void QuestPlayer::AcceptQuest(int questID) {
+    QGRpcClient* rpcClient = GetQGSystem<QGRpcClient>();
+    if (rpcClient == 0) return;
+
+    QGDataRecord args;
+    args.Set("questID", questID);
+    rpcClient->Call("accept_quest", &args, ClientAcceptQuestCB);
+}
+
 void QuestPlayer::ClientAvailableQuestsCB(std::string func, nlohmann::json response) {
     QGReplicationClient* replClient = GetQGSystem<QGReplicationClient>();
     QGWorld* world = QGWorld::GetInstance();
@@ -201,10 +210,52 @@ std::string QuestPlayer::ServerAvailableQuestsCB(std::string func, QGDataRecord*
             if (prerequisites == false) continue;
 
             // Other requirements are met, add
+            player->m_availableQuests.push_back(quest->id);
             retval.push_back(quest->id);
         }
     }
 
     nlohmann::json retobj = retval;
+    return(retobj.dump());
+}
+
+void QuestPlayer::ClientAcceptQuestCB(std::string func, nlohmann::json response) {
+    QGReplicationClient* replClient = GetQGSystem<QGReplicationClient>();
+    QGWorld* world = QGWorld::GetInstance();
+
+    // Get player
+    QGEntity* entity = world->FindEntity(replClient->PlayerID());
+    QuestPlayer* player = entity->GetComponent<QuestPlayer>();
+
+    int accepted = response["accepted"].get<int>();
+    if (accepted) {
+        player->m_currentQuests.push_back(accepted);
+    }
+    else {
+        // Error, let player know
+        return;
+    }
+
+    // TODO: trigger quest UI to update
+}
+
+std::string QuestPlayer::ServerAcceptQuestCB(std::string func, QGDataRecord* args, QGEntity* entity) {
+    // Get list of available quests
+    QuestPlayer* player = entity->GetComponent<QuestPlayer>();
+
+    int questID = args->Get("questID").AsInt();
+    auto it = std::find(player->m_availableQuests.begin(), player->m_availableQuests.end(), questID);
+    if (it == player->m_availableQuests.end()) {
+        // Request denied
+        std::map<std::string, int> c_map{ {"accepted", 0} };
+        nlohmann::json retobj = c_map;
+        return(retobj.dump());
+    }
+
+    player->m_currentQuests.push_back(questID);
+
+    // Reuqest approved
+    std::map<std::string, int> c_map{ {"accepted", questID} };
+    nlohmann::json retobj = c_map;
     return(retobj.dump());
 }

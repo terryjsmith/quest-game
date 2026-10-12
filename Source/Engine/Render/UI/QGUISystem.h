@@ -5,6 +5,7 @@
 #include <Render/UI/QGUIScreen.h>
 #include <Core/QGSystem.h>
 #include <Render/QGTexture2D.h>
+#include <Core/QGEvent.h>
 
 class QUEST_API QGUISystem : public QGSystem {
 public:
@@ -36,6 +37,11 @@ public:
 	 * Get texture data
 	 */
 	unsigned char* Data() { return m_data; }
+
+	/**
+	 * Callbacks
+	 */
+	static void InputEventCallback(QGEvent* ev, QGObject* obj);
 
 protected:
 	void RecursiveRender(QGUIControl* node, vector2 topleft, vector2 bottomright, unsigned char* output);

@@ -24,8 +24,8 @@ void MouseCallback(GLFWwindow* window, int button, int action, int mods) {
 void QGMouse::Initialize() {
 	GLFWwindow* window = QGGameWindow::GetInstance()->Handle();
 	if (glfwSetMouseButtonCallback(window, MouseCallback) == NULL) {
-		QGASSERT(false, "Error initializing mouse callback.");
-		return;
+		//QGASSERT(false, "Error initializing mouse callback.");
+		//return;
 	}
 }
 

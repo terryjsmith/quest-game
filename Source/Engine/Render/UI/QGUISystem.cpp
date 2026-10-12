@@ -3,6 +3,7 @@
 #include <IO/QGInputSystem.h>
 #include <Core/QGApplication.h>
 #include <IO/QGCursor.h>
+#include <Core/QGEventSystem.h>
 
 void QGUISystem::Update(float delta) {
 	// Process cursor position and update states
@@ -14,6 +15,30 @@ void QGUISystem::Update(float delta) {
 	// Process hierarchy to look for intersections
 	RecursiveCursorEventHandler(m_activeScreen, QGUI_MOUSE_MOVE, cursorpos);
 	m_lastCursorPos = cursorpos;
+
+	// Register for click events
+	QGEventSystem* eventSystem = GetQGSystem<QGEventSystem>();
+	eventSystem->Subscribe<QGInputEvent>(InputEventCallback);
+}
+
+void QGUISystem::InputEventCallback(QGEvent* ev, QGObject* obj) {
+	QGInputEvent* event = (QGInputEvent*)ev;
+	QGInputSystem* inputSystem = GetQGSystem<QGInputSystem>();
+	QGCursor* cursor = inputSystem->FindInputDevice<QGCursor>();
+	QGUISystem* uiSystem = GetQGSystem<QGUISystem>();
+
+	// Check for cursor events
+	if (event->device != cursor) return;
+
+	vector2 cursorpos = cursor->GetCursorPosition();
+	if (event->button == CURSOR_BUTTON_LEFT) {
+		if (event->state == 1.0f) {
+			uiSystem->RecursiveCursorEventHandler(uiSystem->m_activeScreen, QGUI_MOUSE_CLICK, cursorpos);
+		}
+		if (event->state == 0.0f) {
+			uiSystem->RecursiveCursorEventHandler(uiSystem->m_activeScreen, QGUI_MOUSE_RELEASE, cursorpos);
+		}
+	}
 }
 
 void QGUISystem::Render(int width, int height) {

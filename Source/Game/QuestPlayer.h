@@ -35,12 +35,20 @@ public:
 	void GetAvailableQuests();
 
 	/**
+	 * Accept a quest
+	 */
+	void AcceptQuest(int questID);
+
+	/**
 	 * Callbacks
 	 */
 	static void InputCommandCallback(QGEvent* ev, QGObject* obj);
 
 	static void ClientAvailableQuestsCB(std::string func, nlohmann::json response);
 	static std::string ServerAvailableQuestsCB(std::string func, QGDataRecord* args, QGEntity* entity);
+
+	static void ClientAcceptQuestCB(std::string func, nlohmann::json response);
+	static std::string ServerAcceptQuestCB(std::string func, QGDataRecord* args, QGEntity* entity);
 
 	/**
 	 * Serialization
@@ -62,6 +70,7 @@ public:
 protected:
 	QGCameraComponent* m_camera;
 	std::vector<int> m_availableQuests;
+	std::vector<int> m_currentQuests;
 	std::map<int, bool> m_completedQuests;
 	bool m_initialized;
 	static bool m_subscribed;

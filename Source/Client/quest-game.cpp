@@ -29,6 +29,7 @@
 #include <Render/QGAnimationSystem.h>
 #include <Render/UI/QGUISystem.h>
 #include <Render/Passes/QGUIRenderPass.h>
+#include <IO/QGMouse.h>
 
 int main()
 {
@@ -113,8 +114,10 @@ int main()
     renderSystem->Initialize(window->Width(), window->Height());
     renderSystem->InitializeGL();
 
-    // Create a keyboard
+    // Create a keyboard and mouse
     QGKeyboard* keyboard = inputSystem->CreateInputDevice<QGKeyboard>();
+    QGMouse* mouse = inputSystem->CreateInputDevice<QGMouse>();
+
 
     // Register key mappings
     inputSystem->AssociateCommandInput("MOVE", keyboard, QGKeys::KEY_UP,    1.0f);

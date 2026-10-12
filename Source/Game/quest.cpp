@@ -19,6 +19,8 @@
 #include <Render/UI/QGUIScreen.h>
 #include <Render/UI/QGUIButton.h>
 #include <Render/UI/QGUIContainer.h>
+#include <Network/QGReplicationClient.h>
+#include <Core/QGWorld.h>
 
 // Callback for newly connected players
 void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
@@ -133,6 +135,7 @@ extern "C" void QUEST_GAME qg_init_library() {
     if (server) {
         QGRpcServer* rpc = GetQGSystem<QGRpcServer>();
         rpc->Bind("get_available_quests", QuestPlayer::ServerAvailableQuestsCB);
+        rpc->Bind("accept_quest", QuestPlayer::ServerAcceptQuestCB);
     }
 
     // Client only
@@ -152,6 +155,19 @@ extern "C" void QUEST_GAME qg_init_library() {
         button->FixedHeight(30);
         button->BGColor(vector4(255.0f, 255.0f, 0.0f, 255.0f));
         container->AddChild(button);
+        button->OnClick([]() 
+            {
+                // Get player
+                QGReplicationClient* client = GetQGSystem<QGReplicationClient>();
+                uint64_t playerID = client->PlayerID();
+
+                QGEntity* entity = QGWorld::GetInstance()->FindEntity(playerID);
+                QuestPlayer* player = entity->GetComponent<QuestPlayer>();
+
+                // Activate quest
+                player->AcceptQuest(1);
+            }
+        );
 
         // Set as active
         uiSystem->ActiveScreen(mainOverlayScreen);

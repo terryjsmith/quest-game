@@ -12,6 +12,7 @@ public:
 		m_bgcolors[QGUI_STATE_CLICK] = vector4(255.0f, 0.0f, 0.0f, 255.0f);
 
 		m_state = QGUI_STATE_DEFAULT;
+		m_hover = false;
 
 		m_xstretch = m_ystretch = false;
 	}
@@ -29,10 +30,12 @@ public:
 	vector4 ClickColor() { return m_bgcolors[2]; }
 	void ClickColor(vector4 color) { m_bgcolors[2] = color; }
 
+	void OnClick(std::function<void()> func) { m_clickFunction = func; }
+
 	/**
 	 * Callbacks / event handlers
 	 */
-	virtual void OnMouseEvent(int type, QGUIMouseEvent* event);
+	void OnMouseEvent(int type, QGUIMouseEvent* event);
 
 	/**
 	 * Draw
@@ -42,6 +45,9 @@ public:
 protected:
 	std::map<int, vector4> m_bgcolors;
 	int m_state;
+	bool m_hover;
+
+	std::function<void()> m_clickFunction;
 };
 
 #endif

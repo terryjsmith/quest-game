@@ -28,8 +28,8 @@ void KeyboardCallback(GLFWwindow* window, int key, int scancode, int action, int
 void QGKeyboard::Initialize() {
 	GLFWwindow* window = QGGameWindow::GetInstance()->Handle();
 	if (glfwSetKeyCallback(window, KeyboardCallback) == NULL) {
-		QGASSERT(false, "Error initializing keyboard callback.");
-		return;
+		//QGASSERT(false, "Error initializing keyboard callback.");
+		//return;
 	}
 
 	// Map keys from GLFW to internal mappings
