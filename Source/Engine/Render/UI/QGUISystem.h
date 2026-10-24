@@ -24,6 +24,11 @@ public:
 	void ActiveScreen(QGUIScreen* screen) { m_activeScreen = screen; }
 
 	/**
+	 * Initialize and subscribe to events
+	 */
+	void Initialize();
+
+	/**
 	 * Update all elements
 	 */
 	void Update(float delta);

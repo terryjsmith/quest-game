@@ -77,6 +77,10 @@ list (APPEND ENGINE_INCLUDE_DIRS "Source/ThirdParty/curl-8.11.0/include")
 list (APPEND ENGINE_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/Source/ThirdParty/gl3w/include")
 list (APPEND ENGINE_INCLUDE_DIRS "Source/ThirdParty/glfw-3.4/include")
 
+add_subdirectory(Source/ThirdParty/freetype-2.13.2)
+list (APPEND ENGINE_LIBS freetype)
+list (APPEND ENGINE_INCLUDE_DIRS "Source/ThirdParty/freetype-2.13.2/include")
+
 if(USE_OPENGL)
 	add_subdirectory(Source/ThirdParty/gl3w)
 	list (APPEND ENGINE_LIBS gl3w)

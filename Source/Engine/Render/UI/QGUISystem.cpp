@@ -5,6 +5,12 @@
 #include <IO/QGCursor.h>
 #include <Core/QGEventSystem.h>
 
+void QGUISystem::Initialize() {
+	// Register for click events
+	QGEventSystem* eventSystem = GetQGSystem<QGEventSystem>();
+	eventSystem->Subscribe<QGInputEvent>(InputEventCallback);
+}
+
 void QGUISystem::Update(float delta) {
 	// Process cursor position and update states
 	QGInputSystem* inputSystem = GetQGSystem<QGInputSystem>();
@@ -15,10 +21,6 @@ void QGUISystem::Update(float delta) {
 	// Process hierarchy to look for intersections
 	RecursiveCursorEventHandler(m_activeScreen, QGUI_MOUSE_MOVE, cursorpos);
 	m_lastCursorPos = cursorpos;
-
-	// Register for click events
-	QGEventSystem* eventSystem = GetQGSystem<QGEventSystem>();
-	eventSystem->Subscribe<QGInputEvent>(InputEventCallback);
 }
 
 void QGUISystem::InputEventCallback(QGEvent* ev, QGObject* obj) {
