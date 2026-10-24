@@ -19,6 +19,7 @@
 #include <Render/UI/QGUIScreen.h>
 #include <Render/UI/QGUIButton.h>
 #include <Render/UI/QGUIContainer.h>
+#include <Render/UI/QGUITextLabel.h>
 #include <Network/QGReplicationClient.h>
 #include <Core/QGWorld.h>
 
@@ -155,6 +156,17 @@ extern "C" void QUEST_GAME qg_init_library() {
         button->FixedHeight(30);
         button->BGColor(vector4(255.0f, 255.0f, 0.0f, 255.0f));
         container->AddChild(button);
+
+        QGResourceSystem* resourceSystem = GetQGSystem<QGResourceSystem>();
+        QGUIFont* font = (QGUIFont*)resourceSystem->Load("Resources/Fonts/GoogleSans-Medium.ttf", "Font");
+
+        QGUITextLabel* label = new QGUITextLabel();
+        label->Font(font);
+        label->Color(vector3(255, 255, 255));
+        label->FontSize(12);
+        label->Text("Click Me");
+        button->AddChild(label);
+
         button->OnClick([]() 
             {
                 // Get player

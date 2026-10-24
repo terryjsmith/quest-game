@@ -30,6 +30,7 @@
 #include <Render/UI/QGUISystem.h>
 #include <Render/Passes/QGUIRenderPass.h>
 #include <IO/QGMouse.h>
+#include <Render/UI/QGUIFontLoader.h>
 
 int main()
 {
@@ -106,6 +107,7 @@ int main()
     resourceSystem->RegisterResourceLoader<QGMeshLoader>("Mesh");
     resourceSystem->RegisterResourceLoader<QGShaderLoader>("Shader", false); 
     resourceSystem->RegisterResourceLoader<QGAnimationLoader>("Animation");
+    resourceSystem->RegisterResourceLoader<QGUIFontLoader>("Font");
 
     // Load game library
     scriptingSystem->LoadScriptLibrary("quest-game");
