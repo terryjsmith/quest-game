@@ -101,7 +101,7 @@ int main()
     collisionShape->Initialize(1.0f);
     colliderc->Shape(collisionShape);
 
-    QGEntity* enemy = world->CreateEntity("Enemy", 30);
+    /*QGEntity* enemy = world->CreateEntity("Enemy", 30);
     enemy->AddTag("enemy");
     QGMeshComponent* qemeshc = enemy->CreateComponent<QGMeshComponent>();
     qemeshc->mesh = (QGMesh*)resourceSystem->Load("Resources/Meshes/box.fbx", "Mesh");
@@ -110,7 +110,7 @@ int main()
     QGCollisionComponent* ecolliderc = enemy->CreateComponent<QGCollisionComponent>();
     QGSphereCollider* ecollisionShape = new QGSphereCollider();
     ecollisionShape->Initialize(1.0f);
-    ecolliderc->Shape(ecollisionShape);
+    ecolliderc->Shape(ecollisionShape);*/
 
     // Get start time of loop
     timespec lastTimestamp;
