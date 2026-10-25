@@ -162,7 +162,7 @@ void QGNetworkClient::Send(uint32_t type, unsigned char* data, uint32_t size, bo
     unsigned char* newBytes = (unsigned char*)malloc(newSize);
 
     int offset = 0;
-    m_nextPacketID = m_nextPacketID++;
+    m_nextPacketID++;
     memcpy(newBytes + offset, &m_nextPacketID, sizeof(uint64_t));
     offset += sizeof(uint64_t);
 
