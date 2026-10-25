@@ -59,6 +59,7 @@ protected:
 		std::map<uint64_t, uint64_t> m_ackPacketTicks;
 		std::map<uint64_t, QGNetworkPacket*> m_ackPackets;
 		uint64_t lastSyncTick;
+		uint64_t m_nextPacketID;
 
 		std::vector<int> rtts;
 		int avgRTT;

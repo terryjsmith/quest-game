@@ -21,6 +21,10 @@ void QGNetworkServer::HandleConnectDisconnect(void* context, int client_index, i
 		eventSystem->Publish(new QGNetworkClientConnectEvent(client_index, client_id));
 
 		QGConnectedClient* client = new QGConnectedClient();
+		client->avgRTT = 0;
+		client->lastSyncTick = 0;
+		client->m_nextPacketID = 0;
+
 		server->m_clients[client_index] = client;
 		server->m_clientIDtoIndex[client_id] = client_index;
 	}
@@ -77,6 +81,9 @@ void QGNetworkServer::Update(float delta) {
 			QGNetworkPacket qgpacket;
 
 			int offset = 0;
+			memcpy(&qgpacket.env.id, packet + offset, sizeof(uint64_t));
+			offset += sizeof(uint64_t);
+
 			memcpy(&qgpacket.env.type, packet + offset, sizeof(uint8_t));
 			offset += sizeof(uint8_t);
 
@@ -89,6 +96,12 @@ void QGNetworkServer::Update(float delta) {
 			// client id - never trust the client
 			//offset += sizeof(uint64_t);
 			qgpacket.env.client = netcode_server_client_id(m_server, i);
+
+			memcpy(&qgpacket.env.start, packet + offset, sizeof(uint16_t));
+			offset += sizeof(uint16_t);
+
+			memcpy(&qgpacket.env.total, packet + offset, sizeof(uint16_t));
+			offset += sizeof(uint16_t);
 
 			memcpy(&qgpacket.env.ack, packet + offset, sizeof(uint8_t));
 			offset += sizeof(uint8_t);
@@ -129,6 +142,10 @@ void QGNetworkServer::Send(int client_index, uint32_t type, unsigned char* data,
 	unsigned char* newBytes = (unsigned char*)malloc(newSize);
 
 	int offset = 0;
+	uint64_t nextPacketID = m_clients[client_index]->m_nextPacketID++;
+	memcpy(newBytes + offset, &nextPacketID, sizeof(uint64_t));
+	offset += sizeof(uint64_t);
+
 	memcpy(newBytes + offset, &type, sizeof(uint8_t));
 	offset += sizeof(uint8_t);
 
@@ -142,6 +159,14 @@ void QGNetworkServer::Send(int client_index, uint32_t type, unsigned char* data,
 	uint64_t client_id = netcode_server_client_id(m_server, client_index);
 	//memcpy(newBytes + offset, &client_id, sizeof(uint64_t));
 	//offset += sizeof(uint64_t);
+
+	uint16_t start = 0;
+	memcpy(newBytes + offset, &start, sizeof(uint16_t));
+	offset += sizeof(uint16_t);
+
+	uint16_t end = size;
+	memcpy(newBytes + offset, &end, sizeof(uint16_t));
+	offset += sizeof(uint16_t);
 
 	int iack = (int)ack;
 	memcpy(newBytes + offset, &iack, sizeof(uint8_t));

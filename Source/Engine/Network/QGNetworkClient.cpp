@@ -57,6 +57,9 @@ void QGNetworkClient::Update(float delta) {
         QGNetworkPacket qgpacket;
         
         int offset = 0;
+        memcpy(&qgpacket.env.id, packet + offset, sizeof(uint64_t));
+        offset += sizeof(uint64_t);
+
         memcpy(&qgpacket.env.type, packet + offset, sizeof(uint8_t));
         offset += sizeof(uint8_t);
 
@@ -68,6 +71,12 @@ void QGNetworkClient::Update(float delta) {
 
         //memcpy(&qgpacket.env.client, &m_clientID, sizeof(uint64_t));
         //offset += sizeof(uint64_t);
+
+        memcpy(&qgpacket.env.start, packet + offset, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        memcpy(&qgpacket.env.total, packet + offset, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
 
         memcpy(&qgpacket.env.ack, packet + offset, sizeof(uint8_t));
         offset += sizeof(uint8_t);
@@ -129,6 +138,10 @@ void QGNetworkClient::Send(uint32_t type, unsigned char* data, uint32_t size, bo
     unsigned char* newBytes = (unsigned char*)malloc(newSize);
 
     int offset = 0;
+    m_nextPacketID = m_nextPacketID++;
+    memcpy(newBytes + offset, &m_nextPacketID, sizeof(uint64_t));
+    offset += sizeof(uint64_t);
+
     memcpy(newBytes + offset, &type, sizeof(uint8_t));
     offset += sizeof(uint8_t);
 
@@ -139,8 +152,16 @@ void QGNetworkClient::Send(uint32_t type, unsigned char* data, uint32_t size, bo
     memcpy(newBytes + offset, &tick, sizeof(uint64_t));
     offset += sizeof(uint64_t);
 
-    memcpy(newBytes + offset, &m_clientID, sizeof(uint64_t));
-    offset += sizeof(uint64_t);
+    //memcpy(newBytes + offset, &m_clientID, sizeof(uint64_t));
+    //offset += sizeof(uint64_t);
+
+    uint16_t start = 0;
+    memcpy(newBytes + offset, &start, sizeof(uint16_t));
+    offset += sizeof(uint16_t);
+
+    uint16_t end = size;
+    memcpy(newBytes + offset, &end, sizeof(uint16_t));
+    offset += sizeof(uint16_t);
 
     int iack = (int)ack;
     memcpy(newBytes + offset, &ack, sizeof(uint8_t));

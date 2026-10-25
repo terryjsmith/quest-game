@@ -10,7 +10,7 @@
 
 class QUEST_API QGNetworkClient : public QGNetworkSystem {
 public:
-	QGNetworkClient() : m_client(0), m_clientID(0), m_avgRTT(0), m_lastSyncTick(10000000000), m_lastTimeSet(0) { }
+	QGNetworkClient() : m_client(0), m_clientID(0), m_avgRTT(0), m_lastSyncTick(10000000000), m_lastTimeSet(0), m_nextPacketID(0) { }
 	~QGNetworkClient() = default;
 
 	/**
@@ -48,6 +48,7 @@ protected:
 protected:
 	struct netcode_client_t* m_client;
 	uint64_t m_clientID;
+	uint64_t m_nextPacketID;
 
 	std::map<uint64_t, uint64_t> m_ackPacketTicks;
 	std::map<uint64_t, QGNetworkPacket*> m_ackPackets;
