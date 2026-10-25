@@ -127,6 +127,7 @@ int main()
     inputSystem->AssociateCommandInput("TURN", keyboard, QGKeys::KEY_RIGHT, -1.0f);
     inputSystem->AssociateCommandInput("TURN", keyboard, QGKeys::KEY_LEFT,  1.0f);
     inputSystem->AssociateCommandInput("INTERACT", keyboard, QGKeys::KEY_X);
+    inputSystem->AssociateCommandInput("ATTACK", keyboard, QGKeys::KEY_1);
 
     // Initialize server
     const char* address = "137.184.52.20:35325";

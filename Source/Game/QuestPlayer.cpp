@@ -122,7 +122,7 @@ void QuestPlayer::InputCommandCallback(QGEvent* ev, QGObject* obj) {
         player->turnSpeed = command->state;
     }
 
-    if (command->command == "INTERACT" && command->state == 1.0)
+    if ((command->command == "INTERACT" || command->command == "ATTACK") && command->state == 1.0)
     {
         // Check for intersections
         QGCollisionSystem* collisionSystem = GetQGSystem<QGCollisionSystem>();
@@ -132,12 +132,22 @@ void QuestPlayer::InputCommandCallback(QGEvent* ev, QGObject* obj) {
             std::vector<QGEntity*> possibleEntities;
             for (auto it = entities.begin(); it != entities.end(); it++) {
                 // Intersection, check if this is a quest giver
-                QuestGiver* qg = entity->GetComponent<QuestGiver>();
-                if (qg != 0)
-                {
-                    possibleEntities.push_back(entity);
-                    printf("I'm interacting with an entity like a real game!\n");
-                    break;
+                if (command->command == "INTERACT") {
+                    QuestGiver* qg = entity->GetComponent<QuestGiver>();
+                    if (qg != 0)
+                    {
+                        possibleEntities.push_back(entity);
+                        printf("I'm interacting with an entity like a real game!\n");
+                        break;
+                    }
+                }
+
+                // Intersection, attack?
+                if (command->command == "ATTACK") {
+                    // Check for enemy tag
+                    if (entity->HasTag("enemy") == true) {
+                        printf("I'm attacking an enemy like a real game!\n");
+                    }
                 }
             }
         }

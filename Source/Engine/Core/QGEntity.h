@@ -57,6 +57,26 @@ public:
 	}
 
 	/**
+	 * Set or remove tags
+	 */
+	void AddTag(std::string tag) {
+		m_tags[tag] = true;
+	}
+
+	bool HasTag(std::string tag) {
+		auto it = m_tags.find(tag);
+		if (it != m_tags.end()) return(true);
+		return(false);
+	}
+
+	void RemoveTag(std::string tag) {
+		auto it = m_tags.find(tag);
+		if (it != m_tags.end()) {
+			m_tags.erase(it);
+		}
+	}
+
+	/**
 	 * Serialize
 	 */
 	void Serialize(QGDataRecord* record) {
@@ -84,6 +104,7 @@ public:
 
 protected:
 	std::vector<QGComponent*> m_components;
+	std::map<std::string, bool> m_tags;
 };
 
 #endif

@@ -266,7 +266,7 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
 
             float adjust = ((float)clientServerDiffinTicks / QG_TICKS_PER_SECOND);
 
-            printf("Adjust: %f seconds\n", adjust);
+            //printf("Adjust: %f seconds\n", adjust);
 
             timespec startupTime = timeSystem->StartupTime();
             timespec clientts = timeSystem->StartupTime();

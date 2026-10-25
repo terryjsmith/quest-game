@@ -29,6 +29,7 @@ void initialize_player_prefab(QGEvent* ev, QGObject* obj) {
     if (server) {
         QGPlayerConnectedEvent* event = (QGPlayerConnectedEvent*)ev;
         QGEntity* entity = event->entity;
+        entity->AddTag("player");
 
         // Add the player script component
         QGMetaSystem* metaSystem = GetQGSystem<QGMetaSystem>();
