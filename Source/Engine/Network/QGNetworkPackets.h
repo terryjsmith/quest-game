@@ -19,11 +19,11 @@ enum QGNetworkPackets {
  * Network envelope
  */
 struct QGNetworkEnvelope {
-	uint8_t type;
-	uint32_t size;
-	uint64_t tick;
-	uint64_t client;
-	uint8_t ack;
+	uint8_t type;		// Packet type from QGNetworkPackets
+	uint32_t size;		// Total size of packet
+	uint64_t tick;		// Packet tick
+	uint64_t client;	// Which client is sending the packet (not transmitted)
+	uint8_t ack;		// Whether we want an ack response
 };
 
 /**

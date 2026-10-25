@@ -66,8 +66,8 @@ void QGNetworkClient::Update(float delta) {
         memcpy(&qgpacket.env.tick, packet + offset, sizeof(uint64_t));
         offset += sizeof(uint64_t);
 
-        memcpy(&qgpacket.env.client, &m_clientID, sizeof(uint64_t));
-        offset += sizeof(uint64_t);
+        //memcpy(&qgpacket.env.client, &m_clientID, sizeof(uint64_t));
+        //offset += sizeof(uint64_t);
 
         memcpy(&qgpacket.env.ack, packet + offset, sizeof(uint8_t));
         offset += sizeof(uint8_t);

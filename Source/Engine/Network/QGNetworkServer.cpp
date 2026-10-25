@@ -87,7 +87,7 @@ void QGNetworkServer::Update(float delta) {
 			offset += sizeof(uint64_t);
 
 			// client id - never trust the client
-			offset += sizeof(uint64_t);
+			//offset += sizeof(uint64_t);
 			qgpacket.env.client = netcode_server_client_id(m_server, i);
 
 			memcpy(&qgpacket.env.ack, packet + offset, sizeof(uint8_t));
@@ -139,9 +139,9 @@ void QGNetworkServer::Send(int client_index, uint32_t type, unsigned char* data,
 	memcpy(newBytes + offset, &tick, sizeof(uint64_t));
 	offset += sizeof(uint64_t);
 
-	uint64_t client_id = netcode_server_client_id(m_server, client_index);
-	memcpy(newBytes + offset, &client_id, sizeof(uint64_t));
-	offset += sizeof(uint64_t);
+	//uint64_t client_id = netcode_server_client_id(m_server, client_index);
+	//memcpy(newBytes + offset, &client_id, sizeof(uint64_t));
+	//offset += sizeof(uint64_t);
 
 	int iack = (int)ack;
 	memcpy(newBytes + offset, &iack, sizeof(uint8_t));
