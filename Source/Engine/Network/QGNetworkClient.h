@@ -51,7 +51,7 @@ protected:
 	uint64_t m_nextPacketID;
 
 	std::map<uint64_t, uint64_t> m_ackPacketTicks;
-	std::map<uint64_t, QGNetworkPacket*> m_ackPackets;
+	std::map<uint64_t, QGNetworkPacket*> m_packets;
 
 	uint64_t m_lastSyncTick;
 	uint64_t m_lastTimeSet;

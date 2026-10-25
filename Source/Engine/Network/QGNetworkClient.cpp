@@ -88,7 +88,7 @@ void QGNetworkClient::Update(float delta) {
 
         // Ack back
         if (qgpacket.env.ack == 1)
-            this->SendAckPacket(qgpacket.env.tick);
+            this->SendAckPacket(qgpacket.env.id);
 
         // Process as an ack packet?
         if (qgpacket.env.type == QGPACKET_ACK)
@@ -115,11 +115,11 @@ void QGNetworkClient::Update(float delta) {
     // Determine response time from average RTT (plus 20%)
     if (m_avgRTT) {
         int avgRTTTicks = std::ceil(std::ceil(((float)m_avgRTT / 1000.0f) * (float)QG_TICKS_PER_SECOND) * 1.2f);
-        auto it = m_ackPackets.begin();
-        for (; it != m_ackPackets.end(); it++) {
-            if (it->first < (currentTick - avgRTTTicks)) {
+        auto it = m_packets.begin();
+        for (; it != m_packets.end(); it++) {
+            if (it->second->env.tick < (currentTick - avgRTTTicks)) {
                 // Resend
-                printf("Resending packet type %d from tick %llu.\n", it->second->env.type, it->first);
+                printf("Resending packet type %d from tick %llu.\n", it->second->env.type, it->second->env.tick);
                 this->Send(it->second->env.type, it->second->bytes, it->second->env.size, it->second->env.ack);
             }
             else {
@@ -128,7 +128,7 @@ void QGNetworkClient::Update(float delta) {
         }
 
         // Remove any re-sent packets
-        if (it != m_ackPackets.begin()) m_ackPackets.erase(m_ackPackets.begin(), it);
+        if (it != m_packets.begin()) m_packets.erase(m_packets.begin(), it);
     }
 }
 
@@ -159,8 +159,8 @@ void QGNetworkClient::Send(uint32_t type, unsigned char* data, uint32_t size, bo
     memcpy(newBytes + offset, &start, sizeof(uint16_t));
     offset += sizeof(uint16_t);
 
-    uint16_t end = size;
-    memcpy(newBytes + offset, &end, sizeof(uint16_t));
+    uint16_t total = size;
+    memcpy(newBytes + offset, &total, sizeof(uint16_t));
     offset += sizeof(uint16_t);
 
     int iack = (int)ack;
@@ -176,17 +176,20 @@ void QGNetworkClient::Send(uint32_t type, unsigned char* data, uint32_t size, bo
 
         // Store a copy of the packet
         QGNetworkPacket* packetcopy = new QGNetworkPacket();
+        packetcopy->env.id = m_nextPacketID;
         packetcopy->env.ack = ack;
         packetcopy->env.client = m_clientID;
         packetcopy->env.size = size;
         packetcopy->env.tick = tick;
         packetcopy->env.type = type;
+        packetcopy->env.start = start;
+        packetcopy->env.total = total;
 
         unsigned char* cpybytes = (unsigned char*)malloc(newSize);
         memcpy(cpybytes, data, size);
         packetcopy->bytes = cpybytes;
 
-        m_ackPackets[tick] = packetcopy;
+        m_packets[tick] = packetcopy;
     }
 
     netcode_client_send_packet(m_client, newBytes, offset);
@@ -254,8 +257,8 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
     uint64_t currentTick = timeSystem->Tick();
 
     // Check packet type
-    if (m_ackPackets.find(sequence_num) == m_ackPackets.end()) return;
-    QGNetworkPacket* ackPacket = m_ackPackets[sequence_num];
+    if (m_packets.find(sequence_num) == m_packets.end()) return;
+    QGNetworkPacket* ackPacket = m_packets[sequence_num];
     if (ackPacket->env.type == QGPACKET_SYNC) {
         // Use to establish a rough RTT based on one direction
         uint64_t diff = ((float)currentTick - sequence_num) * (1.0f / QG_TICKS_PER_SECOND) * 1000;
@@ -311,9 +314,9 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
     m_ackPacketTicks.erase(sequence_num);
 
     // Clean up
-    QGNetworkPacket* packetcopy = m_ackPackets[sequence_num];
+    QGNetworkPacket* packetcopy = m_packets[sequence_num];
     delete packetcopy;
-    m_ackPackets.erase(sequence_num);
+    m_packets.erase(sequence_num);
 }
 
 void QGNetworkClient::HandleStartupPacket(QGNetworkPacket* packet) {
