@@ -17,9 +17,6 @@ void QGNetworkServer::HandleConnectDisconnect(void* context, int client_index, i
 		std::string token = (char*)netcode_server_client_user_data(server->m_server, client_index);
 		server->m_connectTokens[client_id] = token;
 
-		// Publish connected event
-		eventSystem->Publish(new QGNetworkClientConnectEvent(client_index, client_id));
-
 		QGConnectedClient* client = new QGConnectedClient();
 		client->avgRTT = 0;
 		client->lastSyncTick = 0;
@@ -27,6 +24,9 @@ void QGNetworkServer::HandleConnectDisconnect(void* context, int client_index, i
 
 		server->m_clients[client_index] = client;
 		server->m_clientIDtoIndex[client_id] = client_index;
+
+		// Publish connected event
+		eventSystem->Publish(new QGNetworkClientConnectEvent(client_index, client_id));
 	}
 	else {
 		eventSystem->Publish(new QGNetworkClientDisconnectEvent(client_index, netcode_server_client_id(server->m_server, client_index)));
