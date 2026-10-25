@@ -160,13 +160,20 @@ void QGNetworkServer::Update(float delta) {
 
 void QGNetworkServer::Send(int client_index, uint32_t type, unsigned char* data, uint32_t size, bool ack) {
 	QGTimeSystem* timeSystem = GetQGSystem<QGTimeSystem>();
+
+	// Handle disconnected client case
+	auto cit = m_clients.find(client_index);
+	if (cit == m_clients.end()) return;
+
 	int newSize = size + sizeof(QGNetworkEnvelope);
 	unsigned char* newBytes = (unsigned char*)malloc(newSize);
 
-	int offset = 0;
+	// Increment packet ID
 	m_clients[client_index]->m_nextPacketID++;
 
+	int offset = 0;
 	uint64_t nextPacketID = m_clients[client_index]->m_nextPacketID;
+
 	memcpy(newBytes + offset, &nextPacketID, sizeof(uint64_t));
 	offset += sizeof(uint64_t);
 
@@ -230,8 +237,6 @@ void QGNetworkServer::SendAckPacket(uint64_t sequence_num, int client_index) {
 	QGNetworkAckPacket packet;
 	packet.sequence_num = sequence_num;
 	packet.tick = timeSystem->Tick();
-
-	printf("Sending ack packet for packet ID %llu.\n", sequence_num);
 
 	timespec ts;
 	timeSystem->Timestamp(&ts);

@@ -225,8 +225,6 @@ void QGNetworkClient::SendAckPacket(uint64_t sequence_num) {
     packet.sequence_num = sequence_num;
     packet.tick = timeSystem->Tick();
 
-    printf("Sending ack packet for packet ID %llu.\n", sequence_num);
-
     timespec ts;
     timeSystem->Timestamp(&ts);
     packet.sec = ts.tv_sec;

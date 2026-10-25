@@ -4,7 +4,7 @@
 
 #include <Network/QGNetworkSystem.h>
 
-#define QGNETWORK_SERVER_SYNC_TICKS	10
+#define QGNETWORK_SERVER_SYNC_TICKS	30
 
 class QUEST_API QGNetworkServer : public QGNetworkSystem {
 public:
