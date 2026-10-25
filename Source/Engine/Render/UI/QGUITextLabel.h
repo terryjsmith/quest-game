@@ -12,6 +12,7 @@ public:
 		m_font = 0;
 		m_fontSize = 10;
 		m_color = vector3(255.0f);
+		m_alignment = ALIGN_CENTER | ALIGN_VCENTER;
 	}
 
 	~QGUITextLabel() = default;

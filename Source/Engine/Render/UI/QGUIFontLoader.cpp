@@ -8,7 +8,6 @@ QGResourceObject* QGUIFontLoader::LoadResource(QGResource* resource, std::string
 		// Initialize library
 		int error = FT_Init_FreeType(&font->m_library);
 		QGASSERT(error == 0, "Unable to initialize freetype library.");
-		return(0);
 	}
 
 	int error = FT_New_Memory_Face(font->m_library,

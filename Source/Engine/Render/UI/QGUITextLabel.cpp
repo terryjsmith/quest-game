@@ -58,6 +58,7 @@ void QGUITextLabel::Redraw() {
 
 	// Create our texture
 	m_bytes = (unsigned char*)malloc(finalWidth * finalHeight * 4);
+	memset(m_bytes, 0, finalWidth * finalHeight * 4);
 
 	// Copy our characters over
 	int nextX = 0;

@@ -165,8 +165,8 @@ extern "C" void QUEST_GAME qg_init_library() {
 
         QGUITextLabel* label = new QGUITextLabel();
         label->Font(font);
-        label->Color(vector3(255, 255, 255));
-        label->FontSize(12);
+        label->Color(vector3(0, 0, 0));
+        label->FontSize(20);
         label->Text("Click Me");
         button->AddChild(label);
 

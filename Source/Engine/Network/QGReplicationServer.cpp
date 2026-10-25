@@ -40,7 +40,7 @@ void QGReplicationServer::Update(float delta) {
 		uint64_t possibleReplayTick = m_replayTicks.begin()->first;
 
 		// Do we have a snapshot for this tick?
-		int attempts = 0, maxAttempts = 5;
+		int attempts = 0, maxAttempts = 10;
 		while (attempts < maxAttempts) {
 			auto it = m_snapshots.find(possibleReplayTick);
 			if (it != m_snapshots.end()) {

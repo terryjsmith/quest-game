@@ -87,7 +87,7 @@ void QGUISystem::RecursiveRender(QGUIControl* node, vector2 topleft, vector2 bot
 		position.x = topleft.x;
 	}
 	if (alignment & QGUIAlignment::ALIGN_CENTER) {
-		position.x = topleft.x + ((bottomright.x - topleft.x) / 2.0f) - (node->Width() / 2.0f);
+		position.x = std::floor(topleft.x + ((bottomright.x - topleft.x) / 2.0f) - (node->Width() / 2.0f));
 	}
 	if (alignment & QGUIAlignment::ALIGN_RIGHT) {
 		position.x = bottomright.x - node->Width();
@@ -98,7 +98,7 @@ void QGUISystem::RecursiveRender(QGUIControl* node, vector2 topleft, vector2 bot
 		position.y = topleft.y;
 	}
 	if (alignment & QGUIAlignment::ALIGN_VCENTER) {
-		position.y = topleft.y + ((bottomright.y - topleft.y) / 2.0f) - (node->Height() / 2.0f);
+		position.y = std::floor(topleft.y + ((bottomright.y - topleft.y) / 2.0f) - (node->Height() / 2.0f));
 	}
 	if (alignment & QGUIAlignment::ALIGN_BOTTOM) {
 		position.y = bottomright.y - node->Height();
@@ -117,9 +117,28 @@ void QGUISystem::RecursiveRender(QGUIControl* node, vector2 topleft, vector2 bot
 				if (x >= bottomright.x || x >= m_width) continue;
 
 				int localoffset = ((y * node->Width()) + x) * 4;
-				int screenoffset = (((topleft.y + y) * m_width) + (topleft.x + x)) * 4;
+				int screenoffset = (((position.y + y) * m_width) + (position.x + x)) * 4;
 
-				memcpy(output + screenoffset, bytes + localoffset, 4);
+				vector4 source = vector4(
+					(float)bytes[localoffset + 0] / 255.0f,
+					(float)bytes[localoffset + 1] / 255.0f,
+					(float)bytes[localoffset + 2] / 255.0f,
+					(float)bytes[localoffset + 3] / 255.0f
+				);
+
+				vector4 dest = vector4(
+					(float)output[screenoffset + 0] / 255.0f,
+					(float)output[screenoffset + 1] / 255.0f,
+					(float)output[screenoffset + 2] / 255.0f,
+					(float)output[screenoffset + 3] / 255.0f
+				);
+
+				// Blend
+				float alpha = ((1.0f - source.a) * dest.a + source.a);
+				output[screenoffset + 0] = (((1.0f - source.a) * dest.a * dest.r + source.a * source.r) / alpha) * 255.0f;
+				output[screenoffset + 1] = (((1.0f - source.a) * dest.a * dest.g + source.a * source.g) / alpha) * 255.0f;
+				output[screenoffset + 2] = (((1.0f - source.a) * dest.a * dest.b + source.a * source.b) / alpha) * 255.0f;
+				output[screenoffset + 3] = alpha * 255.0f;
 			}
 		}
 	}
