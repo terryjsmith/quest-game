@@ -86,15 +86,39 @@ void QGNetworkClient::Update(float delta) {
         qgpacket.bytes = (unsigned char*)malloc(qgpacket.env.size);
         memcpy(qgpacket.bytes, packet + offset, qgpacket.env.size);
 
-        // Ack back
-        if (qgpacket.env.ack == 1)
-            this->SendAckPacket(qgpacket.env.id);
+        // Do we have the whole packet?
+        bool wholePacket = false;
+        if (qgpacket.env.total == qgpacket.env.size) {
+            wholePacket = true;
+        }
+        else {
+            // Or is it in pieces
+            auto it = m_packetBytes.find(qgpacket.env.id);
+            if (it == m_packetBytes.end()) {
+                m_packetBytes[qgpacket.env.id] = qgpacket.env.size;
+            }
+            else {
+                m_packetBytes[qgpacket.env.id] += qgpacket.env.size;
+            }
 
-        // Process as an ack packet?
-        if (qgpacket.env.type == QGPACKET_ACK)
-            this->HandleAckPacket(&qgpacket);
+            if (m_packetBytes[qgpacket.env.id] == qgpacket.env.total) {
+                // Now we have a whole packet
+                wholePacket = true;
+            }
+        }
 
-        this->ProcessPacket(&qgpacket);
+        // Ack back if necessary
+        if (wholePacket == true) {
+            // Ack back
+            if (qgpacket.env.ack == 1)
+                this->SendAckPacket(qgpacket.env.id);
+
+            // Process as an ack packet?
+            if (qgpacket.env.type == QGPACKET_ACK)
+                this->HandleAckPacket(&qgpacket);
+
+            this->ProcessPacket(&qgpacket);
+        }
 
         (void)packet_sequence;
         netcode_client_free_packet(m_client, packet);
@@ -171,9 +195,6 @@ void QGNetworkClient::Send(uint32_t type, unsigned char* data, uint32_t size, bo
     offset += size;
 
     if (ack) {
-        // Store a copy to be re-sent as necessary
-        m_ackPacketTicks[tick] = tick;
-
         // Store a copy of the packet
         QGNetworkPacket* packetcopy = new QGNetworkPacket();
         packetcopy->env.id = m_nextPacketID;
@@ -203,6 +224,8 @@ void QGNetworkClient::SendAckPacket(uint64_t sequence_num) {
     QGNetworkAckPacket packet;
     packet.sequence_num = sequence_num;
     packet.tick = timeSystem->Tick();
+
+    printf("Sending ack packet for packet ID %llu.\n", sequence_num);
 
     timespec ts;
     timeSystem->Timestamp(&ts);
@@ -257,11 +280,16 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
     uint64_t currentTick = timeSystem->Tick();
 
     // Check packet type
-    if (m_packets.find(sequence_num) == m_packets.end()) return;
+    if (m_packets.find(sequence_num) == m_packets.end()) {
+        printf("Got ack packet back for unknown packet ID %llu.\n", sequence_num);
+        return;
+    }
+
     QGNetworkPacket* ackPacket = m_packets[sequence_num];
+    uint64_t ackTick = ackPacket->env.tick;
     if (ackPacket->env.type == QGPACKET_SYNC) {
         // Use to establish a rough RTT based on one direction
-        uint64_t diff = ((float)currentTick - sequence_num) * (1.0f / QG_TICKS_PER_SECOND) * 1000;
+        uint64_t diff = ((float)currentTick - ackTick) * (1.0f / QG_TICKS_PER_SECOND) * 1000;
 
         // Push on and take one off
         QGNetworkClient* client = GetQGSystem<QGNetworkClient>();
@@ -285,7 +313,7 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
 
         // Figure out what our current timestamp should be
         if (client->m_rtts.size() >= 5) {
-            int RTTinTicks = ((int64_t)currentTick - sequence_num);
+            int RTTinTicks = ((int64_t)currentTick - ackTick);
             int clientServerDiffinTicks = (int64_t)(currentTick - (RTTinTicks / 2) - packetTick);
 
             float adjust = ((float)clientServerDiffinTicks / QG_TICKS_PER_SECOND);
@@ -309,9 +337,6 @@ void QGNetworkClient::HandleAckPacket(QGNetworkPacket* packet) {
             }
         }
     }
-
-    // Remove from ackable packet list
-    m_ackPacketTicks.erase(sequence_num);
 
     // Clean up
     QGNetworkPacket* packetcopy = m_packets[sequence_num];

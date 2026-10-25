@@ -229,6 +229,8 @@ void QGNetworkServer::SendAckPacket(uint64_t sequence_num, int client_index) {
 	packet.sequence_num = sequence_num;
 	packet.tick = timeSystem->Tick();
 
+	printf("Sending ack packet for packet ID %llu.\n", sequence_num);
+
 	timespec ts;
 	timeSystem->Timestamp(&ts);
 	packet.sec = ts.tv_sec;
@@ -293,7 +295,8 @@ void QGNetworkServer::HandleAckPacket(QGNetworkPacket* packet) {
 	offset += sizeof(uint64_t);
 
 	// Get ackable packet tick
-	uint64_t diff = ((float)tick - sequence_num) * (1.0f / QG_TICKS_PER_SECOND) * 1000;
+	uint64_t ackTick = client->m_packets[sequence_num]->env.tick;
+	uint64_t diff = ((float)tick - ackTick) * (1.0f / QG_TICKS_PER_SECOND) * 1000;
 
 	// Push on and take one off
 	client->rtts.push_back((int)diff);
