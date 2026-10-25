@@ -216,7 +216,7 @@ void QGNetworkServer::Send(int client_index, uint32_t type, unsigned char* data,
 		memcpy(cpybytes, data, size);
 		packetcopy->bytes = cpybytes;
 
-		m_clients[client_index]->m_packets[tick] = packetcopy;
+		m_clients[client_index]->m_packets[nextPacketID] = packetcopy;
 	}
 
 	netcode_server_send_packet(m_server, client_index, newBytes, offset);
