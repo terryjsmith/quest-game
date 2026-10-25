@@ -295,6 +295,12 @@ void QGNetworkServer::HandleAckPacket(QGNetworkPacket* packet) {
 	offset += sizeof(uint64_t);
 
 	// Get ackable packet tick
+	auto it = client->m_packets.find(sequence_num);
+	if (it == client->m_packets.end()) {
+		printf("Received ack packet for unknown packet ID %llu.\n", sequence_num);
+		return;
+	}
+
 	uint64_t ackTick = client->m_packets[sequence_num]->env.tick;
 	uint64_t diff = ((float)tick - ackTick) * (1.0f / QG_TICKS_PER_SECOND) * 1000;
 
