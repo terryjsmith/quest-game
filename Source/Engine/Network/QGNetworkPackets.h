@@ -5,6 +5,8 @@
 #include <Core/QGObject.h>
 #include <Core/QGDataRecord.h>
 
+#define QG_NETWORK_MAX_PACKET_SIZE	1150
+
 enum QGNetworkPackets {
 	QGPACKET_STARTUP			= 10,
 	QGPACKET_ACK				= 20,

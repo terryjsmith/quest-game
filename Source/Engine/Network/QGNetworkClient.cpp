@@ -90,34 +90,58 @@ void QGNetworkClient::Update(float delta) {
         bool wholePacket = false;
         if (qgpacket.env.total == qgpacket.env.size) {
             wholePacket = true;
+            this->ProcessPacket(&qgpacket);
         }
         else {
-            // Or is it in pieces
+            // Or is it in pieces...
             auto it = m_packetBytes.find(qgpacket.env.id);
             if (it == m_packetBytes.end()) {
                 m_packetBytes[qgpacket.env.id] = qgpacket.env.size;
+
+                // Create a copy of the packet
+                QGNetworkPacket* packetcopy = new QGNetworkPacket();
+                packetcopy->env.id = qgpacket.env.id;
+                packetcopy->env.ack = qgpacket.env.ack;
+                packetcopy->env.client = qgpacket.env.client;
+                packetcopy->env.size = qgpacket.env.total;
+                packetcopy->env.tick = qgpacket.env.tick;
+                packetcopy->env.start = 0;
+                packetcopy->env.total = qgpacket.env.total;
+                packetcopy->env.type = qgpacket.env.type;
+
+                unsigned char* cpybytes = (unsigned char*)malloc(qgpacket.env.total);
+                memcpy(cpybytes, 0, qgpacket.env.total);
+                packetcopy->bytes = cpybytes;
+
+                m_packetFragments[qgpacket.env.id] = packetcopy;
             }
             else {
                 m_packetBytes[qgpacket.env.id] += qgpacket.env.size;
             }
 
+            // Copy this packet's bytes into the whole
+            memcpy(m_packetFragments[qgpacket.env.id]->bytes + qgpacket.env.start, qgpacket.bytes, qgpacket.env.size);
+
             if (m_packetBytes[qgpacket.env.id] == qgpacket.env.total) {
                 // Now we have a whole packet
+                this->ProcessPacket(m_packetFragments[qgpacket.env.id]);
                 wholePacket = true;
+
+                // Clean up after processing
+                delete m_packetFragments[qgpacket.env.id];
+                m_packetFragments.erase(qgpacket.env.id);
+                m_packetBytes.erase(qgpacket.env.id);
             }
         }
 
         // Ack back if necessary
         if (wholePacket == true) {
-            // Ack back
             if (qgpacket.env.ack == 1)
                 this->SendAckPacket(qgpacket.env.id);
 
             // Process as an ack packet?
             if (qgpacket.env.type == QGPACKET_ACK)
                 this->HandleAckPacket(&qgpacket);
-
-            this->ProcessPacket(&qgpacket);
         }
 
         (void)packet_sequence;
@@ -138,61 +162,70 @@ void QGNetworkClient::Update(float delta) {
 
     // Determine response time from average RTT (plus 20%)
     if (m_avgRTT) {
-        int avgRTTTicks = std::ceil(std::ceil(((float)m_avgRTT / 1000.0f) * (float)QG_TICKS_PER_SECOND) * 1.2f);
+        int avgRTTTicks = std::ceil(std::ceil(((float)m_avgRTT / 1000.0f) * (float)QG_TICKS_PER_SECOND) * 2.0f);
         auto it = m_packets.begin();
         for (; it != m_packets.end(); it++) {
             if (it->second->env.tick < (currentTick - avgRTTTicks)) {
                 // Resend
                 printf("Resending packet type %d from tick %llu.\n", it->second->env.type, it->second->env.tick);
                 this->Send(it->second->env.type, it->second->bytes, it->second->env.size, it->second->env.ack);
+
+                // Remove any re-sent packets
+                it = m_packets.erase(it);
+                continue;
             }
             else {
                 break;
             }
         }
-
-        // Remove any re-sent packets
-        if (it != m_packets.begin()) m_packets.erase(m_packets.begin(), it);
     }
 }
 
 void QGNetworkClient::Send(uint32_t type, unsigned char* data, uint32_t size, bool ack) {
     QGTimeSystem* timeSystem = GetQGSystem<QGTimeSystem>();
-    int newSize = size + sizeof(QGNetworkEnvelope);
-    unsigned char* newBytes = (unsigned char*)malloc(newSize);
-
-    int offset = 0;
-    m_nextPacketID++;
-    memcpy(newBytes + offset, &m_nextPacketID, sizeof(uint64_t));
-    offset += sizeof(uint64_t);
-
-    memcpy(newBytes + offset, &type, sizeof(uint8_t));
-    offset += sizeof(uint8_t);
-
-    memcpy(newBytes + offset, &size, sizeof(uint32_t));
-    offset += sizeof(uint32_t);
-
     uint64_t tick = timeSystem->Tick();
-    memcpy(newBytes + offset, &tick, sizeof(uint64_t));
-    offset += sizeof(uint64_t);
 
-    //memcpy(newBytes + offset, &m_clientID, sizeof(uint64_t));
-    //offset += sizeof(uint64_t);
+    m_nextPacketID++;
+    for (int s = 0; s < size; s += QG_NETWORK_MAX_PACKET_SIZE) {
+        uint32_t fragmentSize = std::min((int)size - s, QG_NETWORK_MAX_PACKET_SIZE);
 
-    uint16_t start = 0;
-    memcpy(newBytes + offset, &start, sizeof(uint16_t));
-    offset += sizeof(uint16_t);
+        int newSize = fragmentSize + sizeof(QGNetworkEnvelope);
+        unsigned char* newBytes = (unsigned char*)malloc(newSize);
 
-    uint16_t total = size;
-    memcpy(newBytes + offset, &total, sizeof(uint16_t));
-    offset += sizeof(uint16_t);
+        int offset = 0;
+        memcpy(newBytes + offset, &m_nextPacketID, sizeof(uint64_t));
+        offset += sizeof(uint64_t);
 
-    int iack = (int)ack;
-    memcpy(newBytes + offset, &ack, sizeof(uint8_t));
-    offset += sizeof(uint8_t);
+        memcpy(newBytes + offset, &type, sizeof(uint8_t));
+        offset += sizeof(uint8_t);
 
-    memcpy(newBytes + offset, data, size);
-    offset += size;
+        memcpy(newBytes + offset, &fragmentSize, sizeof(uint32_t));
+        offset += sizeof(uint32_t);
+
+        memcpy(newBytes + offset, &tick, sizeof(uint64_t));
+        offset += sizeof(uint64_t);
+
+        //memcpy(newBytes + offset, &m_clientID, sizeof(uint64_t));
+        //offset += sizeof(uint64_t);
+
+        uint16_t start = s;
+        memcpy(newBytes + offset, &start, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        uint16_t total = size;
+        memcpy(newBytes + offset, &total, sizeof(uint16_t));
+        offset += sizeof(uint16_t);
+
+        int iack = (int)ack;
+        memcpy(newBytes + offset, &ack, sizeof(uint8_t));
+        offset += sizeof(uint8_t);
+
+        memcpy(newBytes + offset, data, fragmentSize);
+        offset += fragmentSize;
+
+        netcode_client_send_packet(m_client, newBytes, offset);
+        free(newBytes);
+    }
 
     if (ack) {
         // Store a copy of the packet
@@ -203,19 +236,15 @@ void QGNetworkClient::Send(uint32_t type, unsigned char* data, uint32_t size, bo
         packetcopy->env.size = size;
         packetcopy->env.tick = tick;
         packetcopy->env.type = type;
-        packetcopy->env.start = start;
-        packetcopy->env.total = total;
+        packetcopy->env.start = 0;
+        packetcopy->env.total = size;
 
-        unsigned char* cpybytes = (unsigned char*)malloc(newSize);
+        unsigned char* cpybytes = (unsigned char*)malloc(size);
         memcpy(cpybytes, data, size);
         packetcopy->bytes = cpybytes;
 
         m_packets[m_nextPacketID] = packetcopy;
     }
-
-    netcode_client_send_packet(m_client, newBytes, offset);
-
-    free(newBytes);
 }
 
 void QGNetworkClient::SendAckPacket(uint64_t sequence_num) {

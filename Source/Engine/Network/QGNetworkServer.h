@@ -57,6 +57,7 @@ protected:
 protected:
 	struct QGConnectedClient {
 		std::map<uint64_t, QGNetworkPacket*> m_packets;
+		std::map<uint64_t, QGNetworkPacket*> m_packetFragments;
 		std::map<uint64_t, int> m_packetBytes;
 		uint64_t lastSyncTick;
 		uint64_t m_nextPacketID;
