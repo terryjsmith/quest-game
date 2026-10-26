@@ -94,9 +94,6 @@ void QGNetworkClient::Update(float delta) {
         }
         else {
             // Or is it in pieces...
-            printf("Received packet fragment of ID %llu, range %d to %d of %d.\n", 
-                qgpacket.env.id, qgpacket.env.start, qgpacket.env.start + qgpacket.env.size, qgpacket.env.total);
-
             auto it = m_packetBytes.find(qgpacket.env.id);
             if (it == m_packetBytes.end()) {
                 m_packetBytes[qgpacket.env.id] = qgpacket.env.size;

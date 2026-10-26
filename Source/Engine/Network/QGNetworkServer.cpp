@@ -196,7 +196,6 @@ void QGNetworkServer::Send(int client_index, uint32_t type, unsigned char* data,
 	uint64_t client_id = netcode_server_client_id(m_server, client_index);
 	for (int s = 0; s < size; s += QG_NETWORK_MAX_PACKET_SIZE) {
 		uint32_t fragmentSize = std::min((int)size - s, QG_NETWORK_MAX_PACKET_SIZE);
-		printf("Sending packet fragment of bytes %d to %d of %d for packet ID %llu.\n", s, s + fragmentSize, size, nextPacketID);
 
 		int newSize = fragmentSize + sizeof(QGNetworkEnvelope);
 		unsigned char* newBytes = (unsigned char*)malloc(newSize);
