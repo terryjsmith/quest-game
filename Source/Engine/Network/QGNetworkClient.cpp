@@ -95,7 +95,7 @@ void QGNetworkClient::Update(float delta) {
         else {
             // Or is it in pieces...
             printf("Received packet fragment of ID %llu, range %d to %d of %d.\n", 
-                qgpacket.env.id, qgpacket.env.start, qgpacket.env.size, qgpacket.env.total);
+                qgpacket.env.id, qgpacket.env.start, qgpacket.env.start + qgpacket.env.size, qgpacket.env.total);
 
             auto it = m_packetBytes.find(qgpacket.env.id);
             if (it == m_packetBytes.end()) {
@@ -113,7 +113,7 @@ void QGNetworkClient::Update(float delta) {
                 packetcopy->env.type = qgpacket.env.type;
 
                 unsigned char* cpybytes = (unsigned char*)malloc(qgpacket.env.total);
-                memcpy(cpybytes, 0, qgpacket.env.total);
+                memset(cpybytes, 0, qgpacket.env.total);
                 packetcopy->bytes = cpybytes;
 
                 m_packetFragments[qgpacket.env.id] = packetcopy;
