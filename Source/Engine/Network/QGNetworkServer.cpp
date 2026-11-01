@@ -178,7 +178,25 @@ void QGNetworkServer::Update(float delta) {
 			m_clients[i]->lastSyncTick = tick;
 		}
 
-		// TODO: Check ack packets for responses and re-send if necessary
+		// Check ack packets for responses and re-send if necessary
+		if (m_clients[i]->avgRTT) {
+			int avgRTTTicks = std::ceil(std::ceil(((float)m_clients[i]->avgRTT / 1000.0f) * (float)QG_TICKS_PER_SECOND) * 2.0f);
+			auto it = m_clients[i]->m_packets.begin();
+			for (; it != m_clients[i]->m_packets.end(); it++) {
+				if (it->second->env.tick < (tick - avgRTTTicks)) {
+					// Resend
+					printf("Resending packet type %d from tick %llu on client %llu.\n", it->second->env.type, it->second->env.tick, it->second->env.client);
+					this->Send(i, it->second->env.type, it->second->bytes, it->second->env.size, it->second->env.ack);
+
+					// Remove any re-sent packets
+					it = m_clients[i]->m_packets.erase(it);
+					continue;
+				}
+				else {
+					break;
+				}
+			}
+		}
 	}
 
 	m_time += delta;
