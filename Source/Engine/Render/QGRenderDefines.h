@@ -70,4 +70,12 @@ extern int TEXTURE_SLOT_NEGATIVE_Y;
 extern int TEXTURE_SLOT_POSITIVE_Z;
 extern int TEXTURE_SLOT_NEGATIVE_Z;
 
+extern int FRAMEBUFFER_SLOT_0;
+extern int FRAMEBUFFER_SLOT_1;
+extern int FRAMEBUFFER_SLOT_2;
+extern int FRAMEBUFFER_SLOT_3;
+extern int FRAMEBUFFER_SLOT_4;
+extern int FRAMEBUFFER_SLOT_5;
+extern int FRAMEBUFFER_SLOT_DEPTH;
+
 #endif

@@ -185,7 +185,7 @@ void QGNetworkServer::Update(float delta) {
 			for (; it != m_clients[i]->m_packets.end(); it++) {
 				if (it->second->env.tick < (tick - avgRTTTicks)) {
 					// Resend
-					printf("Resending packet type %d from tick %llu on client %llu.\n", it->second->env.type, it->second->env.tick, it->second->env.client);
+					// printf("Resending packet type %d from tick %llu on client %llu.\n", it->second->env.type, it->second->env.tick, it->second->env.client);
 					this->Send(i, it->second->env.type, it->second->bytes, it->second->env.size, it->second->env.ack);
 
 					// Remove any re-sent packets

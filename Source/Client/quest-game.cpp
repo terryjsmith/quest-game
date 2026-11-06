@@ -31,6 +31,7 @@
 #include <Render/Passes/QGUIRenderPass.h>
 #include <IO/QGMouse.h>
 #include <Render/UI/QGUIFontLoader.h>
+#include <Render/Passes/QGGBufferPass.h>
 
 int main()
 {
@@ -84,11 +85,14 @@ int main()
     window->Create("Game Window", 800, 600, false);
 
     // Setup rendering pipeline
+    QGGBufferPass* gbufferPass = new QGGBufferPass();
+    renderSystem->AddRenderPass(0, gbufferPass);
+
     QGForwardRenderPass* forwardRenderPass = new QGForwardRenderPass();
-    renderSystem->AddRenderPass(0, forwardRenderPass);
+    renderSystem->AddRenderPass(1, forwardRenderPass);
 
     QGUIRenderPass* uiRenderPass = new QGUIRenderPass();
-    renderSystem->AddRenderPass(1, uiRenderPass);
+    renderSystem->AddRenderPass(2, uiRenderPass);
 
     // Create command mappings
     inputSystem->RegisterCommand(10, "MOVE");

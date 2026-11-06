@@ -8,6 +8,8 @@
 #include <Render/GL/QGGLTexture2D.h>
 #include <Render/GL/QGGLVertexBuffer.h>
 #include <Render/GL/QGGLVertexAttributeList.h>
+#include <Render/GL/QGGLDepthTexture2D.h>
+#include <Render/GL/QGGLFramebuffer.h>
 
 class QUEST_API QGGLRenderSystem : public QGRenderSystem {
 public:
@@ -57,6 +59,8 @@ public:
 	QGIndexBuffer* CreateIndexBuffer() { return new QGGLIndexBuffer(); }
 	QGVertexAttributeList* CreateVertexAttributeList() { return new QGGLVertexAttributeList(); }
 	QGShaderProgram* CreateShaderProgram() { return new QGGLShaderProgram(); }
+	QGTexture2D* CreateDepthTexture2D() { return new QGGLDepthTexture2D(); }
+	virtual QGFramebuffer* CreateFramebuffer() { return new QGGLFramebuffer(); }
 };
 
 #endif

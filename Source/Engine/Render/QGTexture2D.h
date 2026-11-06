@@ -28,7 +28,7 @@ public:
 	/**
 	 * Create from data
 	 */
-	void Create(int width, int height, int channels, QGTextureDataType type, void* data) {
+	virtual void Create(int width, int height, int channels, QGTextureDataType type, void* data) {
 		this->width = width;
 		this->height = height;
 		this->channels = channels;
@@ -37,8 +37,11 @@ public:
 		if (this->m_data) free(m_data);
 		
 		int bytesize = (type == QGTEXTURE_BYTE) ? sizeof(unsigned char) : sizeof(float);
-		this->m_data = (void*)malloc(width * height * channels * bytesize);
-		memcpy(this->m_data, data, width * height * channels * bytesize);
+
+		if (data) {
+			this->m_data = (void*)malloc(width * height * channels * bytesize);
+			memcpy(this->m_data, data, width * height * channels * bytesize);
+		}
 
 		m_dirty = true;
 	}

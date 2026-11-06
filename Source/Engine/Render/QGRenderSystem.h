@@ -12,6 +12,7 @@
 #include <Render/QGScene.h>
 #include <Render/QGRenderPass.h>
 #include <Render/UI/QGUIScreen.h>
+#include <Render/QGFramebuffer.h>
 
 class QUEST_API QGRenderSystem : public QGSystem {
 public:
@@ -72,6 +73,8 @@ public:
 	virtual QGVertexAttributeList* CreateVertexAttributeList() { return new QGVertexAttributeList(); }
 	virtual QGShader* CreateShader() { return new QGShader(); }
 	virtual QGShaderProgram* CreateShaderProgram() { return new QGShaderProgram(); }
+	virtual QGTexture2D* CreateDepthTexture2D() { return new QGTexture2D(); }
+	virtual QGFramebuffer* CreateFramebuffer() { return new QGFramebuffer(); }
 
 	/**
 	 * Add a render pass

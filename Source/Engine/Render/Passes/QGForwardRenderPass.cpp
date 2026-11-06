@@ -15,7 +15,7 @@ void QGForwardRenderPass::Initialize(int width, int height) {
 	QGRenderSystem* renderSystem = GetQGSystem<QGRenderSystem>();
 	if (m_program == 0) {
 		m_program = renderSystem->CreateShaderProgram();
-		m_program->vertexShader = (QGShader*)resourceSystem->Load("Resources/Shaders/forward.vs", "Shader");
+		m_program->vertexShader = (QGShader*)resourceSystem->Load("Resources/Shaders/static.vs", "Shader");
 		m_program->fragmentShader = (QGShader*)resourceSystem->Load("Resources/Shaders/forward.fs", "Shader");
 	}
 
@@ -123,6 +123,7 @@ void QGForwardRenderPass::RecursiveRender(QGMesh* mesh, bool animated, QGShaderP
 		attribListObject->EnableAttribute(3, QGVertexAttribute::ATTRIB_BONES);
 		attribListObject->EnableAttribute(4, QGVertexAttribute::ATTRIB_BONEWEIGHTS);
 	}
+	attribListObject->EnableAttribute(5, QGVertexAttribute::ATTRIB_NORMAL);
 
 	// Bind textures
 	if (mesh->diffuseTexture) {
